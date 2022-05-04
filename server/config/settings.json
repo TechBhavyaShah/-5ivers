@@ -1,6 +1,6 @@
 {
-    "mongoConfig": {
-      "serverUrl": "mongodb://localhost:27017",
-      "database": "Food waste management"
-    }
+  "mongoConfig": {
+    "serverUrl": "mongodb+srv://5ivers:A559mcitAzog4R08@5ivers.hhunq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+    "database": "Food waste management"
   }
+}
