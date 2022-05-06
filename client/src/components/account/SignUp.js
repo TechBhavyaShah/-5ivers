@@ -30,42 +30,97 @@ const useStyles = makeStyles((theme) => ({
 
 const SignUp = () => {
     const { currentUser } = useContext(AuthContext);
-    const [pwMatch, setPwMatch] = useState("");
+    const { control, handleSubmit, reset } = useForm();
+    const classes = useStyles();
+    const [errors, setErrors] = useState([]);
 
-    const handleSignUp = async (e) => {
-        e.preventDefault();
+    const onSubmit = async (data) => {
+        // event.preventDefault();
+        setErrors([]);
 
-        const { displayName, email, passwordOne, passwordTwo } =
-            e.target.elements;
+        const {
+            name,
+            email,
+            address,
+            postalCode,
+            country,
+            aboutMe,
+            passwordOne,
+            passwordTwo,
+        } = data;
 
-        if (passwordOne.value !== passwordTwo.value) {
-            setPwMatch("Passwords do not match");
-            return false;
+        if (passwordOne !== passwordTwo) {
+            if (!errors.includes("Passwords do not match")) {
+                setErrors([...errors, "Passwords do not match"]);
+            }
+            reset();
         }
 
         try {
-            await doCreateUserWithEmailAndPassword(
-                email.value,
-                passwordOne.value,
-                displayName
+            let user = await doCreateUserWithEmailAndPassword(
+                email,
+                passwordOne,
+                name
             );
+
+            let userId = user.user.uid;
+
+            // Axios call to backend to create a user with the firebase uid
         } catch (error) {
-            // alert(error);
+            // console.log(error);
+            console.log("Entered error block");
+            if (!errors.includes(error.message)) {
+                setErrors([...errors, error.message]);
+            }
+
+            console.log(error.code);
+            // if (error.code == "auth/weak-password") {
+            //     console.log("Password should be at least 6 characters!");
+            // } else if (error.code == "auth/email-already-in-use") {
+            //     console.log("Email is already in use!");
+            // } else {
+            //     console.log("Email is invalid!");
+            // }
         }
+        reset();
     };
 
     if (currentUser) {
         return <Navigate to="/home" />;
     }
 
+    console.log(errors);
     return (
         <div>
             <h1>Sign up</h1>
 
-            {pwMatch && <h4 className="error">{pwMatch}</h4>}
+            {errors.length > 0
+                ? errors.map((error) => <h4 className="error">{error}</h4>)
+                : null}
 
-            <form onSubmit={handleSignUp}>
-                <div className="form-group">
+            <form className={classes.root} onSubmit={handleSubmit(onSubmit)}>
+                <Controller
+                    name="name"
+                    control={control}
+                    defaultValue=""
+                    render={({
+                        field: { onChange, value },
+                        fieldState: { error },
+                    }) => (
+                        <TextField
+                            label="Name"
+                            variant="filled"
+                            type="text"
+                            value={value}
+                            onChange={onChange}
+                            error={!!error}
+                            helperText={error ? error.message : null}
+                        />
+                    )}
+                    rules={{ required: "Name Required" }}
+                ></Controller>
+
+                {/* <div className="form-group">
                     <label>
                         Name:
                         <input
@@ -78,9 +133,36 @@ const SignUp = () => {
                             required
                         />
                     </label>
-                </div>
+                </div> */}
 
-                <div className="form-group">
+                <Controller
+                    name="email"
+                    control={control}
+                    defaultValue=""
+                    render={({
+                        field: { onChange, value },
+                        fieldState: { error },
+                    }) => (
+                        <TextField
+                            label="Email"
+                            variant="filled"
+                            type="email"
+                            value={value}
+                            onChange={onChange}
+                            error={!!error}
+                            helperText={error ? error.message : null}
+                        />
+                    )}
+                    rules={{
+                        required: "Email Required",
+                        pattern: {
+                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                            message: "Enter a valid e-mail address",
+                        },
+                    }}
+                ></Controller>
+
+                {/* <div className="form-group">
                     <label>
                         Email:
                         <input
@@ -93,9 +175,33 @@ const SignUp = () => {
                             required
                         />
                     </label>
-                </div>
+                </div> */}
 
-                <div className="form-group">
+                <Controller
+                    name="address"
+                    control={control}
+                    defaultValue=""
+                    render={({
+                        field: { onChange, value },
+                        fieldState: { error },
+                    }) => (
+                        <TextField
+                            label="Address"
+                            variant="filled"
+                            type="text"
+                            value={value}
+                            onChange={onChange}
+                            error={!!error}
+                            helperText={error ? error.message : null}
+                            multiline
+                        />
+                    )}
+                    rules={{
+                        required: "Address Required",
+                    }}
+                ></Controller>
+
+                {/* <div className="form-group">
                     <label>
                         Address:
                         <textarea
@@ -108,9 +214,32 @@ const SignUp = () => {
                             required
                         />
                     </label>
-                </div>
+                </div> */}
 
-                <div className="form-group">
+                <Controller
+                    name="postalCode"
+                    control={control}
+                    defaultValue=""
+                    render={({
+                        field: { onChange, value },
+                        fieldState: { error },
+                    }) => (
+                        <TextField
+                            label="ZIP or Postal Code"
+                            variant="filled"
+                            type="text"
+                            value={value}
+                            onChange={onChange}
+                            error={!!error}
+                            helperText={error ? error.message : null}
+                        />
+                    )}
+                    rules={{
+                        required: "Postal Code Required",
+                    }}
+                ></Controller>
+
+                {/* <div className="form-group">
                     <label>
                         ZIP or Postal Code:
                         <input
@@ -123,16 +252,42 @@ const SignUp = () => {
                             required
                         />
                     </label>
-                </div>
+                </div> */}
 
-                <div className="form-group">
+                <SelectCountry control={control} />
+
+                {/* <div className="form-group">
                     <label>
                         Country or region:
                         <SelectCountry />
                     </label>
-                </div>
+                </div> */}
 
-                <div className="form-group">
+                <Controller
+                    name="aboutMe"
+                    control={control}
+                    defaultValue=""
+                    render={({
+                        field: { onChange, value },
+                        fieldState: { error },
+                    }) => (
+                        <TextField
+                            label="About Me"
+                            variant="filled"
+                            type="text"
+                            value={value}
+                            onChange={onChange}
+                            error={!!error}
+                            helperText={error ? error.message : null}
+                            multiline
+                        />
+                    )}
+                    rules={{
+                        required: "About Me Required",
+                    }}
+                ></Controller>
+
+                {/* <div className="form-group">
                     <label>
                         About me:
                         <textarea
@@ -143,9 +298,32 @@ const SignUp = () => {
                             placeholder="About Me"
                         />
                     </label>
-                </div>
+                </div> */}
 
-                <div className="form-group">
+                <Controller
+                    name="passwordOne"
+                    control={control}
+                    defaultValue=""
+                    render={({
+                        field: { onChange, value },
+                        fieldState: { error },
+                    }) => (
+                        <TextField
+                            label="Password"
+                            variant="filled"
+                            type="password"
+                            value={value}
+                            onChange={onChange}
+                            error={!!error}
+                            helperText={error ? error.message : null}
+                        />
+                    )}
+                    rules={{
+                        required: "Password Required",
+                    }}
+                ></Controller>
+
+                {/* <div className="form-group">
                     <label>
                         Password:
                         <input
@@ -157,9 +335,32 @@ const SignUp = () => {
                             required
                         />
                     </label>
-                </div>
+                </div> */}
 
-                <div className="form-group">
+                <Controller
+                    name="passwordTwo"
+                    control={control}
+                    defaultValue=""
+                    render={({
+                        field: { onChange, value },
+                        fieldState: { error },
+                    }) => (
+                        <TextField
+                            label="Confirm Password"
+                            variant="filled"
+                            type="password"
+                            value={value}
+                            onChange={onChange}
+                            error={!!error}
+                            helperText={error ? error.message : null}
+                        />
+                    )}
+                    rules={{
+                        required: "Confirm Password Required",
+                    }}
+                ></Controller>
+
+                {/* <div className="form-group">
                     <label>
                         Confirm Password:
                         <input
@@ -170,11 +371,17 @@ const SignUp = () => {
                             required
                         />
                     </label>
-                </div>
+                </div> */}
 
-                <button id="submitButton" name="submitButton" type="submit">
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    id="submitButton"
+                    name="submitButton"
+                >
                     Sign Up
-                </button>
+                </Button>
             </form>
             <br />
             {/* <SocialSignIn /> */}
