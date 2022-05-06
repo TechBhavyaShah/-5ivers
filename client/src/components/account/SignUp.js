@@ -33,13 +33,17 @@ const useStyles = makeStyles((theme) => ({
 
 const SignUp = () => {
     const { currentUser } = useContext(AuthContext);
-    const { control, handleSubmit, reset } = useForm();
+    const {
+        control,
+        handleSubmit,
+        reset,
+        setError,
+        formState: { errors },
+    } = useForm();
     const classes = useStyles();
-    const [errors, setErrors] = useState([]);
 
     const onSubmit = async (data) => {
         // event.preventDefault();
-        setErrors([]);
 
         const {
             name,
@@ -53,9 +57,11 @@ const SignUp = () => {
         } = data;
 
         if (passwordOne !== passwordTwo) {
-            if (!errors.includes("Passwords do not match")) {
-                setErrors([...errors, "Passwords do not match"]);
-            }
+            setError("passwordOne", {
+                type: "client",
+                message: "Passwords do not match!",
+            });
+            return false;
         }
 
         try {
@@ -71,20 +77,24 @@ const SignUp = () => {
 
             // Axios call to backend to create a user with the firebase uid
         } catch (error) {
-            // console.log(error);
-            console.log("Entered error block");
-            if (!errors.includes(error.message)) {
-                setErrors([...errors, error.message]);
-            }
-
             console.log(error.code);
-            // if (error.code == "auth/weak-password") {
-            //     console.log("Password should be at least 6 characters!");
-            // } else if (error.code == "auth/email-already-in-use") {
-            //     console.log("Email is already in use!");
-            // } else {
-            //     console.log("Email is invalid!");
-            // }
+            if (error.code == "auth/weak-password") {
+                setError("passwordOne", {
+                    type: "server",
+                    message: "Password should be at least 6 characters!",
+                });
+            } else if (error.code == "auth/email-already-in-use") {
+                setError("email", {
+                    type: "server",
+                    message: "Email is already in use!",
+                });
+            } else {
+                setError("email", {
+                    type: "server",
+                    message: "Email is invalid!",
+                });
+            }
+            return false;
         }
         reset();
     };
