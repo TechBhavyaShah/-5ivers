@@ -1,7 +1,10 @@
 import React, { useContext, useState } from "react";
 import SelectCountry from "./SelectCountry";
 import { Navigate } from "react-router-dom";
-import { doCreateUserWithEmailAndPassword } from "../../firebase/FirebaseFunctions";
+import {
+    doCreateUserWithEmailAndPassword,
+    doUpdateProfileDisplayName,
+} from "../../firebase/FirebaseFunctions";
 import { AuthContext } from "../../firebase/Auth";
 // import SocialSignIn from "./SocialSignIn";
 
@@ -53,7 +56,6 @@ const SignUp = () => {
             if (!errors.includes("Passwords do not match")) {
                 setErrors([...errors, "Passwords do not match"]);
             }
-            reset();
         }
 
         try {
@@ -62,6 +64,8 @@ const SignUp = () => {
                 passwordOne,
                 name
             );
+
+            await doUpdateProfileDisplayName(name);
 
             let userId = user.user.uid;
 
