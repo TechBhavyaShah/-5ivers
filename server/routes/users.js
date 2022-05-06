@@ -141,24 +141,20 @@ router.post("/userDetails", async (req, res) => {
 });
 
 router.get("/pastOrders/:userId", async (req, res) => {
-    const id = req.params.userId;
-    try {
-      if (id) {
-        const userdata = await usersData.getById(id);
-        res.send({
-          name: userdata.name,
-          emailAddress: userdata.emailAddress,
-          biography: userdata.biography,
-          address: userdata.address,
-          pastOrders: userdata.pastOrders,
-        });
-      } else {
-        res.redirect("/");
-        // res.render("users/error")
-      }
-    } catch (e) {
-      res.status(404).send({ error: e.message });
+  const id = req.params.userId;
+  try {
+    if (id) {
+      const pastOrders = await usersData.getPastOrders(id);
+      res.send({
+        pastOrders: pastOrders,
+      });
+    } else {
+      res.redirect("/");
+      // res.render("users/error")
     }
-  });
+  } catch (e) {
+    res.status(404).send({ error: e.message });
+  }
+});
 
 module.exports = router;

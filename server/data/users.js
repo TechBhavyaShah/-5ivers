@@ -89,7 +89,8 @@ async function createUser(
     throw { message: `Could not add user`, status: 400 };
 
   const newId = insertInfo.insertedId.toString();
-  const user = await get(newId);
+  //   console.log(newId)
+  const user = await getById(id);
 
   return JSON.parse(JSON.stringify(user));
 }
@@ -110,7 +111,8 @@ async function getById(id) {
   //     throw { message: `Id is invalid because of ${e}`, status: 400 };
   //   }
 
-  const user = await userCollection.findOne({ _id: id });
+  const user = await userCollection.findOne({ id: id });
+  //   console.log(user)
 
   if (user === null)
     throw { message: `No user exists with that id`, status: 400 };
