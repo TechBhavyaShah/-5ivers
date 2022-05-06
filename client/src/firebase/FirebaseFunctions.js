@@ -27,21 +27,36 @@ const user = auth.currentUser;
 
   will grab that unique id from the user object.
 */
-async function doCreateUserWithEmailAndPassword(email, password, displayName) {
+async function doCreateUserWithEmailAndPassword(email, password) {
+    // try {
     const user = await createUserWithEmailAndPassword(auth, email, password);
     // await updateProfile(user, { displayName: displayName });
     console.log(user.user.uid);
 
-    console.log("This function finished");
+    return user;
     // Axios call to a backend route
+    // } catch (e) {
+    //     console.log(e.code);
+    //     if (e.code == "auth/weak-password") {
+    //         throw "Password should be at least 6 characters!";
+    //     } else if (e.code == "auth/email-already-in-use") {
+    //         throw "Email is already in use!";
+    //     } else {
+    //         throw "Email is invalid!";
+    //     }
+    // }
 }
 
 // CREATE SEPARATE FUNCTION TO UPDATE PROFILE, I KEEP RUNNING INTO NETWORK ERROR DOING IT CONSECUTIVELY WITH THE FN BEFORE THIS
+async function doUpdateProfileDisplayName(displayName) {
+    console.log(displayName);
+    await updateProfile(auth.currentUser, { displayName: displayName });
+}
 
 async function doChangePassword(email, oldPassword, newPassword) {
     let credentials = EmailAuthProvider.credential(email, oldPassword);
-    await reauthenticateWithCredential(user, credentials);
-    await updatePassword(user, newPassword);
+    await reauthenticateWithCredential(auth.currentUser, credentials);
+    await updatePassword(auth.currentUser, newPassword);
     await doSignOut();
 }
 
@@ -77,6 +92,7 @@ async function doSignOut() {
 
 export {
     doCreateUserWithEmailAndPassword,
+    doUpdateProfileDisplayName,
     // doSocialSignIn,
     doSignInWithEmailAndPassword,
     doPasswordReset,
