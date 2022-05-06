@@ -12,19 +12,14 @@ function validateEmail(email) {
 }
 
 async function createUser(
+  id,
   name,
   emailAddress,
   password,
-  currentLocation,
+  biography,
   address
 ) {
-  if (
-    !name ||
-    !emailAddress ||
-    !password ||
-    !currentLocation ||
-    !address
-  ) {
+  if (!id || !name || !emailAddress || !password || !biography || !address) {
     throw { message: `All fields must be supplied`, status: 400 };
   }
 
@@ -37,18 +32,20 @@ async function createUser(
     throw { message: "password must be string", status: 400 };
   if (typeof address !== "string")
     throw { message: "address must be string", status: 400 };
-  if (typeof currentLocation !== "string")
-    throw { message: "currentLocation must be string", status: 400 };
-//   if (!Array.isArray(pastOrders))
-//     throw { message: "pastOrders must be an array", status: 400 };
+  if (typeof biography !== "string")
+    throw { message: "Biography must be string", status: 400 };
+  //   if (!Array.isArray(pastOrders))
+  //     throw { message: "pastOrders must be an array", status: 400 };
+
+  if (/^ *$/.test(id)) throw { message: `id cannot be empty`, status: 400 };
 
   if (/^ *$/.test(name)) throw { message: `name cannot be empty`, status: 400 };
   if (/^ *$/.test(emailAddress))
     throw { message: `emailAddress cannot be empty`, status: 400 };
   if (/^ *$/.test(password))
     throw { message: `password cannot be empty`, status: 400 };
-  if (/^ *$/.test(currentLocation))
-    throw { message: `currentLocation cannot be empty`, status: 400 };
+  if (/^ *$/.test(biography))
+    throw { message: `Biography cannot be empty`, status: 400 };
   if (/^ *$/.test(address))
     throw { message: `address cannot be empty`, status: 400 };
 
@@ -78,11 +75,11 @@ async function createUser(
     };
 
   let newUser = {
-    id: uuid.v4(),
+    id: id,
     name: name,
     emailAddress: emailAddress.toLowerCase(),
     password: hashedPwd,
-    currentLocation: currentLocation,
+    biography: biography,
     address: address,
     pastOrders: [],
   };
@@ -107,13 +104,13 @@ async function getById(id) {
   const userCollection = await users();
   let getId;
 
-  try {
-    getId = ObjectID(id);
-  } catch (e) {
-    throw { message: `Id is invalid because of ${e}`, status: 400 };
-  }
+  //   try {
+  //     getId = ObjectID(id);
+  //   } catch (e) {
+  //     throw { message: `Id is invalid because of ${e}`, status: 400 };
+  //   }
 
-  const user = await userCollection.findOne({ _id: getId });
+  const user = await userCollection.findOne({ _id: id });
 
   if (user === null)
     throw { message: `No user exists with that id`, status: 400 };
@@ -147,63 +144,82 @@ async function getByEmail(emailAddress) {
   return JSON.parse(JSON.stringify(user));
 }
 
-async function checkUser(emailAddress, password) {
-  if (!emailAddress || !password) {
-    throw { message: `All fields need to have valid values`, status: 400 };
-  }
-
-  if (typeof emailAddress !== "string" || /^ *$/.test(emailAddress)) {
-    throw { message: `Please enter a valid email`, status: 400 };
-  }
-
-  if (!validateEmail(emailAddress))
-    throw { message: `Please Enter valid Email Address`, status: 400 };
-
-  if (/^ *$/.test(password))
-    throw { message: `password cannot be empty`, status: 400 };
-
-  if (/\s/g.test(password))
-    throw { message: `password cannot have spaces`, status: 400 };
-
-  if (password.length < 8) {
-    throw {
-      message: `Password should be atleast 8 characters long`,
-      status: 400,
-    };
-  }
+async function getPastOrders(id) {
+  if (!id) throw { message: `You must provide a proper id`, status: 400 };
+  if (typeof id != "string")
+    throw { message: `${id} is not string`, status: 400 };
+  if (/^ *$/.test(id))
+    throw { message: `id with just empty spaces is not valid`, status: 400 };
 
   const userCollection = await users();
-  const user = await userCollection.findOne({
-    emailAddress: emailAddress.toLowerCase(),
-  });
+  //   let getId;
+  const user = await userCollection.findOne({ _id: id });
 
   if (user === null)
-    throw {
-      message: `Either the Email Address or password is invalid`,
-      status: 400,
-    };
+    throw { message: `No user exists with that id`, status: 400 };
 
-  let compareToMatch = false;
+  let userDetails = JSON.parse(JSON.stringify(user));
 
-  try {
-    compareToMatch = await bcrypt.compare(password, user.password);
-  } catch (e) {
-    //no op
-  }
-
-  if (compareToMatch) {
-    return { authenticated: true };
-  } else {
-    throw {
-      message: `Either the Email Address or password is invalid`,
-      status: 400,
-    };
-  }
+  return userDetails.pastOrders;
 }
+
+// async function checkUser(emailAddress, password) {
+//   if (!emailAddress || !password) {
+//     throw { message: `All fields need to have valid values`, status: 400 };
+//   }
+
+//   if (typeof emailAddress !== "string" || /^ *$/.test(emailAddress)) {
+//     throw { message: `Please enter a valid email`, status: 400 };
+//   }
+
+//   if (!validateEmail(emailAddress))
+//     throw { message: `Please Enter valid Email Address`, status: 400 };
+
+//   if (/^ *$/.test(password))
+//     throw { message: `password cannot be empty`, status: 400 };
+
+//   if (/\s/g.test(password))
+//     throw { message: `password cannot have spaces`, status: 400 };
+
+//   if (password.length < 8) {
+//     throw {
+//       message: `Password should be atleast 8 characters long`,
+//       status: 400,
+//     };
+//   }
+
+//   const userCollection = await users();
+//   const user = await userCollection.findOne({
+//     emailAddress: emailAddress.toLowerCase(),
+//   });
+
+//   if (user === null)
+//     throw {
+//       message: `Either the Email Address or password is invalid`,
+//       status: 400,
+//     };
+
+//   let compareToMatch = false;
+
+//   try {
+//     compareToMatch = await bcrypt.compare(password, user.password);
+//   } catch (e) {
+//     //no op
+//   }
+
+//   if (compareToMatch) {
+//     return { authenticated: true };
+//   } else {
+//     throw {
+//       message: `Either the Email Address or password is invalid`,
+//       status: 400,
+//     };
+//   }
+// }
 
 module.exports = {
   createUser,
   getById,
   getByEmail,
-  checkUser,
+  getPastOrders,
 };

@@ -21,7 +21,7 @@ router.get("/userDetails/:userId", async (req, res) => {
       res.send({
         name: userdata.name,
         emailAddress: userdata.emailAddress,
-        currentLocation: userdata.currentLocation,
+        biography: userdata.biography,
         address: userdata.address,
         pastOrders: userdata.pastOrders,
       });
@@ -53,8 +53,8 @@ router.post("/userDetails", async (req, res) => {
       res.status(400).send({ error: "You must provide a Password" });
       return;
     }
-    if (!req.body.currentLocation) {
-      res.status(400).send({ error: "Current Location not found" });
+    if (!req.body.biography) {
+      res.status(400).send({ error: "Please write something about you" });
       return;
     }
     if (!req.body.address) {
@@ -73,8 +73,8 @@ router.post("/userDetails", async (req, res) => {
       res.status(400).send({ error: "Password must be string" });
       return;
     }
-    if (typeof req.body.currentLocation !== "string") {
-      res.status(400).send({ error: "current location must be string" });
+    if (typeof req.body.biography !== "string") {
+      res.status(400).send({ error: "Biography must be string" });
       return;
     }
     if (typeof req.body.address !== "string") {
@@ -93,8 +93,8 @@ router.post("/userDetails", async (req, res) => {
       res.status(400).send({ error: "password cannot be empty" });
       return;
     }
-    if (/^ *$/.test(req.body.currentLocation)) {
-      res.status(400).send({ error: "current location cannot be empty" });
+    if (/^ *$/.test(req.body.biography)) {
+      res.status(400).send({ error: "Biography cannot be empty" });
       return;
     }
     if (/^ *$/.test(req.body.address)) {
@@ -118,13 +118,12 @@ router.post("/userDetails", async (req, res) => {
     }
     try {
       const user_data = req.body;
-      const { name, emailAddress, password, currentLocation, address } =
-        user_data;
+      const { name, emailAddress, password, biography, address } = user_data;
       const postUser = await usersData.createUser(
         name,
         emailAddress,
         password,
-        currentLocation,
+        biography,
         address
       );
 
@@ -140,3 +139,26 @@ router.post("/userDetails", async (req, res) => {
     res.status(e.status || 500).send({ error: e.message });
   }
 });
+
+router.get("/pastOrders/:userId", async (req, res) => {
+    const id = req.params.userId;
+    try {
+      if (id) {
+        const userdata = await usersData.getById(id);
+        res.send({
+          name: userdata.name,
+          emailAddress: userdata.emailAddress,
+          biography: userdata.biography,
+          address: userdata.address,
+          pastOrders: userdata.pastOrders,
+        });
+      } else {
+        res.redirect("/");
+        // res.render("users/error")
+      }
+    } catch (e) {
+      res.status(404).send({ error: e.message });
+    }
+  });
+
+module.exports = router;
