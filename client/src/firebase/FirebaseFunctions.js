@@ -79,7 +79,7 @@ async function doSignInWithEmailAndPassword(email, password) {
 // }
 
 async function doPasswordReset(email) {
-    await sendPasswordResetEmail(email);
+    await sendPasswordResetEmail(auth, email);
 }
 
 async function doPasswordUpdate(password) {
