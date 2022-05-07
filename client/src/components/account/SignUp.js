@@ -8,10 +8,10 @@ import {
 import { AuthContext } from "../../firebase/Auth";
 // import SocialSignIn from "./SocialSignIn";
 
-import "../../App.css";
 import { makeStyles } from "@material-ui/core";
 import { TextField, Button } from "@material-ui/core";
 import { Controller, useForm } from "react-hook-form";
+import "../../App.css";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -103,14 +103,14 @@ const SignUp = () => {
         return <Navigate to="/home" />;
     }
 
-    console.log(errors);
+    // console.log(errors);
     return (
         <div>
             <h1>Sign up</h1>
 
-            {errors.length > 0
+            {/* {errors.length > 0
                 ? errors.map((error) => <h4 className="error">{error}</h4>)
-                : null}
+                : null} */}
 
             <form className={classes.root} onSubmit={handleSubmit(onSubmit)}>
                 <Controller
