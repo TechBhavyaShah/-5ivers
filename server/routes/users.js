@@ -49,10 +49,10 @@ router.post("/userDetails", async (req, res) => {
       res.status(400).send({ error: "You must provide Email Address" });
       return;
     }
-    if (!req.body.password) {
-      res.status(400).send({ error: "You must provide a Password" });
-      return;
-    }
+    // if (!req.body.password) {
+    //   res.status(400).send({ error: "You must provide a Password" });
+    //   return;
+    // }
     if (!req.body.biography) {
       res.status(400).send({ error: "Please write something about you" });
       return;
@@ -69,10 +69,10 @@ router.post("/userDetails", async (req, res) => {
       res.status(400).send({ error: "Email address must be string" });
       return;
     }
-    if (typeof req.body.password !== "string") {
-      res.status(400).send({ error: "Password must be string" });
-      return;
-    }
+    // if (typeof req.body.password !== "string") {
+    //   res.status(400).send({ error: "Password must be string" });
+    //   return;
+    // }
     if (typeof req.body.biography !== "string") {
       res.status(400).send({ error: "Biography must be string" });
       return;
@@ -89,10 +89,10 @@ router.post("/userDetails", async (req, res) => {
       res.status(400).send({ error: "Email Address cannot be empty" });
       return;
     }
-    if (/^ *$/.test(req.body.password)) {
-      res.status(400).send({ error: "password cannot be empty" });
-      return;
-    }
+    // if (/^ *$/.test(req.body.password)) {
+    //   res.status(400).send({ error: "password cannot be empty" });
+    //   return;
+    // }
     if (/^ *$/.test(req.body.biography)) {
       res.status(400).send({ error: "Biography cannot be empty" });
       return;
@@ -106,23 +106,24 @@ router.post("/userDetails", async (req, res) => {
       return;
     }
 
-    if (/\s/g.test(req.body.password)) {
-      res.status(400).send({ error: "password cannot have spaces" });
-      return;
-    }
-    if (req.body.password.length < 8) {
-      res
-        .status(400)
-        .send({ error: "Password should be atleast 8 characters long" });
-      return;
-    }
+    // if (/\s/g.test(req.body.password)) {
+    //   res.status(400).send({ error: "password cannot have spaces" });
+    //   return;
+    // }
+    // if (req.body.password.length < 8) {
+    //   res
+    //     .status(400)
+    //     .send({ error: "Password should be atleast 8 characters long" });
+    //   return;
+    // }
     try {
       const user_data = req.body;
-      const { name, emailAddress, password, biography, address } = user_data;
+      const { id, name, emailAddress, biography, address } = user_data;
       const postUser = await usersData.createUser(
+        id,
         name,
         emailAddress,
-        password,
+        // password,
         biography,
         address
       );
