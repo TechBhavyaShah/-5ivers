@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import axios from "axios";
 import SelectCountry from "./SelectCountry";
 import { Navigate } from "react-router-dom";
 import {
@@ -8,6 +9,7 @@ import {
 import { AuthContext } from "../../firebase/Auth";
 // import SocialSignIn from "./SocialSignIn";
 
+import { Input } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
 import { TextField, Button } from "@material-ui/core";
 import { Controller, useForm } from "react-hook-form";
@@ -42,10 +44,30 @@ const SignUp = () => {
     } = useForm();
     const classes = useStyles();
 
+    const uploadImage = async (imageFile) => {
+        // Grab the encrypted url to our bucket
+        const { data } = await axios.get("http://localhost:3001/s3/url");
+
+        try {
+            const uploadToS3 = await axios.put(data, imageFile, {
+                headers: {
+                    "Content-Type": imageFile.type,
+                },
+            });
+        } catch (e) {
+            console.log(e);
+        }
+
+        const imageUrl = data.split("?")[0];
+
+        return imageUrl;
+    };
+
     const onSubmit = async (data) => {
         // event.preventDefault();
 
-        const {
+        // I cover all validation with regex except whitespace at beginning and end of string...
+        let {
             name,
             email,
             address,
@@ -56,6 +78,18 @@ const SignUp = () => {
             passwordTwo,
         } = data;
 
+        name = name.trim();
+        email = email.trim();
+        address = address.trim();
+        postalCode = postalCode.trim();
+        country = country.trim();
+        aboutMe = aboutMe.trim();
+        /* I don't allow spaces at all in passwords, but I'll trim it anyway */
+        passwordOne = passwordOne.trim();
+        passwordTwo = passwordTwo.trim();
+
+        console.log(data);
+
         if (passwordOne !== passwordTwo) {
             setError("passwordOne", {
                 type: "client",
@@ -64,18 +98,15 @@ const SignUp = () => {
             return false;
         }
 
+        let user;
         try {
-            let user = await doCreateUserWithEmailAndPassword(
+            // Create user in firebase and update display name
+            user = await doCreateUserWithEmailAndPassword(
                 email,
                 passwordOne,
                 name
             );
-
             await doUpdateProfileDisplayName(name);
-
-            let userId = user.user.uid;
-
-            // Axios call to backend to create a user with the firebase uid
         } catch (error) {
             console.log(error.code);
             if (error.code == "auth/weak-password") {
@@ -96,7 +127,35 @@ const SignUp = () => {
             }
             return false;
         }
-        reset();
+
+        let imageUrl;
+        try {
+            // Upload profile pic to S3 and grab S3 url to pass to axios call below
+            let profilePic = data.profilePic[0];
+            imageUrl = await uploadImage(profilePic);
+        } catch (e) {
+            console.log(e);
+        }
+
+        try {
+            // Axios call to backend to create a user with the firebase uid
+            let userId = user.user.uid;
+            console.log(userId);
+
+            /* 
+                Request body:
+                    _id
+                    name
+                    email
+                    address
+                    about_me
+                    image_url
+            */
+            // let createUser = axios.post();
+        } catch (e) {
+            console.log(e);
+        }
+        // reset();
     };
 
     if (currentUser) {
@@ -131,7 +190,14 @@ const SignUp = () => {
                             helperText={error ? error.message : null}
                         />
                     )}
-                    rules={{ required: "Name Required" }}
+                    rules={{
+                        required: "Name Required",
+                        pattern: {
+                            // No empty strings allowed
+                            value: /^(?!\s*$).+/,
+                            message: "Name Required",
+                        },
+                    }}
                 ></Controller>
 
                 {/* <div className="form-group">
@@ -212,6 +278,11 @@ const SignUp = () => {
                     )}
                     rules={{
                         required: "Address Required",
+                        pattern: {
+                            // No empty strings allowed
+                            value: /^(?!\s*$).+/,
+                            message: "Address Required",
+                        },
                     }}
                 ></Controller>
 
@@ -250,6 +321,11 @@ const SignUp = () => {
                     )}
                     rules={{
                         required: "Postal Code Required",
+                        pattern: {
+                            // No empty strings allowed
+                            value: /^(?!\s*$).+/,
+                            message: "Postcal Code Required",
+                        },
                     }}
                 ></Controller>
 
@@ -298,6 +374,11 @@ const SignUp = () => {
                     )}
                     rules={{
                         required: "About Me Required",
+                        pattern: {
+                            // No empty strings allowed
+                            value: /^(?!\s*$).+/,
+                            message: "About Me Required",
+                        },
                     }}
                 ></Controller>
 
@@ -334,6 +415,12 @@ const SignUp = () => {
                     )}
                     rules={{
                         required: "Password Required",
+                        pattern: {
+                            // No empty strings/strings with whitespace allowed
+                            value: /^\S*$/,
+                            message:
+                                "Password Required (Minimum 6 characters, no spaces)",
+                        },
                     }}
                 ></Controller>
 
@@ -371,6 +458,12 @@ const SignUp = () => {
                     )}
                     rules={{
                         required: "Confirm Password Required",
+                        pattern: {
+                            // No empty strings/strings with whitespace allowed
+                            value: /^\S*$/,
+                            message:
+                                "Confirm Password Required (Minimum 6 characters, no spaces)",
+                        },
                     }}
                 ></Controller>
 
@@ -386,6 +479,36 @@ const SignUp = () => {
                         />
                     </label>
                 </div> */}
+
+                <Controller
+                    name="profilePic"
+                    control={control}
+                    defaultValue=""
+                    render={({
+                        field: { onChange, value },
+                        fieldState: { error },
+                    }) => (
+                        <div>
+                            <p>Upload Profile Picture</p>
+                            <input
+                                // label="Profile Picture"
+                                // variant="filled"
+                                type="file"
+                                // value={value}
+                                onChange={(e) => onChange(e.target.files)}
+                                accept="image/*"
+                                // error={!!error}
+                                // helperText={error ? error.message : null}
+                            />
+                            <p>{error ? error.message : null}</p>
+                        </div>
+                    )}
+                    rules={{
+                        required: "Profile Picture Required!",
+                    }}
+                ></Controller>
+
+                {/* <input type="file" name="profilePic"></input> */}
 
                 <Button
                     type="submit"
