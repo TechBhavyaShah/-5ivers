@@ -12,10 +12,10 @@ const secretAccessKey = process.env.AWS_SECRET_KEY;
 AWS.config.update({ region: region });
 
 const s3 = new AWS.S3({
-    apiVersion,
-    region,
-    accessKeyId,
-    secretAccessKey,
+  apiVersion,
+  region,
+  accessKeyId,
+  secretAccessKey,
 });
 
 /* 
@@ -25,23 +25,23 @@ const s3 = new AWS.S3({
     - type: either "profile" or "food"
 */
 function uploadFile(file, id, type) {
-    const fileStream = fs.createReadStream(file.path);
+  const fileStream = fs.createReadStream(file.path);
 
-    let key;
+  let key;
 
-    if (type == "profile") {
-        key = `profile/${id}/${file.filename}`;
-    } else {
-        key = `${id}/${file.filename}`;
-    }
+  if (type == "profile") {
+    key = `profile/${id}/${file.filename}`;
+  } else {
+    key = `${id}/${file.filename}`;
+  }
 
-    const uploadParams = {
-        Bucket: bucketName,
-        Body: fileStream,
-        Key: key,
-    };
+  const uploadParams = {
+    Bucket: bucketName,
+    Body: fileStream,
+    Key: key,
+  };
 
-    return s3.upload(uploadParams).promise();
+  return s3.upload(uploadParams).promise();
 }
 
 /* 
@@ -51,20 +51,20 @@ function uploadFile(file, id, type) {
     - type: either "profilePic" or "foodItemPic"
 */
 function getFileStream(fileKey, id, type) {
-    let key;
+  let key;
 
-    if (type == "profile") {
-        key = `profile/${id}/${fileKey}`;
-    } else {
-        key = `${id}/${fileKey}`;
-    }
+  if (type == "profile") {
+    key = `profile/${id}/${fileKey}`;
+  } else {
+    key = `${id}/${fileKey}`;
+  }
 
-    const downloadParams = {
-        Key: fileKey,
-        Bucket: bucketName,
-    };
+  const downloadParams = {
+    Key: fileKey,
+    Bucket: bucketName,
+  };
 
-    return s3.getObject(downloadParams).createReadStream();
+  return s3.getObject(downloadParams).createReadStream();
 }
 
 module.exports = { uploadFile, getFileStream };
