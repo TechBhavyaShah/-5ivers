@@ -9,8 +9,15 @@ function validateEmail(email) {
   return re.test(String(email).toLowerCase());
 }
 
-async function createUser(id, name, emailAddress, biography, address) {
-  if (!id || !name || !emailAddress || !biography || !address) {
+async function createUser(
+  id,
+  name,
+  emailAddress,
+  biography,
+  address,
+  image_url
+) {
+  if (!id || !name || !emailAddress || !biography || !address || !image_url) {
     throw { message: `All fields must be supplied`, status: 400 };
   }
 
@@ -19,8 +26,8 @@ async function createUser(id, name, emailAddress, biography, address) {
   // if(typeof name.lastName !== "string" ) throw {message:`lastName must be string`,status:400}
   if (typeof emailAddress !== "string")
     throw { message: "emailAddress must be string", status: 400 };
-  //   if (typeof password !== "string")
-  //     throw { message: "password must be string", status: 400 };
+  if (typeof image_url !== "string")
+    throw { message: "image_url must be string", status: 400 };
   if (typeof address !== "string")
     throw { message: "address must be string", status: 400 };
   if (typeof biography !== "string")
@@ -33,8 +40,8 @@ async function createUser(id, name, emailAddress, biography, address) {
   if (/^ *$/.test(name)) throw { message: `name cannot be empty`, status: 400 };
   if (/^ *$/.test(emailAddress))
     throw { message: `emailAddress cannot be empty`, status: 400 };
-  //   if (/^ *$/.test(password))
-  //     throw { message: `password cannot be empty`, status: 400 };
+  if (/^ *$/.test(image_url))
+    throw { message: `image_url cannot be empty`, status: 400 };
   if (/^ *$/.test(biography))
     throw { message: `Biography cannot be empty`, status: 400 };
   if (/^ *$/.test(address))
@@ -72,6 +79,7 @@ async function createUser(id, name, emailAddress, biography, address) {
     // password: hashedPwd,
     biography: biography,
     address: address,
+    image_url: image_url,
     pastOrders: [],
   };
 
