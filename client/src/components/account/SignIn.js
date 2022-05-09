@@ -1,46 +1,134 @@
 import React, { useContext } from "react";
-// import SocialSignIn from "./SocialSignIn";
-// import { Redirect } from "react-router-dom";
 import { Navigate } from "react-router-dom";
-import { AuthContext } from "../../firebase/Auth";
 import {
     doSignInWithEmailAndPassword,
     doPasswordReset,
 } from "../../firebase/FirebaseFunctions";
+import { AuthContext } from "../../firebase/Auth";
+// import SocialSignIn from "./SocialSignIn";
 
-function SignIn() {
+import { makeStyles } from "@material-ui/core";
+import { TextField, Button } from "@material-ui/core";
+import { Controller, useForm } from "react-hook-form";
+import "../../App.css";
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: theme.spacing(2),
+
+        "& .MuiTextField-root": {
+            margin: theme.spacing(1),
+            width: "300px",
+        },
+        "& .MuiButtonBase-root": {
+            margin: theme.spacing(2),
+        },
+    },
+}));
+
+const SignIn = () => {
     const { currentUser } = useContext(AuthContext);
-    const handleLogin = async (event) => {
-        event.preventDefault();
-        let { email, password } = event.target.elements;
+    const {
+        control,
+        handleSubmit,
+        reset,
+        setError,
+        formState: { errors },
+    } = useForm();
+    const classes = useStyles();
+
+    const handleLogin = async (data) => {
+        // event.preventDefault();
+        let { email, password } = data;
 
         try {
-            await doSignInWithEmailAndPassword(email.value, password.value);
+            await doSignInWithEmailAndPassword(email, password);
         } catch (error) {
-            alert(error);
+            if (
+                error.code == "auth/wrong-password" ||
+                error.code == "auth/user-not-found"
+            ) {
+                setError("email", {
+                    type: "server",
+                    message: "The email and/or password is incorrect!",
+                });
+                setError("password", {
+                    type: "server",
+                    message: "The email and/or password is incorrect!",
+                });
+            }
+            return false;
         }
+        reset();
     };
 
-    const passwordReset = (event) => {
+    const passwordReset = async (event) => {
         event.preventDefault();
+
         let email = document.getElementById("email").value;
+
         if (email) {
-            doPasswordReset(email);
-            alert("Password reset email was sent");
+            try {
+                await doPasswordReset(email);
+            } catch (e) {
+                setError("email", {
+                    type: "server",
+                    message: "The email was not found!",
+                });
+                return false;
+            }
         } else {
-            alert(
-                "Please enter an email address below before you click the forgot password link"
-            );
+            setError("email", {
+                type: "client",
+                message:
+                    "Please enter an email address below before you click the forgot password link",
+            });
+            return false;
         }
+        reset();
     };
+
     if (currentUser) {
         return <Navigate to="/home" />;
     }
+
     return (
         <div>
             <h1>Log in</h1>
-            <form onSubmit={handleLogin}>
-                <div className="form-group">
+            <form className={classes.root} onSubmit={handleSubmit(handleLogin)}>
+                <Controller
+                    name="email"
+                    control={control}
+                    defaultValue=""
+                    render={({
+                        field: { onChange, value },
+                        fieldState: { error },
+                    }) => (
+                        <TextField
+                            label="Email"
+                            variant="filled"
+                            type="email"
+                            id="email"
+                            value={value}
+                            onChange={onChange}
+                            error={!!error}
+                            helperText={error ? error.message : null}
+                        />
+                    )}
+                    rules={{
+                        required: "Email Required",
+                        pattern: {
+                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                            message: "Enter a valid e-mail address",
+                        },
+                    }}
+                ></Controller>
+
+                {/* <div className="form-group">
                     <label>
                         Email:
                         <input
@@ -52,8 +140,32 @@ function SignIn() {
                             required
                         />
                     </label>
-                </div>
-                <div className="form-group">
+                </div> */}
+
+                <Controller
+                    name="password"
+                    control={control}
+                    defaultValue=""
+                    render={({
+                        field: { onChange, value },
+                        fieldState: { error },
+                    }) => (
+                        <TextField
+                            label="Password"
+                            variant="filled"
+                            type="password"
+                            value={value}
+                            onChange={onChange}
+                            error={!!error}
+                            helperText={error ? error.message : null}
+                        />
+                    )}
+                    rules={{
+                        required: "Password Required",
+                    }}
+                ></Controller>
+
+                {/* <div className="form-group">
                     <label>
                         Password:
                         <input
@@ -64,18 +176,26 @@ function SignIn() {
                             required
                         />
                     </label>
-                </div>
-                <button type="submit">Log in</button>
+                </div> */}
 
-                <button className="forgotPassword" onClick={passwordReset}>
-                    Forgot Password
-                </button>
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    id="submitButton"
+                    name="submitButton"
+                >
+                    Log in
+                </Button>
             </form>
+            <button className="forgotPassword" onClick={passwordReset}>
+                Forgot Password
+            </button>
 
             <br />
             {/* <SocialSignIn /> */}
         </div>
     );
-}
+};
 
 export default SignIn;
