@@ -1,0 +1,6 @@
+{
+  "mongoConfig": {
+    "serverUrl": "mongodb+srv://5ivers:A559mcitAzog4R08@5ivers.hhunq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+    "database": "Food_waste_management"
+  }
+}
