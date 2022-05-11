@@ -155,7 +155,7 @@ const SignUp = () => {
         } catch (e) {
             console.log(e);
         }
-        // reset();
+        reset();
     };
 
     if (currentUser) {
