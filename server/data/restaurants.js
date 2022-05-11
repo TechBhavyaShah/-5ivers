@@ -292,7 +292,7 @@ const addItemToRestaurant = async function addItemToRestaurant(
 
   if (/^ *$/.test(stock)) {
     throw {
-      message: 'Item Price cannot be empty Spaces',
+      message: 'The Stock cannot be empty Spaces',
       status: 400,
     }
   }
@@ -344,9 +344,98 @@ const addItemToRestaurant = async function addItemToRestaurant(
   )
 }
 
+const updateFoodItemStock = async function updateFoodItemStock(
+  restaurantId,
+  itemId,
+  stock,
+) {
+  if (arguments.length != 3) {
+    throw {
+      message: `All the 1 Arguments should be available in order to process request`,
+      status: 400,
+    }
+  }
+
+  if (!stock || !restaurantId || !itemId) {
+    throw {
+      message: 'You must provide stock,restaurant Id and Item Id of the Item ',
+      status: 400,
+    }
+  }
+
+  if (
+    restaurantId == null ||
+    restaurantId == undefined ||
+    itemId == null ||
+    itemId == undefined
+  ) {
+    throw {
+      message:
+        'You must provide restaurant ID and Item Id to add the item. It cannot be null',
+      status: 400,
+    }
+  }
+
+  if (/^ *$/.test(restaurantId)) {
+    throw {
+      message: 'Restaurant ID cannot be empty Spaces',
+      status: 400,
+    }
+  }
+
+  if (/^ *$/.test(itemId)) {
+    throw {
+      message: 'Item ID cannot be empty Spaces',
+      status: 400,
+    }
+  }
+  if (stock == null || stock == undefined) {
+    throw {
+      message:
+        'the stock parameter must be provided in the function for updating an item',
+      status: 400,
+    }
+  }
+
+  if (/^ *$/.test(stock)) {
+    throw {
+      message: 'The Stock cannot be empty Spaces',
+      status: 400,
+    }
+  }
+
+  if (
+    typeof stock !== 'number' ||
+    typeof restaurantId !== 'string' ||
+    typeof itemId !== 'string'
+  ) {
+    throw {
+      message:
+        'The stock should be of Number Type and restaurant id and Item Id should be of string type. No Other Datatype is allowed!',
+      status: 400,
+    }
+  }
+
+  if (isNaN(stock)) {
+    throw {
+      message:
+        'The stock should be of Number Type. No Other Datatype is allowed!',
+      status: 400,
+    }
+  }
+
+  const restaurantsCollection = await restaurants()
+t 
+  restaurantsCollection.updateOne(
+    { _id: restaurantId, 'food_items.item_id': itemId },
+    { $set: { 'food_items.$.stock': stock } },
+  )
+}
+
 module.exports = {
   create,
   getRestaurantById,
   getAllRestaurants,
   addItemToRestaurant,
+  updateFoodItemStock,
 }
