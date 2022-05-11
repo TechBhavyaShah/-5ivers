@@ -1,6 +1,6 @@
 // This component displays the restaurants based on user's location
 // It further filter's restaurant based on distance radius *** if provided by user ***
-// Displays all restaurant if user has denied the location permission
+// Displays restaurant near stevens if user has denied the location permission
 
 import React, { useState, useEffect } from "react";
 import "../App.css";
@@ -15,7 +15,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { Link, useParams } from "react-router-dom";
-
+// const noImage = require('../public/logo512.png')
 const useStyles = makeStyles({
   card: {
     maxWidth: 250,
@@ -79,72 +79,121 @@ const dummydata = [
 const Restaurants = () => {
   const classes = useStyles();
   const [restaurantsList, setRestaurantsList] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true); //Not working
+  //   const [userLat, setUserLat] = useState("")
+  //   const [userLon, setUserLon] = useState("")
 
-// Get user's current location
-    navigator.geolocation.getCurrentPosition((position) => {
-    console.log(position);
-    let lat = position.coords.latitude;
-    let lon = position.coords.longitude;
-    // document.getElementById("latitude").textContent = lat;
-    // document.getElementById("longitude").textContent = lon;
-  });
- 
+  // Get user's current location
+  var lat = "40.7434768";
+  var lon = "-74.0266051";
 
   // Following use effect will run only once. It will display all the restaurants
   useEffect(() => {
-      console.log('useEffect has fired')
-    // Do the axios call and get the restaurants. Here we need to pass the current location of user
-    // const data = await axios.get("")
-    
-    async function getRestaurantData() {
-    //   Method 1
-    //   data = await axios.get("http://localhost:3000/restaurants/location")
-    // Method 2 : Params not going through
-    // const {data} = await axios({
-    //     method: 'get',
-    //     url: 'http://localhost:3000/restaurants/location'
-    //     ,
-    //     params: {
-    //               lat: "40.7401353",
-    //               lon: "-74.0466352",
-    //             }
-       
-    //   });
-    // Method 3:
-    const {data} = await axios.get('http://localhost:3000/restaurants/location', {
-        params: {
-            lat: "40.7401353",
-            lon: "-74.0466352"
-        }})
-      console.log('axios call',data)
-      setRestaurantsList(data);
-    //   {
-    //     params: {
-    //       lat: "40.7401353",
-    //       lon: "-74.0466352",
-    //     }
-    //   });
+    console.log("Main useEffect has fired");
+    // Get user location
+    function getUserLocation() {
+      // console.log('navigator',navigator)
+
+      if ("geolocation" in navigator) {
+        console.log("Location Available");
+
+        navigator.geolocation.getCurrentPosition(ShowPos, showError);
+      } else {
+        console.log("Not Available");
+      }
+    }
+    // Following function call will set the lat and lon variable.
+    getUserLocation();
+
+    // A success call back function for navigator.geolocation
+    function ShowPos(pos) {
+      // console.log('wefwfwefwef',pos)
+      getRestaurantData(pos.coords.latitude, pos.coords.longitude);
+    }
+    // // A failure call back function for navigator.geolocation
+    function showError(error) {
+      switch (error.code) {
+        case error.PERMISSION_DENIED:
+          console.log("User denied the request for Geolocation.");
+          break;
+        case error.POSITION_UNAVAILABLE:
+          console.log("Location information is unavailable.");
+          break;
+        case error.TIMEOUT:
+          console.log("The request to get user location timed out.");
+          break;
+        case error.UNKNOWN_ERROR:
+          console.log("An unknown error occurred.");
+          break;
+      }
+      // Since user has denied the location access, we are showing restaurants near stevens Institute of Tech.
+      lat = "40.74347683711104";
+      lon = "-74.02660504466289";
+      getRestaurantData(lat, lon);
     }
 
-    getRestaurantData()
-    
-    console.log('res list',restaurantsList)
+    // Do the axios call and get the restaurants. Here we need to pass the current location of user
+    async function getRestaurantData(uLat, uLon) {
+      // Method 2 : Params not going through
+      // const {data} = await axios({
+      //     method: 'get',
+      //     url: 'http://localhost:3000/restaurants/location'
+      //     ,
+      //     params: {
+      //               lat: "40.7401353",
+      //               lon: "-74.0466352",
+      //             }
+
+      //   });
+      // Method 3:
+      const { data } = await axios.get(
+        `http://localhost:3000/restaurants/location/${uLat}/${uLon}`,
+        {
+          params: {
+            lat: lat, // "40.7401353",
+            lon: lon, //"-74.0466352"
+          },
+        }
+      );
+      //   console.log('axios call',data)
+      setRestaurantsList(data);
+      setLoading(false);
+    }
+    console.log("res list", restaurantsList);
   }, []);
+
+  //   useeffect for Search Term
+  useEffect(() => {
+    console.log("Search term changed", searchTerm);
+    async function getSearchedTermData(searchTerm){
+        const { data } = await axios.get(
+            `http://localhost:3000/restaurants/search/${searchTerm}`
+          );
+          //   console.log('axios call',data)
+          setRestaurantsList(data);
+          setLoading(false);
+    }
+    getSearchedTermData(searchTerm)
+    // setLoading(false)
+  }, [searchTerm]);
 
   // To display Restaurant cards
   const buildCard = (restaurant) => {
     return (
       // <h1>heer</h1>
-      <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={restaurant.Id}>
+      <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={restaurant._id}>
         <Card className={classes.card} variant="outlined">
           <CardActionArea>
-            <Link to={`/restaurant/${restaurant.Id}`}>
-              {/* <CardMedia
-								className={classes.media}
-								component='img'
-								image={show.thumbnail && show.thumbnail.path && show.thumbnail.extension ? show.thumbnail.path + '.'+ show.thumbnail.extension : noImage}
-								title='show image'
-							/> */}
+            <Link to={`/restaurant/${restaurant._id}`}>
+              <CardMedia
+                className={classes.media}
+                component="img"
+                image="/default.png"
+                // {restaurant.restaurant_image}
+                // {show.thumbnail && show.thumbnail.path && show.thumbnail.extension ? show.thumbnail.path + '.'+ show.thumbnail.extension : noImage}
+                title="show image"
+              />
 
               <CardContent>
                 <Typography
@@ -153,10 +202,12 @@ const Restaurants = () => {
                   variant="h6"
                   component="h2"
                 >
-                  {restaurant.Restaurant_name}
+                  {restaurant.restaurant_name}
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                  {restaurant.distance}																		
+                  {restaurant.distance} Miles
+                  <br />
+                  {restaurant.address}
                 </Typography>
               </CardContent>
             </Link>
@@ -165,30 +216,40 @@ const Restaurants = () => {
       </Grid>
     );
   };
- 
-  if (restaurantsList) {
-
+  if (loading) {
+    return <h1>Loading</h1>;
+  } else if (restaurantsList) {
     card =
-    restaurantsList &&
-    restaurantsList.map((rest) => {
+      restaurantsList &&
+      restaurantsList.map((rest) => {
         return buildCard(rest);
       });
   }
-
+  const handleChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
   return (
     <div>
-      <Grid container className={classes.grid} spacing={5}>
-        {card}
-      </Grid>
+      {/* search restaurants */}
+      <label>
+        Search Restaurants:
+        <input
+          id="name"
+          name="name"
+          defaultValue={searchTerm}
+          onChange={handleChange}
+        />
+      </label>
+      <br />
+      <br />
+      <br />
+      <div id="res-list">
+        <Grid container className={classes.grid} spacing={5}>
+          {card}
+        </Grid>
+      </div>
     </div>
   );
-
-  // return (
-  // 	<div>
-  //         <h1>Display list of restaurants</h1>
-
-  // 	</div>
-  // );
 };
 
 export default Restaurants;

@@ -1,5 +1,5 @@
-let location = require('./location')
+let location = require("./location");
 
 module.exports = {
-     location : location 
-}
+  location: location,
+};
