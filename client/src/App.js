@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Account from "./components/account/Account";
 import Home from "./components/account/Home";
@@ -6,6 +6,9 @@ import Landing from "./components/account/Landing";
 import Navigation from "./components/account/Navigation";
 import SignIn from "./components/account/SignIn";
 import SignUp from "./components/account/SignUp";
+import AdminHome from "./components/admin/AdminHome";
+import AdminSignin from "./components/admin/AdminSignin";
+import AdminRestaurant from "./components/admin/AdminRestaurant";
 import { AuthProvider } from "./firebase/Auth";
 
 import "./App.css";
@@ -24,12 +27,16 @@ function App() {
                 <Routes>
                     <Route index element={<Landing />} />
                     <Route path="landing" element={<Landing />} />
-                    {/* Private route */}
                     <Route path="/home" element={<Home />} />
-                    {/* Private route */}
                     <Route path="/account" element={<Account />} />
                     <Route path="/signin" element={<SignIn />} />
                     <Route path="/signup" element={<SignUp />} />
+                    <Route path="/admin" element={<AdminHome />} />
+                    <Route path="/admin/signin" element={<AdminSignin />} />
+                    <Route
+                        path="/admin/restaurant"
+                        element={<AdminRestaurant />}
+                    />
                     <Route
                         path="*"
                         element={<p>There's nothing here: 404!</p>}
