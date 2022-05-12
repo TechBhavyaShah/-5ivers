@@ -32,17 +32,21 @@ let dummydata = [
 ];
 
 async function getAllRestaurants() {
-  let restCollection = await restaurants();
+  try {
+    let restCollection = await restaurants();
 
-  let restList = await restCollection
-    .find({}) //,{ projection: { _id: 1, name: 1 } }
-    .toArray();
+    let restList = await restCollection
+      .find({}) //,{ projection: { _id: 1, name: 1 } }
+      .toArray();
 
-  for (let i = 0; i < restList.length; i++) {
-    restList[i]["_id"] = restList[i]["_id"].toString();
+    for (let i = 0; i < restList.length; i++) {
+      restList[i]["_id"] = restList[i]["_id"].toString();
+    }
+    console.log("getAll", restList);
+    return restList;
+  } catch (error) {
+    console.log(error);
   }
-  console.log("getAll", restList);
-  return restList;
 }
 
 // Calculate distance between two co-ordinates
@@ -58,7 +62,7 @@ function calcCrow(lat1, lon1, lat2, lon2) {
   var dLon = toRad(lon2 - lon1);
   var lat1 = toRad(lat1);
   var lat2 = toRad(lat2);
-  console.log("co", lat1, lon1, lat2, lon2);
+  // console.log("co", lat1, lon1, lat2, lon2);
   var a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
@@ -125,21 +129,52 @@ module.exports = {
     }
   },
 
-  async searchRes(searchTerm) {
-    if (!searchTerm) {
-      return [];
+  async searchRes(searchTerm,user_lat,user_lon,user_dist) {
+    searchTerm = searchTerm.trim();
+    if (searchTerm.length === 0) {
+      // let restList = await restCollection
+      //   .find({}) //,{ projection: { _id: 1, name: 1 } }
+      //   .toArray();
+      // for (let i = 0; i < restList.length; i++) {
+      //   restList[i]["_id"] = restList[i]["_id"].toString();
+      // }
+      // return restList;
+    } else {
+      try {
+        let restCollection = await restaurants();
+        let searchRegex = `/^` + searchTerm + `/i`;
+        const query = { restaurant_name: searchTerm }; //{'$regex': "/res",'$options' : 'i'}};
+
+        let restList = await restCollection
+          .find({
+            restaurant_name: { $regex: "^" + searchTerm, $options: "i" },
+          }) //, $options: "i"
+          .toArray();
+        for (let i = 0; i < restList.length; i++) {
+          restList[i]["_id"] = restList[i]["_id"].toString();
+        }
+
+        result = []; //to send filtered restaurants
+        // console.log(user_dist);
+        //Compute the distance
+        for (let i = 0; i < restList.length; i++) {
+          restList[i].distance = calcCrow(
+            user_lat,
+            user_lon,
+            restList[i].location.lat,
+            restList[i].location.lon
+          );
+          //   console.log(dummydata[i].distance, user_dist);
+          if (restList[i].distance <= user_dist) {
+            result.push(restList[i]);
+          }
+        }
+
+        return result;
+      } catch (error) {
+        console.log(error);
+        return [];
+      }
     }
-    let restCollection = await restaurants();
-    let searchRegex = `/^` + searchTerm + `/i`;
-    const query = { restaurant_name: searchTerm }; //{'$regex': "/res",'$options' : 'i'}};
-    console.log("searchregex:", searchRegex);
-    let restList = await restCollection
-      .find({ "restaurant_name": { "$regex": "^"+searchTerm, $options: "i" } }) //, $options: "i" 
-      .toArray();
-    for (let i = 0; i < restList.length; i++) {
-      restList[i]["_id"] = restList[i]["_id"].toString();
-    }
-    
-    return restList;
   },
 };

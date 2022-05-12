@@ -81,12 +81,53 @@ const Restaurants = () => {
   const [restaurantsList, setRestaurantsList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true); //Not working
-  //   const [userLat, setUserLat] = useState("")
-  //   const [userLon, setUserLon] = useState("")
+  const [error404, setError404] = useState(false);
+  const [userLat, setUserLat] = useState("40.7434768");
+  const [userLon, setUserLon] = useState("-74.0266051");
 
   // Get user's current location
-  var lat = "40.7434768";
-  var lon = "-74.0266051";
+//   var lat = "40.7434768";
+//   var lon = "-74.0266051";
+
+  // Do the axios call and get the restaurants. Here we need to pass the current location of user
+  async function getRestaurantData(uLat, uLon) {
+    // Method 2 : Params not going through
+    // const {data} = await axios({
+    //     method: 'get',
+    //     url: 'http://localhost:3000/restaurants/location'
+    //     ,
+    //     params: {
+    //               lat: "40.7401353",
+    //               lon: "-74.0466352",
+    //             }
+
+    //   });
+    // Method 3:
+    try {
+      const { data } = await axios.get(
+        `http://localhost:3000/restaurants/location/${uLat}/${uLon}`,
+        {
+          params: {
+            lat: uLat, // "40.7401353",
+            lon: uLon, //"-74.0466352"
+          },
+        }
+      );
+      //   console.log('axios call',data)
+      if (data.length === 0) {
+        setLoading(false);
+        setError404(true);
+      } else {
+        setRestaurantsList(data);
+        setLoading(false);
+        setError404(false);
+      }
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+      setError404(true);
+    }
+  }
 
   // Following use effect will run only once. It will display all the restaurants
   useEffect(() => {
@@ -109,7 +150,11 @@ const Restaurants = () => {
     // A success call back function for navigator.geolocation
     function ShowPos(pos) {
       // console.log('wefwfwefwef',pos)
-      getRestaurantData(pos.coords.latitude, pos.coords.longitude);
+      //   lat = pos.coords.latitude;
+      //   lon = pos.coords.longitude;
+      setUserLat(pos.coords.latitude);
+      setUserLon(pos.coords.longitude);
+      getRestaurantData(userLat, userLon);
     }
     // // A failure call back function for navigator.geolocation
     function showError(error) {
@@ -128,55 +173,52 @@ const Restaurants = () => {
           break;
       }
       // Since user has denied the location access, we are showing restaurants near stevens Institute of Tech.
-      lat = "40.74347683711104";
-      lon = "-74.02660504466289";
-      getRestaurantData(lat, lon);
+      //   lat = "40.74347683711104";
+      //   lon = "-74.02660504466289";
+      setUserLat("40.7434768");
+      setUserLon("-74.0266051");
+      getRestaurantData(userLat, userLon);
     }
 
-    // Do the axios call and get the restaurants. Here we need to pass the current location of user
-    async function getRestaurantData(uLat, uLon) {
-      // Method 2 : Params not going through
-      // const {data} = await axios({
-      //     method: 'get',
-      //     url: 'http://localhost:3000/restaurants/location'
-      //     ,
-      //     params: {
-      //               lat: "40.7401353",
-      //               lon: "-74.0466352",
-      //             }
-
-      //   });
-      // Method 3:
-      const { data } = await axios.get(
-        `http://localhost:3000/restaurants/location/${uLat}/${uLon}`,
-        {
-          params: {
-            lat: lat, // "40.7401353",
-            lon: lon, //"-74.0466352"
-          },
-        }
-      );
-      //   console.log('axios call',data)
-      setRestaurantsList(data);
-      setLoading(false);
-    }
     console.log("res list", restaurantsList);
   }, []);
 
   //   useeffect for Search Term
   useEffect(() => {
-    console.log("Search term changed", searchTerm);
-    async function getSearchedTermData(searchTerm){
+    console.log("Search term changed", searchTerm, userLat, userLon);
+    try {
+      async function getSearchedTermData(searchTerm,userLat, userLon) {
         const { data } = await axios.get(
-            `http://localhost:3000/restaurants/search/${searchTerm}`
-          );
-          //   console.log('axios call',data)
+          `http://localhost:3000/restaurants/search/${searchTerm}/${userLat}/${userLon}`
+        );
+        console.log("axios search call", data);
+        if (data.length === 0) {
+          setLoading(false);
+          setError404(true);
+        } else {
           setRestaurantsList(data);
           setLoading(false);
+          setError404(false);
+        }
+      }
+      if (searchTerm.length !== 0) {
+        getSearchedTermData(searchTerm,userLat,userLon);
+      } else {
+        getRestaurantData(userLat, userLon);
+      }
+    } catch (error) {
+      console.log("catch", error);
+      setLoading(false);
+      setError404(true);
     }
-    getSearchedTermData(searchTerm)
+
     // setLoading(false)
   }, [searchTerm]);
+
+  //   To set search term
+  const handleChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
   // To display Restaurant cards
   const buildCard = (restaurant) => {
@@ -218,6 +260,24 @@ const Restaurants = () => {
   };
   if (loading) {
     return <h1>Loading</h1>;
+  } else if (error404) {
+    return (
+      <div>
+        <label>
+          Search Restaurants:
+          <input
+            id="name"
+            name="name"
+            defaultValue={searchTerm}
+            onChange={handleChange}
+          />
+        </label>
+        <br />
+        <br />
+        <br />
+        <h1>No Restaurant found.</h1>
+      </div>
+    );
   } else if (restaurantsList) {
     card =
       restaurantsList &&
@@ -225,9 +285,9 @@ const Restaurants = () => {
         return buildCard(rest);
       });
   }
-  const handleChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
+  //   const handleChange = (e) => {
+  //     setSearchTerm(e.target.value);
+  //   };
   return (
     <div>
       {/* search restaurants */}
