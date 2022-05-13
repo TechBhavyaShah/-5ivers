@@ -31,6 +31,11 @@ const NavigationAuth = () => {
                     </Link>
                 </li>
                 <li>
+                    <Link to="/restaurants" className="link">
+                        Find Restaurants
+                    </Link>
+                </li>
+                <li>
                     <SignOutButton />
                 </li>
             </ul>
@@ -45,6 +50,11 @@ const NavigationNonAuth = () => {
                 <li>
                     <Link to="/" className="link">
                         Landing
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/restaurants" className="link">
+                        Find Restaurants
                     </Link>
                 </li>
                 <li>

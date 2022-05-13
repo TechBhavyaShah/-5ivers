@@ -5,7 +5,7 @@ const router = express.Router();
 const data = require("../data");
 const locationData = data.location;
 const url = require("url");
-const user_dist = "1.5"
+const user_dist = "2";
 router.get("/location/:lat/:lon", async (req, res) => {
   // Below 5 lines are required for front end to access this data
   res.setHeader("Access-Control-Allow-Origin", "*");

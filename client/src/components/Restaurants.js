@@ -86,15 +86,15 @@ const Restaurants = () => {
   const [userLon, setUserLon] = useState("-74.0266051");
 
   // Get user's current location
-//   var lat = "40.7434768";
-//   var lon = "-74.0266051";
+  //   var lat = "40.7434768";
+  //   var lon = "-74.0266051";
 
   // Do the axios call and get the restaurants. Here we need to pass the current location of user
   async function getRestaurantData(uLat, uLon) {
     // Method 2 : Params not going through
     // const {data} = await axios({
     //     method: 'get',
-    //     url: 'http://localhost:3000/restaurants/location'
+    //     url: 'http://localhost:3001/restaurant/location'
     //     ,
     //     params: {
     //               lat: "40.7401353",
@@ -105,7 +105,7 @@ const Restaurants = () => {
     // Method 3:
     try {
       const { data } = await axios.get(
-        `http://localhost:3000/restaurants/location/${uLat}/${uLon}`,
+        `http://localhost:3001/restaurant/location/${uLat}/${uLon}`,
         {
           params: {
             lat: uLat, // "40.7401353",
@@ -154,7 +154,7 @@ const Restaurants = () => {
       //   lon = pos.coords.longitude;
       setUserLat(pos.coords.latitude);
       setUserLon(pos.coords.longitude);
-      getRestaurantData(userLat, userLon);
+      getRestaurantData(pos.coords.latitude, pos.coords.longitude);
     }
     // // A failure call back function for navigator.geolocation
     function showError(error) {
@@ -187,9 +187,9 @@ const Restaurants = () => {
   useEffect(() => {
     console.log("Search term changed", searchTerm, userLat, userLon);
     try {
-      async function getSearchedTermData(searchTerm,userLat, userLon) {
+      async function getSearchedTermData(searchTerm, userLat, userLon) {
         const { data } = await axios.get(
-          `http://localhost:3000/restaurants/search/${searchTerm}/${userLat}/${userLon}`
+          `http://localhost:3001/restaurant/search/${searchTerm}/${userLat}/${userLon}`
         );
         console.log("axios search call", data);
         if (data.length === 0) {
@@ -202,7 +202,7 @@ const Restaurants = () => {
         }
       }
       if (searchTerm.length !== 0) {
-        getSearchedTermData(searchTerm,userLat,userLon);
+        getSearchedTermData(searchTerm, userLat, userLon);
       } else {
         getRestaurantData(userLat, userLon);
       }
@@ -227,7 +227,7 @@ const Restaurants = () => {
       <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={restaurant._id}>
         <Card className={classes.card} variant="outlined">
           <CardActionArea>
-            <Link to={`/restaurant/${restaurant._id}`}>
+            <Link to={`/restaurants/${restaurant._id}`}>
               <CardMedia
                 className={classes.media}
                 component="img"
