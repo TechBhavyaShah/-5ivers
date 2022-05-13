@@ -377,7 +377,8 @@ async function checkRestaurant(_restaurantUsername, _restaurantPassword) {
                     username: 1,
                     password: 1,
                     restaurant_name: 1,
-                    password: 1,
+                    restaurant_image: 1,
+                    address: 1,
                 },
             }
         );
@@ -409,6 +410,36 @@ async function checkRestaurant(_restaurantUsername, _restaurantPassword) {
     }
 }
 
+async function getFoodItemsByRestaurantId(_restaurantId) {
+    try {
+        const restaurantId = validator.isRestaurantIdValid(xss(_restaurantId));
+
+        const restaurantCollection = await restaurants();
+
+        const foodItems = await restaurantCollection.findOne(
+            { _id: restaurantId },
+            {
+                projection: {
+                    _id: 0,
+                    food_items: 1,
+                },
+            }
+        );
+
+        if (
+            !foodItems ||
+            !foodItems.food_items ||
+            foodItems.food_items.length < 1
+        ) {
+            throwError(ErrorCode.NOT_FOUND, "Error: Food items not found.");
+        }
+
+        return foodItems;
+    } catch (error) {
+        throwCatchError(error);
+    }
+}
+
 const throwError = (code = 500, message = "Error: Internal Server Error") => {
     throw { code, message };
 };
@@ -431,4 +462,5 @@ module.exports = {
     getAllRestaurants,
     addItemToRestaurant,
     checkRestaurant,
+    getFoodItemsByRestaurantId,
 };

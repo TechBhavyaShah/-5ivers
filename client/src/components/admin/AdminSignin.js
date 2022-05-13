@@ -2,8 +2,15 @@ import { Form, Button } from "react-bootstrap";
 import { useState } from "react";
 import Loader from "../Loader";
 import axios from "axios";
+import jwtDecode from "jwt-decode";
+import { useDispatch } from "react-redux";
+import { signInRestaurant } from "../../redux/actions/restaurantActions";
+import { useNavigate } from "react-router-dom";
 
 function AdminSignin() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const [restaurantUsername, setRestaurantUsername] = useState("");
     const [restaurantPassword, setRestaurantPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -24,11 +31,22 @@ function AdminSignin() {
                 postData
             );
 
-            localStorage.setItem(
-                "accessToken",
-                (data && data.token && data.token.length > 0 && data.token) ||
-                    null
-            );
+            localStorage.setItem("accessToken", (data && data.token) || null);
+
+            const decodedToken =
+                data && data.token ? jwtDecode(data.token) : {};
+
+            const restaurant = {
+                token: (data && data.token) || null,
+                isAuthenticated: data && data.token ? true : false,
+                id: decodedToken.restaurant?.id,
+                name: decodedToken.restaurant?.name,
+                image: decodedToken.restaurant?.image,
+                address: decodedToken.restaurant?.address,
+            };
+
+            dispatch(signInRestaurant(restaurant));
+            navigate("/admin/restaurant");
 
             setError(null);
             setIsError(false);

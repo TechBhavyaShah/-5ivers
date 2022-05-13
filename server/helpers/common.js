@@ -1,5 +1,6 @@
 const ErrorCode = require("./error-code");
 const uuid = require("uuid");
+const jwt = require("jsonwebtoken");
 
 function isArgumentString(string, variableName) {
     if (typeof string !== "string") {
@@ -8,6 +9,17 @@ function isArgumentString(string, variableName) {
             `Error: Invalid argument passed for ${
                 variableName || "provided variable"
             }. Expected string.`
+        );
+    }
+}
+
+function isString(string, variableName) {
+    if (typeof string !== "string") {
+        throwError(
+            ErrorCode.BAD_REQUEST,
+            `Error: ${
+                variableName || "provided variable"
+            } is not a string. Expected string.`
         );
     }
 }
@@ -137,6 +149,19 @@ function isUuid(id) {
     }
 }
 
+function isJsonWebToken(accessToken) {
+    try {
+        const decodedToken = jwt.verify(
+            accessToken,
+            process.env.JSON_WEB_TOKEN_KEY
+        );
+
+        return decodedToken;
+    } catch (error) {
+        throwError(ErrorCode.UNAUTHORIZED, "Error: You are not logged in.");
+    }
+}
+
 const throwError = (code = 500, message = "Error: Internal server error") => {
     throw { code, message };
 };
@@ -156,4 +181,6 @@ module.exports = {
     isNumberUnderUpperLimit,
     isNumber,
     isUuid,
+    isString,
+    isJsonWebToken,
 };

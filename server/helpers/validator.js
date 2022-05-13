@@ -19,7 +19,7 @@ function isRestaurantPasswordValid(password) {
 function isRestaurantUsernameValid(username) {
     common.isArgumentString(username, "restaurant username");
     common.isStringEmpty(username, "restaurant username");
-    common.isNonSpaceString(username, "restaurant username");
+    common.isStringAlphaNumeric(username, "restaurant username");
 
     return username;
 }
@@ -36,9 +36,28 @@ function isCheckRestaurantTotalFieldsValid(totalFields) {
     common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
 }
 
+function isRestaurantIdValid(_restaurantId) {
+    common.isArgumentString(_restaurantId, "restaurant id");
+    common.isStringEmpty(_restaurantId, "restaurant id");
+
+    const restaurantId = _restaurantId.trim();
+
+    common.isUuid(restaurantId);
+
+    return restaurantId;
+}
+
+function isAccessTokenValid(accessToken) {
+    common.isString(accessToken);
+    common.isStringEmpty(accessToken);
+    return common.isJsonWebToken(accessToken);
+}
+
 module.exports = {
     isRestaurantPasswordValid,
     isRestaurantUsernameValid,
     isPostSignInTotalFieldsValid,
     isCheckRestaurantTotalFieldsValid,
+    isRestaurantIdValid,
+    isAccessTokenValid,
 };

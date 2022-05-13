@@ -6,11 +6,7 @@ const jwt = require("jsonwebtoken");
 const restaurantdata = data.restaurants;
 const validator = require("../helpers/validator");
 
-const ErrorCode = {
-    BAD_REQUEST: 400,
-    NOT_FOUND: 404,
-    INTERNAL_SERVER_ERROR: 500,
-};
+const ErrorCode = require("../helpers/error-code");
 
 //---------This is Get by Restaurant ID method to get a restaurant with Id---------------//
 router.get("/:restaurantId", async (req, res) => {
@@ -297,11 +293,51 @@ router.post("/signin", async (request, response) => {
         }
 
         const jsonWebToken = jwt.sign(
-            { restaurantId: restaurant._id },
-            process.env.JSON_WEB_TOKEN
+            {
+                restaurant: {
+                    id: restaurant._id,
+                    name: restaurant.restaurant_name,
+                    image: restaurant.restaurant_image,
+                    address: restaurant.address,
+                },
+            },
+            process.env.JSON_WEB_TOKEN_KEY
         );
 
-        response.json({ token: jsonWebToken });
+        response.json({
+            token: jsonWebToken,
+        });
+    } catch (error) {
+        console.log(error);
+        response.status(error.code || 500).json({
+            isError: true,
+            error: error.message || "Error: Internal server error.",
+        });
+    }
+});
+
+router.get("/foodItems/:id", async (request, response) => {
+    try {
+        const decodedAccessToken = validator.isAccessTokenValid(
+            request.header("accessToken")
+        );
+
+        if (
+            !decodedAccessToken.restaurant?.id ||
+            request.params.id.trim() !== decodedAccessToken.restaurant?.id
+        ) {
+            throwError(ErrorCode.UNAUTHORIZED, "Error: You are not logged in.");
+        }
+
+        const restaurantId = validator.isRestaurantIdValid(
+            xss(decodedAccessToken.restaurant?.id)
+        );
+
+        const foodItems = await restaurantdata.getFoodItemsByRestaurantId(
+            restaurantId
+        );
+
+        response.json({ foodItems: foodItems.food_items });
     } catch (error) {
         console.log(error);
         response.status(error.code || 500).json({

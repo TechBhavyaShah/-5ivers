@@ -6,12 +6,13 @@ import Landing from "./components/account/Landing";
 import Navigation from "./components/account/Navigation";
 import SignIn from "./components/account/SignIn";
 import SignUp from "./components/account/SignUp";
-import AdminHome from "./components/admin/AdminHome";
 import AdminSignin from "./components/admin/AdminSignin";
 import AdminRestaurant from "./components/admin/AdminRestaurant";
 import { AuthProvider } from "./firebase/Auth";
 
 import "./App.css";
+import FoodItemEdit from "./components/admin/FoodItemEdit";
+import FoodItemAdd from "./components/admin/FoodItemAdd";
 
 function App() {
     return (
@@ -31,11 +32,18 @@ function App() {
                     <Route path="/account" element={<Account />} />
                     <Route path="/signin" element={<SignIn />} />
                     <Route path="/signup" element={<SignUp />} />
-                    <Route path="/admin" element={<AdminHome />} />
                     <Route path="/admin/signin" element={<AdminSignin />} />
                     <Route
                         path="/admin/restaurant"
                         element={<AdminRestaurant />}
+                    />
+                    <Route
+                        path="/admin/restaurant/foodItem/Edit/:foodItemId"
+                        element={<FoodItemEdit />}
+                    />
+                    <Route
+                        path="/admin/restaurant/foodItem/Add"
+                        element={<FoodItemAdd />}
                     />
                     <Route
                         path="*"
