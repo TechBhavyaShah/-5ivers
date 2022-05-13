@@ -129,7 +129,7 @@ module.exports = {
     }
   },
 
-  async searchRes(searchTerm,user_lat,user_lon,user_dist) {
+  async searchRes(searchTerm, user_lat, user_lon, user_dist) {
     searchTerm = searchTerm.trim();
     if (searchTerm.length === 0) {
       // let restList = await restCollection

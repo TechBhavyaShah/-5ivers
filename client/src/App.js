@@ -1,16 +1,16 @@
-import React, { useContext } from 'react'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
-import Account from './components/account/Account'
-import Home1 from './components/account/Home'
-import Landing from './components/account/Landing'
-import Navigation from './components/account/Navigation'
-import SignIn from './components/account/SignIn'
-import SignUp from './components/account/SignUp'
-import { AuthProvider } from './firebase/Auth'
-import Restaurants from './components/Restaurants'
-import Restaurant from './components/restaurant/Restaurant'
-import Home from './components/Home'
-import './App.css'
+import React, { useContext } from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Account from "./components/account/Account";
+import Home1 from "./components/account/Home";
+import Landing from "./components/account/Landing";
+import Navigation from "./components/account/Navigation";
+import SignIn from "./components/account/SignIn";
+import SignUp from "./components/account/SignUp";
+import { AuthProvider } from "./firebase/Auth";
+import Restaurants from "./components/Restaurants";
+import Restaurant from "./components/restaurant/Restaurant";
+import Home from "./components/Home";
+import "./App.css";
 
 function App() {
   return (
@@ -39,7 +39,7 @@ function App() {
         </Routes>
       </Router>
     </AuthProvider>
-  )
+  );
 }
 
-export default App
+export default App;

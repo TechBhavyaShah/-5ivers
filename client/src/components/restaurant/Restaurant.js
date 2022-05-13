@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-import { Link, useParams, useNavigate } from 'react-router-dom'
-import '../../App.css'
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import "../../App.css";
 
 import {
   Card,
@@ -11,48 +11,48 @@ import {
   Grid,
   Typography,
   makeStyles,
-} from '@material-ui/core'
+} from "@material-ui/core";
 
 const useStyles = makeStyles({
   card: {
     maxWidth: 250,
-    height: 'auto',
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    height: "auto",
+    marginLeft: "auto",
+    marginRight: "auto",
     borderRadius: 5,
-    border: '1px solid #1e8678',
-    boxShadow: '0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);',
+    border: "1px solid #1e8678",
+    boxShadow: "0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);",
   },
   titleHead: {
-    borderBottom: '1px solid #202020',
-    fontWeight: 'bold',
+    borderBottom: "1px solid #202020",
+    fontWeight: "bold",
   },
   grid: {
     flexGrow: 1,
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   media: {
-    height: '100%',
-    width: '100%',
+    height: "100%",
+    width: "100%",
   },
   button: {
-    color: '#202020',
-    fontWeight: 'bold',
+    color: "#202020",
+    fontWeight: "bold",
     fontSize: 12,
   },
   inlineContainer: {
-    display: 'flex',
-    justifyContent: 'center',
+    display: "flex",
+    justifyContent: "center",
   },
-})
+});
 
 const Restaurant = () => {
-  const classes = useStyles()
-  const [loading, setLoading] = useState(true)
-  const [restaurantData, setRestaurantData] = useState(undefined)
-  const { restaurantId } = useParams()
-  const [isError, setError] = useState(false)
-  let card = null
+  const classes = useStyles();
+  const [loading, setLoading] = useState(true);
+  const [restaurantData, setRestaurantData] = useState(undefined);
+  const { restaurantId } = useParams();
+  const [isError, setError] = useState(false);
+  let card = null;
 
   //   async function getRestaurantById(restaurantId) {
   //     const { data } = await axios.get(
@@ -66,25 +66,25 @@ const Restaurant = () => {
     async function getRestaurantById(restaurantId) {
       try {
         const { data } = await axios.get(
-          `http://localhost:3001/restaurants/${restaurantId}`,
-        )
+          `http://localhost:3001/restaurants/${restaurantId}`
+        );
 
-        console.log(data)
-        setRestaurantData(data)
-        setLoading(false)
-        setError(false)
+        console.log(data);
+        setRestaurantData(data);
+        setLoading(false);
+        setError(false);
         // if (data == null || data.data.results.length < 1) {
         //   setError(true)
         // }
       } catch (e) {
-        console.log(e)
-        setError(true)
+        console.log(e);
+        setError(true);
       }
     }
     if (restaurantId) {
-      getRestaurantById(restaurantId)
+      getRestaurantById(restaurantId);
     }
-  }, [])
+  }, []);
 
   const buildCard = (item) => {
     return (
@@ -98,7 +98,7 @@ const Restaurant = () => {
               image={
                 item.item_image
                   ? item.item_image
-                  : '/restaurant_images/Item_default.jpg'
+                  : "/restaurant_images/Item_default.jpg"
               }
               title="show image"
             />
@@ -113,10 +113,10 @@ const Restaurant = () => {
                 {item.name}
               </Typography>
               <Typography variant="body2" color="textSecondary" component="p">
-                {item.description ? item.description : ''}
+                {item.description ? item.description : ""}
               </Typography>
               <Typography variant="h6" component="h2">
-                {'$'+item.price}
+                {"$" + item.price}
               </Typography>
             </CardContent>
             {/* </Link> */}
@@ -124,21 +124,21 @@ const Restaurant = () => {
           </CardActionArea>
         </Card>
       </Grid>
-    )
-  }
+    );
+  };
 
   if (loading) {
     return (
       <div>
         <h2>Loading....</h2>
       </div>
-    )
+    );
   } else {
     card =
       restaurantData &&
       restaurantData.food_items.map((item) => {
-        return buildCard(item)
-      })
+        return buildCard(item);
+      });
     return (
       <div>
         <div className="roundImageContainer">
@@ -158,8 +158,8 @@ const Restaurant = () => {
           </Grid>
         </div>
       </div>
-    )
+    );
   }
-}
+};
 
-export default Restaurant
+export default Restaurant;
