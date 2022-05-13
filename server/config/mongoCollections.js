@@ -18,3 +18,4 @@ module.exports = {
   users: getCollectionFn('users'),
   restaurants: getCollectionFn('restaurants'),
 }
+
