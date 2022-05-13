@@ -88,6 +88,9 @@ const SignUp = () => {
         passwordOne = passwordOne.trim();
         passwordTwo = passwordTwo.trim();
 
+        // Appending address details together
+        address = `${address} ${postalCode} ${country}`;
+
         console.log(data);
 
         if (passwordOne !== passwordTwo) {
@@ -151,11 +154,21 @@ const SignUp = () => {
                     about_me
                     image_url
             */
-            // let createUser = axios.post();
+            let createUser = axios.post(
+                "http://localhost:3001/user/userDetails",
+                {
+                    id: userId,
+                    name: name,
+                    emailAddress: email,
+                    image_url: imageUrl,
+                    biography: aboutMe,
+                    address: address,
+                }
+            );
         } catch (e) {
             console.log(e);
         }
-        // reset();
+        reset();
     };
 
     if (currentUser) {

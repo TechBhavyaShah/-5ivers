@@ -45,6 +45,10 @@ const SignIn = () => {
         // event.preventDefault();
         let { email, password } = data;
 
+        email = email.trim();
+        /* I don't allow spaces at all in passwords, but I'll trim it anyway */
+        password = password.trim();
+
         try {
             await doSignInWithEmailAndPassword(email, password);
         } catch (error) {
@@ -69,7 +73,7 @@ const SignIn = () => {
     const passwordReset = async (event) => {
         event.preventDefault();
 
-        let email = document.getElementById("email").value;
+        let email = document.getElementById("email").value.trim();
 
         if (email) {
             try {
@@ -85,7 +89,7 @@ const SignIn = () => {
             setError("email", {
                 type: "client",
                 message:
-                    "Please enter an email address below before you click the forgot password link",
+                    "Please enter an email address below before you click the forgot password link!",
             });
             return false;
         }
@@ -162,6 +166,11 @@ const SignIn = () => {
                     )}
                     rules={{
                         required: "Password Required",
+                        pattern: {
+                            // No empty strings/strings with whitespace allowed
+                            value: /^\S*$/,
+                            message: "Password Required",
+                        },
                     }}
                 ></Controller>
 
