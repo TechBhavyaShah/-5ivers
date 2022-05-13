@@ -5,12 +5,12 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "seed": "node task/seed.js"
+    "seed": "node task/seed.js",
+    "item_seed": "node task/item_seed.js"
   },
   "author": "Bansri",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
     "express": "^4.18.1",
     "express-handlebars": "^6.0.5",
     "express-session": "^1.17.2",
