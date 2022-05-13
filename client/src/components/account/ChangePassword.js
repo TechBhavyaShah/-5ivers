@@ -45,6 +45,11 @@ const ChangePassword = () => {
         // event.preventDefault();
         const { currentPassword, newPasswordOne, newPasswordTwo } = data;
 
+        /* I don't allow spaces at all in passwords, but I'll trim it anyway */
+        currentPassword = currentPassword.trim();
+        newPasswordOne = newPasswordOne.trim();
+        newPasswordTwo = newPasswordTwo.trim();
+
         if (newPasswordOne !== newPasswordTwo) {
             setError("newPasswordOne", {
                 type: "client",
@@ -108,6 +113,11 @@ const ChangePassword = () => {
                         )}
                         rules={{
                             required: "Current Password Required!",
+                            pattern: {
+                                // No empty strings/strings with whitespace allowed
+                                value: /^\S*$/,
+                                message: "Current Password Required",
+                            },
                         }}
                     ></Controller>
 
@@ -145,6 +155,12 @@ const ChangePassword = () => {
                         )}
                         rules={{
                             required: "New Password Required!",
+                            pattern: {
+                                // No empty strings/strings with whitespace allowed
+                                value: /^\S*$/,
+                                message:
+                                    "New Password Required (Minimum 6 characters, no spaces)",
+                            },
                         }}
                     ></Controller>
 
@@ -182,6 +198,12 @@ const ChangePassword = () => {
                         )}
                         rules={{
                             required: "Please Confirm New Password!",
+                            pattern: {
+                                // No empty strings/strings with whitespace allowed
+                                value: /^\S*$/,
+                                message:
+                                    "Confirm Password Required (Minimum 6 characters, no spaces)",
+                            },
                         }}
                     ></Controller>
 
