@@ -96,18 +96,18 @@ router.post('/foodItem/:restaurantId', async (req, res) => {
     res.status(400).json({ error: 'You must provide name of the Item' })
     return
   }
-  if (!restaurantItemData.description) {
-    res.status(400).json({ error: 'You must provide description of the item' })
-    return
-  }
+  // if (!restaurantItemData.description) {
+  //   res.status(400).json({ error: 'You must provide description of the item' })
+  //   return
+  // }
   if (!restaurantItemData.price) {
     res.status(400).json({ error: 'You must provide price of the item' })
     return
   }
-  if (!restaurantItemData.item_image) {
-    res.status(400).json({ error: 'You must provide image of the item added' })
-    return
-  }
+  // if (!restaurantItemData.item_image) {
+  //   res.status(400).json({ error: 'You must provide image of the item added' })
+  //   return
+  // }
 
   if (!restaurantItemData.type) {
     res.status(400).json({
@@ -126,9 +126,9 @@ router.post('/foodItem/:restaurantId', async (req, res) => {
   //------------Starts here--------------------//
   if (
     restaurantItemData.name == null ||
-    restaurantItemData.description == null ||
+    // restaurantItemData.description == null ||
     restaurantItemData.price == null ||
-    restaurantItemData.item_image == null ||
+    // restaurantItemData.item_image == null ||
     restaurantItemData.type == null ||
     restaurantItemData.stock == null
   ) {
@@ -178,12 +178,12 @@ router.post('/foodItem/:restaurantId', async (req, res) => {
     return
   }
 
-  if (/^ *$/.test(restaurantItemData.description)) {
-    res.status(400).json({
-      error: 'Item description cannot be empty Spaces',
-    })
-    return
-  }
+  // if (/^ *$/.test(restaurantItemData.description)) {
+  //   res.status(400).json({
+  //     error: 'Item description cannot be empty Spaces',
+  //   })
+  //   return
+  // }
 
   if (/^ *$/.test(restaurantItemData.price)) {
     res.status(400).json({
@@ -192,12 +192,12 @@ router.post('/foodItem/:restaurantId', async (req, res) => {
     return
   }
 
-  if (/^ *$/.test(restaurantItemData.item_image)) {
-    res.status(400).json({
-      error: 'Item Image cannot be empty Spaces',
-    })
-    return
-  }
+  // if (/^ *$/.test(restaurantItemData.item_image)) {
+  //   res.status(400).json({
+  //     error: 'Item Image cannot be empty Spaces',
+  //   })
+  //   return
+  // }
 
   if (/^ *$/.test(restaurantItemData.type)) {
     res.status(400).json({

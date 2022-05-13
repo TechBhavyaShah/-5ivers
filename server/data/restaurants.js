@@ -189,15 +189,15 @@ const addItemToRestaurant = async function addItemToRestaurant(
   if (!name) {
     throw { message: 'You must provide name of the Item', status: 400 }
   }
-  if (!description) {
-    throw { message: 'You must provide decription of the Item', status: 400 }
-  }
+  // if (!description) {
+  //   throw { message: 'You must provide decription of the Item', status: 400 }
+  // }
   if (!price) {
     throw { message: 'You must provide price of the Item', status: 400 }
   }
-  if (!item_image) {
-    throw { message: 'You must provide Image of the Item', status: 400 }
-  }
+  // if (!item_image) {
+  //   throw { message: 'You must provide Image of the Item', status: 400 }
+  // }
 
   if (!type) {
     throw { message: 'You must provide Type of the Item ', status: 400 }
@@ -208,17 +208,10 @@ const addItemToRestaurant = async function addItemToRestaurant(
   }
 
   //------------Starts here--------------------//
-  if (
-    name == null ||
-    description == null ||
-    price == null ||
-    item_image == null ||
-    type == null ||
-    stock == null
-  ) {
+  if (name == null || price == null || type == null || stock == null) {
     throw {
       message:
-        'All the input parameter must be provided in the function for adding an item',
+        'name price type and stock parameter must be provided in the function for adding an item',
       status: 400,
     }
   }
@@ -262,12 +255,12 @@ const addItemToRestaurant = async function addItemToRestaurant(
     }
   }
 
-  if (/^ *$/.test(description)) {
-    throw {
-      message: 'Item description cannot be empty Spaces',
-      status: 400,
-    }
-  }
+  // if (/^ *$/.test(description)) {
+  //   throw {
+  //     message: 'Item description cannot be empty Spaces',
+  //     status: 400,
+  //   }
+  // }
 
   if (/^ *$/.test(price)) {
     throw {
@@ -276,12 +269,12 @@ const addItemToRestaurant = async function addItemToRestaurant(
     }
   }
 
-  if (/^ *$/.test(item_image)) {
-    throw {
-      message: 'Item Image cannot be empty Spaces',
-      status: 400,
-    }
-  }
+  // if (/^ *$/.test(item_image)) {
+  //   throw {
+  //     message: 'Item Image cannot be empty Spaces',
+  //     status: 400,
+  //   }
+  // }
 
   if (/^ *$/.test(type)) {
     throw {
@@ -334,7 +327,7 @@ const addItemToRestaurant = async function addItemToRestaurant(
 
   const restaurantsCollection = await restaurants()
 
-  restaurantsCollection.updateOne(
+  await restaurantsCollection.updateOne(
     { _id: restaurantId },
     {
       $push: {
@@ -425,7 +418,7 @@ const updateFoodItemStock = async function updateFoodItemStock(
   }
 
   const restaurantsCollection = await restaurants()
-t 
+  t
   restaurantsCollection.updateOne(
     { _id: restaurantId, 'food_items.item_id': itemId },
     { $set: { 'food_items.$.stock': stock } },
