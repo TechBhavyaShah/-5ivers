@@ -86,3 +86,18 @@
 	text-decoration: none;
 	color: red;
 }
+
+
+.roundRestImg {
+	border: 1px solid #000505;
+	/* border-radius: 50%; */
+	padding: 2px;
+    width: 200px ;
+    height: 200px;
+	
+}
+
+.roundImageContainer{
+	padding-top: 15px;
+text-align: center;  
+}
