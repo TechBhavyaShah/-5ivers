@@ -27,7 +27,7 @@ const NavigationAuth = () => {
                 </li>
                 <li>
                     <Link to="/account" className="link">
-                        Account
+                        Profile
                     </Link>
                 </li>
                 <li>

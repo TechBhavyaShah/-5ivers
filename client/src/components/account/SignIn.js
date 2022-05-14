@@ -102,7 +102,7 @@ const SignIn = () => {
 
     return (
         <div>
-            <h1>Log in</h1>
+            <h1 className="textCenter">Log in</h1>
             <form className={classes.root} onSubmit={handleSubmit(handleLogin)}>
                 <Controller
                     name="email"
