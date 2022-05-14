@@ -30,7 +30,7 @@ export const decreaseQuantity = (foodItemId) => {
 
 export const clearCart = () => {
     return {
-        type: ActionTypes.DECREASE_QUANTITY,
+        type: ActionTypes.CLEAR_CART,
         payload: null,
     };
 };
