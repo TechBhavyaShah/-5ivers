@@ -132,12 +132,14 @@ const SignUp = () => {
         }
 
         let imageUrl;
-        try {
-            // Upload profile pic to S3 and grab S3 url to pass to axios call below
-            let profilePic = data.profilePic[0];
-            imageUrl = await uploadImage(profilePic);
-        } catch (e) {
-            console.log(e);
+        if (data.profilePic) {
+            try {
+                // Upload profile pic to S3 and grab S3 url to pass to axios call below
+                let profilePic = data.profilePic[0];
+                imageUrl = await uploadImage(profilePic);
+            } catch (e) {
+                console.log(e);
+            }
         }
 
         try {
@@ -160,7 +162,8 @@ const SignUp = () => {
                     id: userId,
                     name: name,
                     emailAddress: email,
-                    image_url: imageUrl,
+                    // Profile picture isn't required to be uploaded by user
+                    image_url: imageUrl ? imageUrl : "N/A",
                     biography: aboutMe,
                     address: address,
                 }
@@ -516,9 +519,9 @@ const SignUp = () => {
                             <p>{error ? error.message : null}</p>
                         </div>
                     )}
-                    rules={{
-                        required: "Profile Picture Required!",
-                    }}
+                    // rules={{
+                    //     required: "Profile Picture Required!",
+                    // }}
                 ></Controller>
 
                 {/* <input type="file" name="profilePic"></input> */}
