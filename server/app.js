@@ -4,6 +4,9 @@ const app = express();
 const configRoutes = require("./routes");
 const xss = require("xss");
 
+const static = express.static(__dirname + "/public");
+app.use("/public", static);
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 

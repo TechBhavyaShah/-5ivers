@@ -12,6 +12,7 @@ import Restaurants from "./components/Restaurants";
 import Restaurant from "./components/restaurant/Restaurant";
 import Home from "./components/Home";
 import "./App.css";
+import AdminRoutes from "./components/admin/AdminRoutes";
 
 function App() {
     return (
@@ -43,6 +44,7 @@ function App() {
                     />
                     <Route path="/signin" element={<SignIn />} />
                     <Route path="/signup" element={<SignUp />} />
+                    <Route path="/admin/*" element={<AdminRoutes />} />
                     <Route
                         path="/restaurants/:restaurantId"
                         element={<Restaurant />}
