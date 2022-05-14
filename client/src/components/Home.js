@@ -8,11 +8,9 @@ const Home = () => {
     console.log(position);
     let lat = position.coords.latitude;
     let lon = position.coords.longitude;
-    document.getElementById('latitude').textContent = lat
-    document.getElementById('longitude').textContent = lon
-                    
+    document.getElementById("latitude").textContent = lat;
+    document.getElementById("longitude").textContent = lon;
   });
-  
 
   // }
   return (
