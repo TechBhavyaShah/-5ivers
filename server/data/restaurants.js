@@ -129,6 +129,7 @@ const create = async function create(
 //---------------Function to get a restaurant By Id-------------------//
 
 async function getRestaurantById(id) {
+    //   console.log(id);
     if (!id) throw { message: `You must provide a proper id`, status: 400 };
     if (typeof id != "string")
         throw { message: `${id} is not string`, status: 400 };
@@ -146,6 +147,7 @@ async function getRestaurantById(id) {
     if (restaurant === null)
         throw { message: `No restaurant exists with that id`, status: 400 };
 
+    delete restaurant.password;
     return restaurant;
 }
 
