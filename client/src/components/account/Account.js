@@ -8,18 +8,23 @@ import { AuthContext } from "../../firebase/Auth";
 import "../../App.css";
 
 const Account = () => {
-    const [user, setUser] = useState(null);
+    const [userData, setUserData] = useState(undefined);
     const { currentUser } = useContext(AuthContext);
-    console.log(currentUser.uid);
+
+    let currentUserUid = currentUser.uid;
 
     useEffect(() => {
+        console.log("On load useEffect (sign up)");
+
         async function getUser() {
             try {
-                let { data } = await axios.get(
-                    `http://localhost:3001/user/userDetails/${currentUser.uid}`
+                const { data } = await axios.get(
+                    `http://localhost:3001/user/userDetails/${currentUserUid}`
                 );
 
-                setUser(data);
+                console.log(data);
+
+                setUserData(data);
             } catch (e) {
                 console.log(e);
             }
@@ -29,15 +34,14 @@ const Account = () => {
 
     // let pastOrders = user.pastOrders;
 
-    console.log(user);
+    // console.log(userData);
     return (
         <div>
             <h2>Account Page</h2>
-
-            <h3>{user.name}</h3>
-            <img src={user.image_url} alt="profile picture"></img>
-            <p>Address: {user.address}</p>
-            <p>About me: {user.biography}</p>
+            <h3>{userData.name}</h3>
+            <img src={userData.image_url} alt="profile picture" />
+            <p>Address: {userData.address}</p>
+            <p>About me: {userData.biography}</p>
             <Link to="/changePassword" className="link">
                 Change Password
             </Link>
