@@ -27,7 +27,17 @@ const NavigationAuth = () => {
                 </li>
                 <li>
                     <Link to="/account" className="link">
-                        Account
+                        Profile
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/restaurants" className="link">
+                        Find Restaurants
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/cart" className="link">
+                        Cart
                     </Link>
                 </li>
                 <li>
@@ -48,6 +58,11 @@ const NavigationNonAuth = () => {
                     </Link>
                 </li>
                 <li>
+                    <Link to="/restaurants" className="link">
+                        Find Restaurants
+                    </Link>
+                </li>
+                <li>
                     <Link to="/signup" className="link">
                         Sign-up
                     </Link>
@@ -56,6 +71,11 @@ const NavigationNonAuth = () => {
                 <li>
                     <Link to="/signin" className="link">
                         Sign-In
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/cart" className="link">
+                        Cart
                     </Link>
                 </li>
             </ul>

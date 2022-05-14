@@ -6,7 +6,7 @@ const s3storageFns = s3storage.s3DirectUpload;
 router.get("/url", async (req, res) => {
     try {
         const url = await s3storageFns.generateUploadURL();
-        console.log(url);
+        // console.log(url);
         return res.json(url);
     } catch (e) {
         console.log(e);
