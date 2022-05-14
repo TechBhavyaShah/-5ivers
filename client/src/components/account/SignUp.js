@@ -178,7 +178,7 @@ const SignUp = () => {
     // console.log(errors);
     return (
         <div>
-            <h1>Sign up</h1>
+            <h1 className="textCenter">Sign Up</h1>
 
             {/* {errors.length > 0
                 ? errors.map((error) => <h4 className="error">{error}</h4>)

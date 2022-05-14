@@ -80,6 +80,7 @@
   text-decoration: underline;
   margin-left: 5px;
   color: #069;
+  /* text-align: center; */
 }
 
 .forgotPassword:hover {
@@ -127,4 +128,8 @@
 	background-color: white;
 	color: #1a2a5a;
 	border: 2px solid  #1a2a5a;
+}
+
+.textCenter{
+	text-align: center;
 }
