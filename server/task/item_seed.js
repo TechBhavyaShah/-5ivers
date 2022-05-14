@@ -902,7 +902,7 @@ async function main() {
     //   "Chicken & Lamb over Rice",
     //   "",
     //   5.0,
-    //   "",
+    //   "https://addysexpressjamaica.com/wp-content/uploads/2020/09/combo_rice_x_2048x2048.jpg",
     //   "non-veg",
     //   "Halal, Chicken",
     //   10
@@ -935,7 +935,7 @@ async function main() {
     //   "Latte",
     //   "",
     //   1.0,
-    //   "",
+    //   "https://coffeeaffection.com/wp-content/uploads/2021/05/Spanish-latte-milk-and-espresso-500x500.jpg",
     //   "veg",
     //   "Bevrages,cookies,coffee",
     //   10
@@ -946,7 +946,7 @@ async function main() {
     //   "American Coffee",
     //   "",
     //   1.0,
-    //   "",
+    //   "https://pontevecchiosrl.it/wp-content/uploads/2021/03/caffe-americano-in-casa.jpg",
     //   "non-veg",
     //   "Bevrages,cookies,coffee",
     //   10
@@ -957,7 +957,7 @@ async function main() {
     //   "Espresso",
     //   "",
     //   1.0,
-    //   "",
+    //   "https://www.dailygrind.com/wp-content/uploads/2018/11/espresso-1.jpg",
     //   "non-veg",
     //   "Bevrages,cookies,coffee",
     //   10
@@ -1252,7 +1252,7 @@ async function main() {
       "Tandoori Chicken Tikka",
       "Chicken breast cubes dipped in lemon juice garlic sauce and desi spices.",
       5.0,
-      "Chicken breast cubes dipped in lemon juice garlic sauce and desi spices.",
+      "https://img.cdn4dd.com/p/fit=cover,width=600,format=auto,quality=50/media/photos/d8b38d5e-9b65-4bab-bf35-1233a74c0283-retina-large.jpg",
       "non-veg",
       "Indian, Tandoori",
       10
@@ -1432,7 +1432,7 @@ async function main() {
       "Mac N' Cheese",
       "Four cheeses, applewood smoked bacon, herb panko crust.",
       7.0,
-      "Four cheeses, applewood smoked bacon, herb panko crust.",
+      "https://www.lactaid.com/sites/lactaid_us/files/recipe-images/mac-and-cheese-website.png",
       "non-veg",
       "Bar & Grill, Mexican,American",
       10

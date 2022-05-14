@@ -84,17 +84,18 @@ const Restaurants = () => {
   const [error404, setError404] = useState(false);
   const [userLat, setUserLat] = useState("40.7434768");
   const [userLon, setUserLon] = useState("-74.0266051");
+  const [locationAcquired, setLocationAcquired] = useState(false); //This will indicate if we have obtained the user current location of not
 
   // Get user's current location
-//   var lat = "40.7434768";
-//   var lon = "-74.0266051";
+  //   var lat = "40.7434768";
+  //   var lon = "-74.0266051";
 
   // Do the axios call and get the restaurants. Here we need to pass the current location of user
   async function getRestaurantData(uLat, uLon) {
     // Method 2 : Params not going through
     // const {data} = await axios({
     //     method: 'get',
-    //     url: 'http://localhost:3000/restaurants/location'
+    //     url: 'http://localhost:3001/restaurant/location'
     //     ,
     //     params: {
     //               lat: "40.7401353",
@@ -105,7 +106,7 @@ const Restaurants = () => {
     // Method 3:
     try {
       const { data } = await axios.get(
-        `http://localhost:3000/restaurants/location/${uLat}/${uLon}`,
+        `http://localhost:3001/restaurant/location/${uLat}/${uLon}`,
         {
           params: {
             lat: uLat, // "40.7401353",
@@ -131,17 +132,17 @@ const Restaurants = () => {
 
   // Following use effect will run only once. It will display all the restaurants
   useEffect(() => {
-    console.log("Main useEffect has fired");
+    // console.log("Main useEffect has fired");
     // Get user location
     function getUserLocation() {
       // console.log('navigator',navigator)
 
       if ("geolocation" in navigator) {
-        console.log("Location Available");
+        // console.log("Location Available");
 
         navigator.geolocation.getCurrentPosition(ShowPos, showError);
       } else {
-        console.log("Not Available");
+        // console.log("Not Available");
       }
     }
     // Following function call will set the lat and lon variable.
@@ -149,12 +150,10 @@ const Restaurants = () => {
 
     // A success call back function for navigator.geolocation
     function ShowPos(pos) {
-      // console.log('wefwfwefwef',pos)
-      //   lat = pos.coords.latitude;
-      //   lon = pos.coords.longitude;
       setUserLat(pos.coords.latitude);
       setUserLon(pos.coords.longitude);
-      getRestaurantData(userLat, userLon);
+      getRestaurantData(pos.coords.latitude, pos.coords.longitude);
+      setLocationAcquired(true); //This will help when checking "searchTerm !== 0"
     }
     // // A failure call back function for navigator.geolocation
     function showError(error) {
@@ -173,25 +172,21 @@ const Restaurants = () => {
           break;
       }
       // Since user has denied the location access, we are showing restaurants near stevens Institute of Tech.
-      //   lat = "40.74347683711104";
-      //   lon = "-74.02660504466289";
       setUserLat("40.7434768");
       setUserLon("-74.0266051");
       getRestaurantData(userLat, userLon);
     }
-
-    console.log("res list", restaurantsList);
   }, []);
 
   //   useeffect for Search Term
   useEffect(() => {
-    console.log("Search term changed", searchTerm, userLat, userLon);
+    // console.log("Search term changed", searchTerm, userLat, userLon);
     try {
-      async function getSearchedTermData(searchTerm,userLat, userLon) {
+      async function getSearchedTermData(searchTerm, userLat, userLon) {
         const { data } = await axios.get(
-          `http://localhost:3000/restaurants/search/${searchTerm}/${userLat}/${userLon}`
+          `http://localhost:3001/restaurant/search/${searchTerm}/${userLat}/${userLon}`
         );
-        console.log("axios search call", data);
+
         if (data.length === 0) {
           setLoading(false);
           setError404(true);
@@ -202,9 +197,11 @@ const Restaurants = () => {
         }
       }
       if (searchTerm.length !== 0) {
-        getSearchedTermData(searchTerm,userLat,userLon);
+        getSearchedTermData(searchTerm, userLat, userLon);
       } else {
-        getRestaurantData(userLat, userLon);
+        if (locationAcquired) {
+          getRestaurantData(userLat, userLon);
+        }
       }
     } catch (error) {
       console.log("catch", error);
@@ -227,14 +224,19 @@ const Restaurants = () => {
       <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={restaurant._id}>
         <Card className={classes.card} variant="outlined">
           <CardActionArea>
-            <Link to={`/restaurant/${restaurant._id}`}>
+            <Link to={`/restaurants/${restaurant._id}`}>
               <CardMedia
                 className={classes.media}
                 component="img"
-                image="/default.png"
-                // {restaurant.restaurant_image}
+                image={
+                  "/restaurant_images/" +
+                  restaurant.restaurant_name.replace(" ", "") +
+                  ".png"
+                }
+                //
                 // {show.thumbnail && show.thumbnail.path && show.thumbnail.extension ? show.thumbnail.path + '.'+ show.thumbnail.extension : noImage}
                 title="show image"
+                onError={(event) => (event.target.src = "/default.png")}
               />
 
               <CardContent>
@@ -262,7 +264,7 @@ const Restaurants = () => {
     return <h1>Loading</h1>;
   } else if (error404) {
     return (
-      <div>
+      <div className={classes.root}>
         <label>
           Search Restaurants:
           <input
