@@ -42,7 +42,7 @@ async function getAllRestaurants() {
     for (let i = 0; i < restList.length; i++) {
       restList[i]["_id"] = restList[i]["_id"].toString();
     }
-    console.log("getAll", restList);
+
     return restList;
   } catch (error) {
     console.log(error);
@@ -154,7 +154,6 @@ module.exports = {
           restList[i]["_id"] = restList[i]["_id"].toString();
         }
 
-        result = []; //to send filtered restaurants
         // console.log(user_dist);
         //Compute the distance
         for (let i = 0; i < restList.length; i++) {
@@ -165,12 +164,9 @@ module.exports = {
             restList[i].location.lon
           );
           //   console.log(dummydata[i].distance, user_dist);
-          if (restList[i].distance <= user_dist) {
-            result.push(restList[i]);
-          }
         }
 
-        return result;
+        return restList;
       } catch (error) {
         console.log(error);
         return [];
