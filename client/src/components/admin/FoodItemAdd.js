@@ -1,13 +1,13 @@
 import { useSelector } from "react-redux";
-import { useState, useEffect } from "react";
-import Loader from "../Loader";
+import { useState } from "react";
 import axios from "axios";
-import { useParams, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 
 function FoodItemAdd() {
+    const navigate = useNavigate();
+
     const restaurant = useSelector((state) => state.restaurant);
-    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isError, setIsError] = useState(false);
 
@@ -20,10 +20,6 @@ function FoodItemAdd() {
     const [image, setImage] = useState("");
 
     async function handleSubmit() {
-        console.log({ name, description, price, cuisines, stock, type, image });
-
-        setIsLoading(true);
-
         const postData = {
             name,
             description,
@@ -35,7 +31,7 @@ function FoodItemAdd() {
         };
 
         try {
-            const { data } = await axios.post(
+            await axios.post(
                 `http://localhost:3001/restaurants/foodItems/${restaurant.id}`,
                 postData,
                 {
@@ -46,8 +42,7 @@ function FoodItemAdd() {
                 }
             );
 
-            console.log(data);
-
+            navigate("/admin/restaurant");
             setError(null);
             setIsError(false);
         } catch (error) {
@@ -55,8 +50,6 @@ function FoodItemAdd() {
                 error.response?.data?.error || "Error: Internal Server Error."
             );
             setIsError(true);
-        } finally {
-            setIsLoading(false);
         }
     }
 
@@ -173,6 +166,10 @@ function FoodItemAdd() {
                             }
                         />
                     </div>
+
+                    {isError && (
+                        <p className="text-danger text-center">{error}</p>
+                    )}
 
                     <p className="text-center">
                         <Button

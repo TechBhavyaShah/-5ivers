@@ -12,6 +12,7 @@ function FoodItemEdit() {
     const [isError, setIsError] = useState(false);
     const [response, setResponse] = useState(null);
     const [foodItemStock, setFoodItemStock] = useState(0);
+    const [message, setMessage] = useState("");
     const { foodItemId } = useParams();
 
     useEffect(() => {
@@ -48,18 +49,24 @@ function FoodItemEdit() {
     }, [restaurant, foodItemId]);
 
     async function handleSubmit() {
-        setIsLoading(true);
+        setMessage("");
 
         try {
-            const postData = {};
+            const putData = {
+                stock: foodItemStock,
+            };
 
-            const { data } = await axios.post(
-                "http://localhost:3001/restaurants/signin",
-                postData
+            await axios.put(
+                `http://localhost:3001/restaurants/foodItems/singleFoodItem/${foodItemId}`,
+                putData,
+                {
+                    headers: {
+                        accessToken: restaurant.token,
+                    },
+                }
             );
 
-            console.log(data);
-
+            setMessage("Stock updated successfully.");
             setError(null);
             setIsError(false);
         } catch (error) {
@@ -67,8 +74,6 @@ function FoodItemEdit() {
                 error.response?.data?.error || "Error: Internal Server Error."
             );
             setIsError(true);
-        } finally {
-            setIsLoading(false);
         }
     }
 
@@ -135,6 +140,16 @@ function FoodItemEdit() {
                                 />
                             </li>
                         </ul>
+
+                        {isError && (
+                            <p className="text-danger text-center">{error}</p>
+                        )}
+
+                        {message && message.length > 0 && (
+                            <p className="text-success text-center">
+                                {message}
+                            </p>
+                        )}
                         <Button
                             className="btn btn-primary"
                             type="button"

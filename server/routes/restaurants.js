@@ -515,6 +515,41 @@ async function _uploadFoodItemImage(file) {
     }
 }
 
+router.put(
+    "/foodItems/singleFoodItem/:foodItemId",
+    async (request, response) => {
+        try {
+            const requestPostData = request.body;
+
+            console.log(requestPostData);
+
+            const decodedAccessToken = validator.isAccessTokenValid(
+                request.header("accessToken")
+            );
+
+            if (!decodedAccessToken.restaurant?.id) {
+                throwError(
+                    ErrorCode.UNAUTHORIZED,
+                    "Error: You are not logged in."
+                );
+            }
+
+            await restaurantdata.updateFoodItemStock(
+                request.params.foodItemId,
+                decodedAccessToken.restaurant.id,
+                parseInt(requestPostData.stock)
+            );
+
+            response.json({ success: true });
+        } catch (error) {
+            console.log(error);
+            response.status(error.code || 500).json({
+                error: error.message || "Error: Internal server error.",
+            });
+        }
+    }
+);
+
 const throwCatchError = (error) => {
     console.log(error);
     if (error.code && error.message) {

@@ -470,6 +470,26 @@ async function getFoodItemByFoodItemId(_foodItemId) {
     }
 }
 
+async function updateFoodItemStock(_foodItemId, _restaurantId, _stock) {
+    try {
+        const foodItem = await getFoodItemByFoodItemId(_foodItemId);
+
+        const restaurantCollection = await restaurants();
+
+        const updateStatus = await restaurantCollection.updateOne(
+            { _id: _restaurantId, "food_items.item_id": _foodItemId },
+            {
+                $set: {
+                    "food_items.$.stock": _stock,
+                },
+            }
+        );
+        console.log(updateStatus, foodItem);
+    } catch (error) {
+        throwCatchError(error);
+    }
+}
+
 const throwError = (code = 500, message = "Error: Internal Server Error") => {
     throw { code, message };
 };
@@ -494,4 +514,5 @@ module.exports = {
     checkRestaurant,
     getFoodItemsByRestaurantId,
     getFoodItemByFoodItemId,
+    updateFoodItemStock,
 };
