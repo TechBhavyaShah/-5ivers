@@ -23,7 +23,7 @@ router.get("/userDetails/:userId", async (req, res) => {
         emailAddress: userdata.emailAddress,
         biography: userdata.biography,
         address: userdata.address,
-        image_url: image_url,
+        image_url: userdata.image_url,
         pastOrders: userdata.pastOrders,
       });
     } else {
