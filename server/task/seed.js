@@ -21,7 +21,7 @@ async function main() {
       "restaurant2",
       "restaurant2.123",
       "Mexiterraneo Grill",
-      "MexiterraneoGrill.png",
+      "https://img.cdn4dd.com/cdn-cgi/image/fit=cover,width=800,height=250,format=auto,quality=50/https://doordash-static.s3.amazonaws.com/media/store/header/7edf2419-ca88-4fb9-8e46-184d1b6aba41.jpg",
       "40.7374588",
       "-74.0320251",
       "153 1st St, Hoboken"
@@ -39,7 +39,7 @@ async function main() {
       "restaurant4",
       "restaurant4.123",
       "Mike's",
-      "Mike's.png",
+      "https://img.cdn4dd.com/cdn-cgi/image/fit=cover,width=800,height=250,format=auto,quality=50/https://doordash-static.s3.amazonaws.com/media/store/header/5d49d216-65a2-404b-a76e-b6da5e5db3e4.jpg",
       "40.7490474",
       "-74.0409191",
       "602 Palisade Ave, Jersey City"
@@ -66,7 +66,7 @@ async function main() {
       "restaurant7",
       "restaurant7.123",
       "Ali Baba",
-      "AliBaba.png",
+      "https://img.cdn4dd.com/cdn-cgi/image/fit=cover,width=800,height=250,format=auto,quality=50/https://doordash-static.s3.amazonaws.com/media/store/header/928f017c-df6d-45e4-afa8-a9c21f7e3592.png",
       "40.747743",
       "-74.02799329999999",
       "912 Washington St Ste 1, Hoboken"

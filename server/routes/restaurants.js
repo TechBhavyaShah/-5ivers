@@ -100,7 +100,10 @@ router.post("/foodItem/:restaurantId", async (req, res) => {
   //   res.status(400).json({ error: 'You must provide description of the item' })
   //   return
   // }
-  if (!restaurantItemData.price) {
+  if (
+    restaurantItemData.price == null ||
+    restaurantItemData.price == undefined
+  ) {
     res.status(400).json({ error: "You must provide price of the item" });
     return;
   }
@@ -116,7 +119,10 @@ router.post("/foodItem/:restaurantId", async (req, res) => {
     return;
   }
 
-  if (!restaurantItemData.stock) {
+  if (
+    restaurantItemData.stock == null ||
+    restaurantItemData.stock == undefined
+  ) {
     res
       .status(400)
       .json({ error: "You must provide stock of the Item available" });

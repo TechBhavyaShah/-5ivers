@@ -192,9 +192,9 @@ const addItemToRestaurant = async function addItemToRestaurant(
   // if (!description) {
   //   throw { message: 'You must provide decription of the Item', status: 400 }
   // }
-  if (!price) {
-    throw { message: "You must provide price of the Item", status: 400 };
-  }
+  // if (!price) {
+  //   throw { message: "You must provide price of the Item", status: 400 };
+  // }
   // if (!item_image) {
   //   throw { message: 'You must provide Image of the Item', status: 400 }
   // }
@@ -203,9 +203,9 @@ const addItemToRestaurant = async function addItemToRestaurant(
     throw { message: "You must provide Type of the Item ", status: 400 };
   }
 
-  if (!stock) {
-    throw { message: "You must provide stock of the Item ", status: 400 };
-  }
+  // if (!stock) {
+  //   throw { message: "You must provide stock of the Item ", status: 400 };
+  // }
 
   //------------Starts here--------------------//
   if (name == null || price == null || type == null || stock == null) {
