@@ -72,7 +72,7 @@ const SignUp = () => {
             email,
             address,
             postalCode,
-            country,
+            // country,
             aboutMe,
             passwordOne,
             passwordTwo,
@@ -82,11 +82,14 @@ const SignUp = () => {
         email = email.trim();
         address = address.trim();
         postalCode = postalCode.trim();
-        country = country.trim();
+        // country = country.trim();
         aboutMe = aboutMe.trim();
         /* I don't allow spaces at all in passwords, but I'll trim it anyway */
         passwordOne = passwordOne.trim();
         passwordTwo = passwordTwo.trim();
+
+        // Appending address details together
+        address = `${address} ${postalCode}`;
 
         console.log(data);
 
@@ -151,11 +154,21 @@ const SignUp = () => {
                     about_me
                     image_url
             */
-            // let createUser = axios.post();
+            let createUser = axios.post(
+                "http://localhost:3001/user/userDetails",
+                {
+                    id: userId,
+                    name: name,
+                    emailAddress: email,
+                    image_url: imageUrl,
+                    biography: aboutMe,
+                    address: address,
+                }
+            );
         } catch (e) {
             console.log(e);
         }
-        // reset();
+        reset();
     };
 
     if (currentUser) {
@@ -165,7 +178,7 @@ const SignUp = () => {
     // console.log(errors);
     return (
         <div>
-            <h1>Sign up</h1>
+            <h1 className="textCenter">Sign Up</h1>
 
             {/* {errors.length > 0
                 ? errors.map((error) => <h4 className="error">{error}</h4>)
@@ -344,7 +357,7 @@ const SignUp = () => {
                     </label>
                 </div> */}
 
-                <SelectCountry control={control} />
+                {/* <SelectCountry control={control} /> */}
 
                 {/* <div className="form-group">
                     <label>

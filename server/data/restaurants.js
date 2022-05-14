@@ -4,9 +4,6 @@ const restaurants = mongoCollections.restaurants;
 const ObjectId = require("mongodb").ObjectId;
 const uuid = require("uuid");
 const bcrypt = require("bcryptjs");
-const ErrorCode = require("../helpers/error-code");
-const validator = require("../helpers/validator");
-const xss = require("xss");
 const saltRounds = 12;
 
 //--------------- Function to create a Restaurant------------------------//
@@ -198,39 +195,29 @@ const addItemToRestaurant = async function addItemToRestaurant(
     if (!name) {
         throw { message: "You must provide name of the Item", status: 400 };
     }
-    if (!description) {
-        throw {
-            message: "You must provide decription of the Item",
-            status: 400,
-        };
-    }
-    if (!price) {
-        throw { message: "You must provide price of the Item", status: 400 };
-    }
-    if (!item_image) {
-        throw { message: "You must provide Image of the Item", status: 400 };
-    }
+    // if (!description) {
+    //   throw { message: 'You must provide decription of the Item', status: 400 }
+    // }
+    // if (!price) {
+    //   throw { message: "You must provide price of the Item", status: 400 };
+    // }
+    // if (!item_image) {
+    //   throw { message: 'You must provide Image of the Item', status: 400 }
+    // }
 
     if (!type) {
         throw { message: "You must provide Type of the Item ", status: 400 };
     }
 
-    if (!stock) {
-        throw { message: "You must provide stock of the Item ", status: 400 };
-    }
+    // if (!stock) {
+    //   throw { message: "You must provide stock of the Item ", status: 400 };
+    // }
 
     //------------Starts here--------------------//
-    if (
-        name == null ||
-        description == null ||
-        price == null ||
-        item_image == null ||
-        type == null ||
-        stock == null
-    ) {
+    if (name == null || price == null || type == null || stock == null) {
         throw {
             message:
-                "All the input parameter must be provided in the function for adding an item",
+                "name price type and stock parameter must be provided in the function for adding an item",
             status: 400,
         };
     }
@@ -274,12 +261,12 @@ const addItemToRestaurant = async function addItemToRestaurant(
         };
     }
 
-    if (/^ *$/.test(description)) {
-        throw {
-            message: "Item description cannot be empty Spaces",
-            status: 400,
-        };
-    }
+    // if (/^ *$/.test(description)) {
+    //   throw {
+    //     message: 'Item description cannot be empty Spaces',
+    //     status: 400,
+    //   }
+    // }
 
     if (/^ *$/.test(price)) {
         throw {
@@ -288,12 +275,12 @@ const addItemToRestaurant = async function addItemToRestaurant(
         };
     }
 
-    if (/^ *$/.test(item_image)) {
-        throw {
-            message: "Item Image cannot be empty Spaces",
-            status: 400,
-        };
-    }
+    // if (/^ *$/.test(item_image)) {
+    //   throw {
+    //     message: 'Item Image cannot be empty Spaces',
+    //     status: 400,
+    //   }
+    // }
 
     if (/^ *$/.test(type)) {
         throw {
@@ -304,7 +291,7 @@ const addItemToRestaurant = async function addItemToRestaurant(
 
     if (/^ *$/.test(stock)) {
         throw {
-            message: "Item Price cannot be empty Spaces",
+            message: "The Stock cannot be empty Spaces",
             status: 400,
         };
     }
@@ -346,7 +333,7 @@ const addItemToRestaurant = async function addItemToRestaurant(
 
     const restaurantsCollection = await restaurants();
 
-    restaurantsCollection.updateOne(
+    await restaurantsCollection.updateOne(
         { _id: restaurantId },
         {
             $push: {
@@ -356,59 +343,94 @@ const addItemToRestaurant = async function addItemToRestaurant(
     );
 };
 
-async function checkRestaurant(_restaurantUsername, _restaurantPassword) {
-    try {
-        validator.isCheckRestaurantTotalFieldsValid(arguments.length);
-
-        const restaurantUsername = validator.isRestaurantUsernameValid(
-            xss(_restaurantUsername)
-        );
-        const restaurantPassword = validator.isRestaurantPasswordValid(
-            xss(_restaurantPassword)
-        );
-
-        const restaurantCollection = await restaurants();
-
-        const restaurant = await restaurantCollection.findOne(
-            { username: restaurantUsername },
-            {
-                projection: {
-                    _id: 1,
-                    username: 1,
-                    password: 1,
-                    restaurant_name: 1,
-                    restaurant_image: 1,
-                    address: 1,
-                },
-            }
-        );
-
-        if (!restaurant) {
-            throwError(
-                ErrorCode.BAD_REQUEST,
-                "Error: Incorrect username or password."
-            );
-        }
-
-        const isPasswordCorrect = await bcrypt.compare(
-            restaurantPassword,
-            restaurant.password
-        );
-
-        if (!isPasswordCorrect) {
-            throwError(
-                ErrorCode.BAD_REQUEST,
-                "Error: Incorrect username or password."
-            );
-        }
-
-        delete restaurant.password;
-
-        return restaurant;
-    } catch (error) {
-        throwCatchError(error);
+const updateFoodItemStock = async function updateFoodItemStock(
+    restaurantId,
+    itemId,
+    stock
+) {
+    if (arguments.length != 3) {
+        throw {
+            message: `All the 1 Arguments should be available in order to process request`,
+            status: 400,
+        };
     }
-}
+
+    if (!stock || !restaurantId || !itemId) {
+        throw {
+            message:
+                "You must provide stock,restaurant Id and Item Id of the Item ",
+            status: 400,
+        };
+    }
+
+    if (
+        restaurantId == null ||
+        restaurantId == undefined ||
+        itemId == null ||
+        itemId == undefined
+    ) {
+        throw {
+            message:
+                "You must provide restaurant ID and Item Id to add the item. It cannot be null",
+            status: 400,
+        };
+    }
+
+    if (/^ *$/.test(restaurantId)) {
+        throw {
+            message: "Restaurant ID cannot be empty Spaces",
+            status: 400,
+        };
+    }
+
+    if (/^ *$/.test(itemId)) {
+        throw {
+            message: "Item ID cannot be empty Spaces",
+            status: 400,
+        };
+    }
+    if (stock == null || stock == undefined) {
+        throw {
+            message:
+                "the stock parameter must be provided in the function for updating an item",
+            status: 400,
+        };
+    }
+
+    if (/^ *$/.test(stock)) {
+        throw {
+            message: "The Stock cannot be empty Spaces",
+            status: 400,
+        };
+    }
+
+    if (
+        typeof stock !== "number" ||
+        typeof restaurantId !== "string" ||
+        typeof itemId !== "string"
+    ) {
+        throw {
+            message:
+                "The stock should be of Number Type and restaurant id and Item Id should be of string type. No Other Datatype is allowed!",
+            status: 400,
+        };
+    }
+
+    if (isNaN(stock)) {
+        throw {
+            message:
+                "The stock should be of Number Type. No Other Datatype is allowed!",
+            status: 400,
+        };
+    }
+
+    const restaurantsCollection = await restaurants();
+    t;
+    restaurantsCollection.updateOne(
+        { _id: restaurantId, "food_items.item_id": itemId },
+        { $set: { "food_items.$.stock": stock } }
+    );
+};
 
 async function getFoodItemsByRestaurantId(_restaurantId) {
     try {
@@ -490,6 +512,60 @@ async function updateFoodItemStock(_foodItemId, _restaurantId, _stock) {
     }
 }
 
+async function checkRestaurant(_restaurantUsername, _restaurantPassword) {
+    try {
+        validator.isCheckRestaurantTotalFieldsValid(arguments.length);
+
+        const restaurantUsername = validator.isRestaurantUsernameValid(
+            xss(_restaurantUsername)
+        );
+        const restaurantPassword = validator.isRestaurantPasswordValid(
+            xss(_restaurantPassword)
+        );
+
+        const restaurantCollection = await restaurants();
+
+        const restaurant = await restaurantCollection.findOne(
+            { username: restaurantUsername },
+            {
+                projection: {
+                    _id: 1,
+                    username: 1,
+                    password: 1,
+                    restaurant_name: 1,
+                    restaurant_image: 1,
+                    address: 1,
+                },
+            }
+        );
+
+        if (!restaurant) {
+            throwError(
+                ErrorCode.BAD_REQUEST,
+                "Error: Incorrect username or password."
+            );
+        }
+
+        const isPasswordCorrect = await bcrypt.compare(
+            restaurantPassword,
+            restaurant.password
+        );
+
+        if (!isPasswordCorrect) {
+            throwError(
+                ErrorCode.BAD_REQUEST,
+                "Error: Incorrect username or password."
+            );
+        }
+
+        delete restaurant.password;
+
+        return restaurant;
+    } catch (error) {
+        throwCatchError(error);
+    }
+}
+
 const throwError = (code = 500, message = "Error: Internal Server Error") => {
     throw { code, message };
 };
@@ -511,8 +587,5 @@ module.exports = {
     getRestaurantById,
     getAllRestaurants,
     addItemToRestaurant,
-    checkRestaurant,
-    getFoodItemsByRestaurantId,
-    getFoodItemByFoodItemId,
     updateFoodItemStock,
 };

@@ -23,7 +23,7 @@ router.get("/userDetails/:userId", async (req, res) => {
         emailAddress: userdata.emailAddress,
         biography: userdata.biography,
         address: userdata.address,
-        image_url: image_url,
+        image_url: userdata.image_url,
         pastOrders: userdata.pastOrders,
       });
     } else {
@@ -134,9 +134,9 @@ router.post("/userDetails", async (req, res) => {
         return res.redirect("/");
       }
     } catch (e) {
-      res
-        .status(e.status || 500)
-        .send({ error: e.message || `Internal Server Error` });
+      res.status(e.status || 500).send({
+        error: e.message || `Internal Server Error`,
+      });
     }
   } catch (e) {
     res.status(e.status || 500).send({ error: e.message });

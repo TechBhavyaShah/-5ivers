@@ -102,6 +102,13 @@ router.post("/foodItem/:restaurantId", async (req, res) => {
     const restaurantId = req.params.restaurantId;
     const restaurantItemData = req.body;
 
+    if (/^ *$/.test(restaurantId)) {
+        res.status(400).json({
+            error: "restaurantId cannot be empty Spaces",
+        });
+        return;
+    }
+
     if (Object.keys(restaurantItemData).length != 7) {
         res.status(400).json({
             error: "The Number of Parameters is not sufficient while adding the Food Item",
@@ -120,22 +127,21 @@ router.post("/foodItem/:restaurantId", async (req, res) => {
         res.status(400).json({ error: "You must provide name of the Item" });
         return;
     }
-    if (!restaurantItemData.description) {
-        res.status(400).json({
-            error: "You must provide description of the item",
-        });
-        return;
-    }
-    if (!restaurantItemData.price) {
+    // if (!restaurantItemData.description) {
+    //   res.status(400).json({ error: 'You must provide description of the item' })
+    //   return
+    // }
+    if (
+        restaurantItemData.price == null ||
+        restaurantItemData.price == undefined
+    ) {
         res.status(400).json({ error: "You must provide price of the item" });
         return;
     }
-    if (!restaurantItemData.item_image) {
-        res.status(400).json({
-            error: "You must provide image of the item added",
-        });
-        return;
-    }
+    // if (!restaurantItemData.item_image) {
+    //   res.status(400).json({ error: 'You must provide image of the item added' })
+    //   return
+    // }
 
     if (!restaurantItemData.type) {
         res.status(400).json({
@@ -144,7 +150,10 @@ router.post("/foodItem/:restaurantId", async (req, res) => {
         return;
     }
 
-    if (!restaurantItemData.stock) {
+    if (
+        restaurantItemData.stock == null ||
+        restaurantItemData.stock == undefined
+    ) {
         res.status(400).json({
             error: "You must provide stock of the Item available",
         });
@@ -154,9 +163,9 @@ router.post("/foodItem/:restaurantId", async (req, res) => {
     //------------Starts here--------------------//
     if (
         restaurantItemData.name == null ||
-        restaurantItemData.description == null ||
+        // restaurantItemData.description == null ||
         restaurantItemData.price == null ||
-        restaurantItemData.item_image == null ||
+        // restaurantItemData.item_image == null ||
         restaurantItemData.type == null ||
         restaurantItemData.stock == null
     ) {
@@ -202,12 +211,12 @@ router.post("/foodItem/:restaurantId", async (req, res) => {
         return;
     }
 
-    if (/^ *$/.test(restaurantItemData.description)) {
-        res.status(400).json({
-            error: "Item description cannot be empty Spaces",
-        });
-        return;
-    }
+    // if (/^ *$/.test(restaurantItemData.description)) {
+    //   res.status(400).json({
+    //     error: 'Item description cannot be empty Spaces',
+    //   })
+    //   return
+    // }
 
     if (/^ *$/.test(restaurantItemData.price)) {
         res.status(400).json({
@@ -216,12 +225,12 @@ router.post("/foodItem/:restaurantId", async (req, res) => {
         return;
     }
 
-    if (/^ *$/.test(restaurantItemData.item_image)) {
-        res.status(400).json({
-            error: "Item Image cannot be empty Spaces",
-        });
-        return;
-    }
+    // if (/^ *$/.test(restaurantItemData.item_image)) {
+    //   res.status(400).json({
+    //     error: 'Item Image cannot be empty Spaces',
+    //   })
+    //   return
+    // }
 
     if (/^ *$/.test(restaurantItemData.type)) {
         res.status(400).json({
@@ -565,5 +574,106 @@ const throwCatchError = (error) => {
 const throwError = (code = 500, message = "Internal Server Error") => {
     throw { code, message };
 };
+//--------------Router to update the stock of the Item in restaurant-------------------//
+router.put("/foodItem/:restaurantId/:foodItemId", async (req, res) => {
+    const ItemStock = req.body;
+
+    if (Object.keys(ItemStock).length != 1) {
+        res.status(400).json({
+            error: "Proper Number of Parameters is Required",
+        });
+        return;
+    }
+
+    let restaurantId = req.params.restaurantId;
+    let itemId = req.params.foodItemId;
+    if (!restaurantId) {
+        res.status(400).json({ error: "You must provide the restaurant Id" });
+        return;
+    }
+    if (!itemId) {
+        res.status(400).json({ error: "You must provide the Food Item ID" });
+        return;
+    }
+    if (!itemId) {
+        res.status(400).json({
+            error: "You must the updated stock of the Food Item",
+        });
+        return;
+    }
+
+    if (restaurantId == null || restaurantId == undefined) {
+        res.status(400).json({
+            error: `There is no Input in restaurantId Parameter. It cannot be null or undefined`,
+        });
+        return;
+    }
+
+    if (itemId == null || itemId == undefined) {
+        res.status(400).json({
+            error: `There is no Input in itemId Parameter. It cannot be null or undefined`,
+        });
+        return;
+    }
+
+    if (/^ *$/.test(restaurantId)) {
+        res.status(400).json({
+            error: "restaurant Id cannot be empty Spaces",
+        });
+        return;
+    }
+
+    if (/^ *$/.test(itemId)) {
+        res.status(400).json({
+            error: "Item Id cannot be empty Spaces",
+        });
+        return;
+    }
+
+    //------------Starts here--------------------//
+    let stock = ItemStock.stock;
+
+    if (stock == null || undefined) {
+        res.status(400).json({
+            error: "All the stock must be provided in the Body",
+        });
+        return;
+    }
+
+    if (/^ *$/.test(stock)) {
+        res.status(400).json({
+            error: "Stock cannot be empty Spaces",
+        });
+        return;
+    }
+
+    if (typeof stock !== "number") {
+        res.status(400).json({
+            error: "stock should be of number type. No Other Datatype is allowed!",
+        });
+        return;
+    }
+
+    if (isNaN(stock)) {
+        res.status(400).json({
+            error: "The stock should be of Number Type. No Other Datatype is allowed!",
+        });
+        return;
+    }
+
+    //------------Ends Here------------------------//
+    try {
+        const newRest = await restaurantdata.updateFoodItemStock(
+            restaurantId,
+            itemId,
+            stock
+        );
+        res.json(newRest);
+    } catch (e) {
+        res.status(e.err || 500).json({
+            message: e.msg || "Internal Server Error",
+        });
+    }
+});
 
 module.exports = router;
