@@ -25,3 +25,5 @@ yarn-error.log*
 
 .env
 
+uploads/s3/*
+public/s3/*
