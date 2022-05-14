@@ -47,6 +47,17 @@ function isRestaurantIdValid(_restaurantId) {
     return restaurantId;
 }
 
+function isRestaurantIdValid(_foodItemId) {
+    common.isArgumentString(_foodItemId, "food item id");
+    common.isStringEmpty(_foodItemId, "food item id");
+
+    const foodItemId = _foodItemId.trim();
+
+    common.isUuid(foodItemId);
+
+    return foodItemId;
+}
+
 function isAccessTokenValid(accessToken) {
     common.isString(accessToken);
     common.isStringEmpty(accessToken);

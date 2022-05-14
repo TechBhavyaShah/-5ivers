@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import FoodItemCard from "./FootItemCard";
 import Loader from "../Loader";
 import axios from "axios";
@@ -13,6 +14,8 @@ function AdminRestaurant() {
 
     useEffect(() => {
         async function getRestaurantFoodItems() {
+            setIsLoading(true);
+
             try {
                 const { data } = await axios.get(
                     `http://localhost:3001/restaurants/foodItems/${restaurant.id}`,
@@ -32,6 +35,7 @@ function AdminRestaurant() {
                         "Error: Internal Server Error."
                 );
                 setIsError(true);
+                setResponse(null);
             } finally {
                 setIsLoading(false);
             }
@@ -46,10 +50,19 @@ function AdminRestaurant() {
                 <h1>{restaurant.name}</h1>
                 <img src={`/${restaurant.image}`} alt={restaurant.name} />
                 <p>{restaurant.address}</p>
+
+                <p className="mt-4">
+                    <Link
+                        className="btn btn-danger btn-sm"
+                        to="/admin/restaurant/foodItem/Add"
+                    >
+                        Add Food Item
+                    </Link>
+                </p>
             </div>
             <div className="container mt-5">
                 {response && response.length > 0 && (
-                    <div className="row row-cols-1 row-cols-md-3 g-4">
+                    <div className="row row-cols-1 row-cols-md-4 g-4">
                         {response.map((currentFoodItem) => {
                             return (
                                 <FoodItemCard

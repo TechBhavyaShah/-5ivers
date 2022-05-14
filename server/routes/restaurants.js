@@ -3,10 +3,38 @@ const router = express.Router();
 const data = require("../data");
 const xss = require("xss");
 const jwt = require("jsonwebtoken");
+const multer = require("multer");
 const restaurantdata = data.restaurants;
 const validator = require("../helpers/validator");
-
 const ErrorCode = require("../helpers/error-code");
+const path = require("path");
+const im = require("imagemagick");
+const AWS = require("aws-sdk");
+var fs = require("fs");
+require("dotenv").config();
+
+const s3AwsUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/`;
+
+if (process.platform == "win32") {
+    im.convert.path = "C:/Program Files/ImageMagick-7.1.0-Q16-HDRI/convert";
+    im.identify.path = "C:/Program Files/ImageMagick-7.1.0-Q16-HDRI/identify";
+}
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "uploads");
+    },
+    filename: function (req, file, cb) {
+        cb(
+            null,
+            file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+        );
+    },
+});
+
+const upload = multer({
+    storage: storage,
+});
 
 //---------This is Get by Restaurant ID method to get a restaurant with Id---------------//
 router.get("/:restaurantId", async (req, res) => {
@@ -310,11 +338,50 @@ router.post("/signin", async (request, response) => {
     } catch (error) {
         console.log(error);
         response.status(error.code || 500).json({
-            isError: true,
             error: error.message || "Error: Internal server error.",
         });
     }
 });
+
+router.get(
+    "/foodItems/singleFoodItem/:foodItemId",
+    async (request, response) => {
+        try {
+            const decodedAccessToken = validator.isAccessTokenValid(
+                request.header("accessToken")
+            );
+
+            if (!decodedAccessToken.restaurant?.id) {
+                throwError(
+                    ErrorCode.UNAUTHORIZED,
+                    "Error: You are not logged in."
+                );
+            }
+
+            const foodItemId = validator.isRestaurantIdValid(
+                xss(request.params.foodItemId)
+            );
+
+            const foodItem = await restaurantdata.getFoodItemByFoodItemId(
+                foodItemId
+            );
+
+            if (decodedAccessToken.restaurant.id !== foodItem._id) {
+                throwError(
+                    ErrorCode.UNAUTHORIZED,
+                    "Error: You are not logged in."
+                );
+            }
+
+            response.json(foodItem);
+        } catch (error) {
+            console.log(error);
+            response.status(error.code || 500).json({
+                error: error.message || "Error: Internal server error.",
+            });
+        }
+    }
+);
 
 router.get("/foodItems/:id", async (request, response) => {
     try {
@@ -341,11 +408,124 @@ router.get("/foodItems/:id", async (request, response) => {
     } catch (error) {
         console.log(error);
         response.status(error.code || 500).json({
-            isError: true,
             error: error.message || "Error: Internal server error.",
         });
     }
 });
+
+router.post(
+    "/foodItems/:id",
+    upload.single("image"),
+    async (request, response) => {
+        try {
+            const decodedAccessToken = validator.isAccessTokenValid(
+                request.header("accessToken")
+            );
+
+            if (!decodedAccessToken.restaurant?.id) {
+                throwError(
+                    ErrorCode.UNAUTHORIZED,
+                    "Error: You are not logged in."
+                );
+            }
+
+            const requestPostData = request.body;
+
+            await _uploadFoodItemImage(request.file);
+
+            await restaurantdata.addItemToRestaurant(
+                decodedAccessToken.restaurant.id,
+                requestPostData.name,
+                requestPostData.description,
+                parseInt(requestPostData.price),
+                `${s3AwsUrl}${request.file.filename}`,
+                requestPostData.type,
+                requestPostData.cuisines,
+                parseInt(requestPostData.stock)
+            );
+
+            response.json({ success: true });
+        } catch (error) {
+            console;
+            response.status(error.code || error.status || 500).json({
+                error: error.message || "Error: Internal server error.",
+            });
+        }
+    }
+);
+
+async function _uploadFoodItemImage(file) {
+    try {
+        const imageSourcePath = path.join(__dirname, "..", "/", file.path);
+        const imageDestinationPath = path.join(
+            __dirname,
+            "..",
+            "/public/",
+            file.filename
+        );
+
+        im.resize(
+            {
+                srcPath: imageSourcePath,
+                dstPath: imageDestinationPath,
+                height: 175,
+            },
+            async function (error, stdout) {
+                if (error) {
+                    throwError(ErrorCode.INTERNAL_SERVER_ERROR, error);
+                }
+
+                const params = {
+                    Bucket: process.env.AWS_BUCKET_NAME,
+                    Key: file.filename,
+                    Body: fs.createReadStream(imageDestinationPath),
+                    ContentType: file.mimetype,
+                };
+
+                const s3 = new AWS.S3({
+                    accessKeyId: process.env.AWS_ACCESS_KEY,
+                    secretAccessKey: process.env.AWS_SECRET_KEY,
+                    signatureVersion: "v4",
+                    region: process.env.AWS_BUCKET_REGION,
+                });
+
+                const awsImage = await s3
+                    .upload(params, function (error) {
+                        if (error) {
+                            throwError(ErrorCode.INTERNAL_SERVER_ERROR, error);
+                        }
+                    })
+                    .promise();
+
+                fs.unlink(imageSourcePath, (error) => {
+                    if (error) {
+                        throwError(ErrorCode.INTERNAL_SERVER_ERROR, error);
+                    }
+                });
+
+                fs.unlink(imageDestinationPath, (error) => {
+                    if (error) {
+                        throwError(ErrorCode.INTERNAL_SERVER_ERROR, error);
+                    }
+                });
+            }
+        );
+    } catch (error) {
+        throwCatchError(error);
+    }
+}
+
+const throwCatchError = (error) => {
+    console.log(error);
+    if (error.code && error.message) {
+        throwError(error.code, error.message);
+    }
+
+    throwError(
+        ErrorCode.INTERNAL_SERVER_ERROR,
+        "Error: Internal server error."
+    );
+};
 
 const throwError = (code = 500, message = "Internal Server Error") => {
     throw { code, message };
