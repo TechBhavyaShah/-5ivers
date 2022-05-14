@@ -86,8 +86,8 @@ const Restaurants = () => {
   const [userLon, setUserLon] = useState("-74.0266051");
 
   // Get user's current location
-//   var lat = "40.7434768";
-//   var lon = "-74.0266051";
+  //   var lat = "40.7434768";
+  //   var lon = "-74.0266051";
 
   // Do the axios call and get the restaurants. Here we need to pass the current location of user
   async function getRestaurantData(uLat, uLon) {
@@ -105,7 +105,7 @@ const Restaurants = () => {
     // Method 3:
     try {
       const { data } = await axios.get(
-        `http://localhost:3000/restaurants/location/${uLat}/${uLon}`,
+        `http://localhost:3001/restaurants/location/${uLat}/${uLon}`,
         {
           params: {
             lat: uLat, // "40.7401353",
@@ -187,9 +187,9 @@ const Restaurants = () => {
   useEffect(() => {
     console.log("Search term changed", searchTerm, userLat, userLon);
     try {
-      async function getSearchedTermData(searchTerm,userLat, userLon) {
+      async function getSearchedTermData(searchTerm, userLat, userLon) {
         const { data } = await axios.get(
-          `http://localhost:3000/restaurants/search/${searchTerm}/${userLat}/${userLon}`
+          `http://localhost:3001/restaurants/search/${searchTerm}/${userLat}/${userLon}`
         );
         console.log("axios search call", data);
         if (data.length === 0) {
@@ -202,7 +202,7 @@ const Restaurants = () => {
         }
       }
       if (searchTerm.length !== 0) {
-        getSearchedTermData(searchTerm,userLat,userLon);
+        getSearchedTermData(searchTerm, userLat, userLon);
       } else {
         getRestaurantData(userLat, userLon);
       }
