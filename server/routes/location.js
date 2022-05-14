@@ -18,12 +18,9 @@ router.get("/location/:lat/:lon", async (req, res) => {
   );
 
   // get the user co-ordinates from request params
-  console.log("Inside location router");
-  console.log(req.originalUrl);
-  console.log(req.params);
   const lat = req.params.lat;
   const lon = req.params.lon;
-  console.log(lat, lon);
+
   const data = await locationData.locBasedRes(lat, lon, user_dist);
   if (data.length === 0) {
     res.status(404).json({ message: "No restaurants to display" });
@@ -44,15 +41,13 @@ router.get("/search/:searchTerm/:userLat/:userLon", async (req, res) => {
     "PUT, POST, GET, DELETE, PATCH, OPTIONS"
   );
 
-  console.log("search Term: ", req.params.searchTerm);
-  console.log("User Lat, lon", req.params.userLat, req.params.userLon);
   const data = await locationData.searchRes(
     req.params.searchTerm,
     req.params.userLat,
     req.params.userLon,
     user_dist
   );
-  console.log(data);
+
   if (data.length === 0) {
     // res.status(404).json({ message: "No restaurants to display" });
     res.json([]);

@@ -42,7 +42,7 @@ async function getAllRestaurants() {
     for (let i = 0; i < restList.length; i++) {
       restList[i]["_id"] = restList[i]["_id"].toString();
     }
-    console.log("getAll", restList);
+
     return restList;
   } catch (error) {
     console.log(error);
