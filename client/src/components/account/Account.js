@@ -46,17 +46,23 @@ const Account = () => {
         );
     } else {
         return (
-            <div>
-                <h2>Account Page</h2>
+            <div className="profile">
+                <h2>User Profile</h2>
+                <br/>
                 <h3>{userData.name}</h3>
-                <img src={userData.image_url} alt="profile picture" />
+                <br />
+                <img src={userData.image_url} alt="profile picture" className="user" />
+                <br />
+                <br />
                 <p>Address: {userData.address}</p>
                 <p>About me: {userData.biography}</p>
-                <Link to="/changePassword" className="link">
+                <br />
+                <br />
+                <Link to="/changePassword" className="profileLink">
                     Change Password
                 </Link>
                 {/* <ChangePassword /> */}
-                <SignOutButton />
+                {/* <SignOutButton /> */}
             </div>
         );
     }
