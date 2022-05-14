@@ -72,7 +72,7 @@ const SignUp = () => {
             email,
             address,
             postalCode,
-            country,
+            // country,
             aboutMe,
             passwordOne,
             passwordTwo,
@@ -82,14 +82,14 @@ const SignUp = () => {
         email = email.trim();
         address = address.trim();
         postalCode = postalCode.trim();
-        country = country.trim();
+        // country = country.trim();
         aboutMe = aboutMe.trim();
         /* I don't allow spaces at all in passwords, but I'll trim it anyway */
         passwordOne = passwordOne.trim();
         passwordTwo = passwordTwo.trim();
 
         // Appending address details together
-        address = `${address} ${postalCode} ${country}`;
+        address = `${address} ${postalCode}`;
 
         console.log(data);
 
@@ -357,7 +357,7 @@ const SignUp = () => {
                     </label>
                 </div> */}
 
-                <SelectCountry control={control} />
+                {/* <SelectCountry control={control} /> */}
 
                 {/* <div className="form-group">
                     <label>

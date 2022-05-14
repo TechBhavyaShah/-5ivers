@@ -134,9 +134,9 @@ router.post("/userDetails", async (req, res) => {
         return res.redirect("/");
       }
     } catch (e) {
-      res
-        .status(e.status || 500)
-        .send({ error: e.message || `Internal Server Error` });
+      res.status(e.status || 500).send({
+        error: e.message || `Internal Server Error`,
+      });
     }
   } catch (e) {
     res.status(e.status || 500).send({ error: e.message });
