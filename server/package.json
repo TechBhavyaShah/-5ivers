@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node app.js",
     "seed": "node task/seed.js",
-    "item_seed": "node task/item_seed.js"
+    "item_seed": "node task/item_seed.js",
+    "users_seed": "node task/users_seed.js"
   },
   "author": "Bansri",
   "license": "ISC",
