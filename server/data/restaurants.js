@@ -4,6 +4,9 @@ const restaurants = mongoCollections.restaurants;
 const ObjectId = require("mongodb").ObjectId;
 const uuid = require("uuid");
 const bcrypt = require("bcryptjs");
+const ErrorCode = require("../helpers/error-code");
+const validator = require("../helpers/validator");
+const xss = require("xss");
 const saltRounds = 12;
 
 //--------------- Function to create a Restaurant------------------------//
@@ -425,7 +428,7 @@ const updateFoodItemStock = async function updateFoodItemStock(
     }
 
     const restaurantsCollection = await restaurants();
-    t;
+
     restaurantsCollection.updateOne(
         { _id: restaurantId, "food_items.item_id": itemId },
         { $set: { "food_items.$.stock": stock } }
@@ -487,26 +490,6 @@ async function getFoodItemByFoodItemId(_foodItemId) {
         delete foodItem.food_items;
 
         return foodItem;
-    } catch (error) {
-        throwCatchError(error);
-    }
-}
-
-async function updateFoodItemStock(_foodItemId, _restaurantId, _stock) {
-    try {
-        const foodItem = await getFoodItemByFoodItemId(_foodItemId);
-
-        const restaurantCollection = await restaurants();
-
-        const updateStatus = await restaurantCollection.updateOne(
-            { _id: _restaurantId, "food_items.item_id": _foodItemId },
-            {
-                $set: {
-                    "food_items.$.stock": _stock,
-                },
-            }
-        );
-        console.log(updateStatus, foodItem);
     } catch (error) {
         throwCatchError(error);
     }
@@ -588,4 +571,7 @@ module.exports = {
     getAllRestaurants,
     addItemToRestaurant,
     updateFoodItemStock,
+    checkRestaurant,
+    getFoodItemsByRestaurantId,
+    getFoodItemByFoodItemId,
 };

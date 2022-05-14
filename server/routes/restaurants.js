@@ -73,7 +73,6 @@ router.get("/:restaurantId", async (req, res) => {
         res.json(restaurantById);
         return;
     } catch (e) {
-        //console.log(e)
         res.status(e.status || 500).json({
             message: e.message || "Internal Server Error",
         });
@@ -345,7 +344,6 @@ router.post("/signin", async (request, response) => {
             token: jsonWebToken,
         });
     } catch (error) {
-        console.log(error);
         response.status(error.code || 500).json({
             error: error.message || "Error: Internal server error.",
         });
@@ -384,7 +382,6 @@ router.get(
 
             response.json(foodItem);
         } catch (error) {
-            console.log(error);
             response.status(error.code || 500).json({
                 error: error.message || "Error: Internal server error.",
             });
@@ -415,7 +412,6 @@ router.get("/foodItems/:id", async (request, response) => {
 
         response.json({ foodItems: foodItems.food_items });
     } catch (error) {
-        console.log(error);
         response.status(error.code || 500).json({
             error: error.message || "Error: Internal server error.",
         });
@@ -455,7 +451,6 @@ router.post(
 
             response.json({ success: true });
         } catch (error) {
-            console;
             response.status(error.code || error.status || 500).json({
                 error: error.message || "Error: Internal server error.",
             });
@@ -530,8 +525,6 @@ router.put(
         try {
             const requestPostData = request.body;
 
-            console.log(requestPostData);
-
             const decodedAccessToken = validator.isAccessTokenValid(
                 request.header("accessToken")
             );
@@ -544,14 +537,13 @@ router.put(
             }
 
             await restaurantdata.updateFoodItemStock(
-                request.params.foodItemId,
                 decodedAccessToken.restaurant.id,
+                request.params.foodItemId,
                 parseInt(requestPostData.stock)
             );
 
             response.json({ success: true });
         } catch (error) {
-            console.log(error);
             response.status(error.code || 500).json({
                 error: error.message || "Error: Internal server error.",
             });
