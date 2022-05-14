@@ -154,7 +154,7 @@ const SignUp = () => {
                     about_me
                     image_url
             */
-            let createUser = axios.post(
+            let createUser = await axios.post(
                 "http://localhost:3001/user/userDetails",
                 {
                     id: userId,
@@ -172,7 +172,7 @@ const SignUp = () => {
     };
 
     if (currentUser) {
-        return <Navigate to="/home" />;
+        return <Navigate to="/" />;
     }
 
     // console.log(errors);
