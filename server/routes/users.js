@@ -133,8 +133,8 @@ router.post("/userDetails", async (req, res) => {
             // if (postUser) {
             //     return res.redirect("/");
             // }
+            res.json(postUser);
         } catch (e) {
-            console.log(e);
             res.status(e.status || 500).send({
                 error: e.message || `Internal Server Error`,
             });
