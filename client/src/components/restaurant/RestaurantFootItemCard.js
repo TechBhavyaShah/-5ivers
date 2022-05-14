@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { addToCart, removeFromCart } from "../../redux/actions/cartActions";
 
-function RestaurantFoodItemCard({ data, isAddedToCart }) {
+function RestaurantFoodItemCard({ data, isAddedToCart, restaurant }) {
     const dispatch = useDispatch();
 
     function handleAddToCart(data) {
@@ -14,6 +14,7 @@ function RestaurantFoodItemCard({ data, isAddedToCart }) {
             description: data.description,
             cuisines: data.cuisines,
             quantity: 1,
+            restaurant: restaurant,
         };
 
         dispatch(addToCart(foodItem));
@@ -60,12 +61,19 @@ function RestaurantFoodItemCard({ data, isAddedToCart }) {
                             >
                                 Remove From Cart
                             </button>
-                        ) : (
+                        ) : data.stock && data.stock > 1 ? (
                             <button
                                 className="btn btn-primary btn-sm"
                                 onClick={() => handleAddToCart(data)}
                             >
                                 Add To Cart
+                            </button>
+                        ) : (
+                            <button
+                                className="btn btn-secondary btn-sm"
+                                disabled="disabled"
+                            >
+                                Out of Stock
                             </button>
                         )}
                     </li>

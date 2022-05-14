@@ -13,3 +13,24 @@ export const removeFromCart = (foodItemId) => {
         payload: { foodItemId: foodItemId },
     };
 };
+
+export const increaseQuantity = (foodItemId) => {
+    return {
+        type: ActionTypes.INCREASE_QUANTITY,
+        payload: { foodItemId: foodItemId },
+    };
+};
+
+export const decreaseQuantity = (foodItemId) => {
+    return {
+        type: ActionTypes.DECREASE_QUANTITY,
+        payload: { foodItemId: foodItemId },
+    };
+};
+
+export const clearCart = () => {
+    return {
+        type: ActionTypes.DECREASE_QUANTITY,
+        payload: null,
+    };
+};

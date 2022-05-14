@@ -87,6 +87,7 @@ const Restaurant = () => {
                                         isAddedToCart={isAddedToCart(
                                             currentFoodItem.item_id
                                         )}
+                                        restaurant={response.restaurant_name}
                                     />
                                 );
                             })}

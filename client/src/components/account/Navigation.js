@@ -36,6 +36,11 @@ const NavigationAuth = () => {
                     </Link>
                 </li>
                 <li>
+                    <Link to="/cart" className="link">
+                        Cart
+                    </Link>
+                </li>
+                <li>
                     <SignOutButton />
                 </li>
             </ul>
@@ -66,6 +71,11 @@ const NavigationNonAuth = () => {
                 <li>
                     <Link to="/signin" className="link">
                         Sign-In
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/cart" className="link">
+                        Cart
                     </Link>
                 </li>
             </ul>

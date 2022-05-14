@@ -13,6 +13,7 @@ import Restaurant from "./components/restaurant/Restaurant";
 import Home from "./components/Home";
 import "./App.css";
 import AdminRoutes from "./components/admin/AdminRoutes";
+import Cart from "./components/Cart";
 
 function App() {
     return (
@@ -49,6 +50,7 @@ function App() {
                         path="/restaurants/:restaurantId"
                         element={<Restaurant />}
                     />
+                    <Route path="/cart" element={<Cart />} />
                     <Route
                         path="*"
                         element={<p>There's nothing here: 404!</p>}
