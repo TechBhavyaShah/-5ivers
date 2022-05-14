@@ -48,10 +48,16 @@ const Account = () => {
         return (
             <div className="profile">
                 <h2>User Profile</h2>
-                <br/>
+                <br />
                 <h3>{userData.name}</h3>
                 <br />
-                <img src={userData.image_url} alt="profile picture" className="user" />
+                {userData.image_url !== "N/A" && (
+                    <img
+                        src={userData.image_url}
+                        alt="profile picture"
+                        className="user"
+                    />
+                )}
                 <br />
                 <br />
                 <p>Address: {userData.address}</p>
