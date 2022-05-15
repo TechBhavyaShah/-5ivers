@@ -140,6 +140,7 @@ const SignIn = () => {
                         fieldState: { error },
                     }) => (
                         <TextField
+                            id="password"
                             label="Password"
                             variant="filled"
                             type="password"

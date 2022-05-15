@@ -71,9 +71,8 @@ function CartItem({ data }) {
                 </span>
 
                 <span
-                    className="badge rounded-pill bg-danger mt-2"
+                    className="badge rounded-pill bg-danger mt-2 cursor-pointer"
                     onClick={() => handleRemoveFromCart(data.id)}
-                    role="button"
                 >
                     Remove
                 </span>
