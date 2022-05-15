@@ -17,7 +17,7 @@ But for good measure and completion, you would need to create a file called `.en
 ### Package and data setup
 Navigate to `/client` and `/server` and run `npm install` to install the required dependencies on both the client and server-side of our project.
 
-Then run `npm run seed`, `npm run item_seed`, `npm run users_seed` to run the various seed files for our database. (Since we are using MongoDB Atlas, we cleared out the database prior to submitting so it has a clean slate for you to work with)
+Then run `npm run seed`, `node /task/item_seed`, `node /task/users_seed` to run the various seed files for our database. (Since we are using MongoDB Atlas, we cleared out the database prior to submitting so it has a clean slate for you to work with)
 
 ### ImageMagick Setup
 The next step is to install ImageMagick on your machine since it will be needed locally for one of our image upload features to work...
@@ -37,6 +37,8 @@ From here, you can run 'npm start' in the `/client` folder to start the react ap
 We also have seeded both user accounts and restaurant admin accounts (so you can update the food items offered for a particular restaurant)...
 
 ### Restaurant Admin Accounts
+Access the Admin login page using http://localhost:3000/admin/signin  (Note: There is no button to go to admin page. We need to manually type the url)
+
 The username and password follow the same format for each restaurant... 
 
 Username: restaurant{number}
