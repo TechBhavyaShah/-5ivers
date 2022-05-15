@@ -7,7 +7,7 @@ const SignOutButton = () => {
 
     const handleSignOut = async () => {
         await doSignOut();
-        navigate("/home");
+        navigate("/");
     };
 
     return (
