@@ -12,7 +12,7 @@ async function main() {
       "restaurant1",
       "restaurant1.123",
       "La Casa",
-      "LaCasa.png",
+      "https://lacasahoboken.com/img/LCasa-interior.png",
       "40.7368747",
       "-74.0302638",
       "54 Newark St., Hoboken"
@@ -21,7 +21,7 @@ async function main() {
       "restaurant2",
       "restaurant2.123",
       "Mexiterraneo Grill",
-      "https://img.cdn4dd.com/cdn-cgi/image/fit=cover,width=800,height=250,format=auto,quality=50/https://doordash-static.s3.amazonaws.com/media/store/header/7edf2419-ca88-4fb9-8e46-184d1b6aba41.jpg",
+      "https://img.cdn4dd.com/cdn-cgi/image/fit=contain,width=1200,height=672,format=auto/https://doordash-static.s3.amazonaws.com/media/restaurant/cover/66aed670-52b8-4f38-9ccc-347ecca5eb86.png",
       "40.7374588",
       "-74.0320251",
       "153 1st St, Hoboken"
