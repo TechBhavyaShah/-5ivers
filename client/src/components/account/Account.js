@@ -81,9 +81,9 @@ const Account = () => {
                     <p>N/A</p>
                 )}
                 <br />
-                <Link to="/changePassword" className="profileLink">
+                {/* <Link to="/changePassword" className="profileLink">
                     Change Password
-                </Link>
+                </Link> */}
                 <br />
                 <br />
                 {/* <ChangePassword /> */}
