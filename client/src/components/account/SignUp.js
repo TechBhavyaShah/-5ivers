@@ -181,7 +181,6 @@ const SignUp = () => {
             <form className={classes.root} onSubmit={handleSubmit(onSubmit)}>
                 <Controller
                     name="name"
-                    InputLabelProps="name"
                     control={control}
                     defaultValue=""
                     render={({
@@ -191,7 +190,6 @@ const SignUp = () => {
                         <TextField
                             id="name"
                             label="Name"
-                            InputLabelProps="name"
                             variant="filled"
                             type="text"
                             value={value}

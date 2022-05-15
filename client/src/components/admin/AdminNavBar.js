@@ -2,9 +2,11 @@ import { Navbar, Nav, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { signOutRestaurant } from "../../redux/actions/restaurantActions";
+import { useSelector } from "react-redux";
 
 function AdminNavBar() {
     const dispatch = useDispatch();
+    const restaurant = useSelector((state) => state.restaurant);
 
     function handleAdminLogout() {
         localStorage.removeItem("accessToken");
@@ -21,15 +23,17 @@ function AdminNavBar() {
                 >
                     <img src="/icon96.png" alt="brand logo" height="50" />
                 </Navbar.Brand>
-                <Nav>
-                    <button
-                        className="btn btn-primary btn-sm"
-                        type="button"
-                        onClick={handleAdminLogout}
-                    >
-                        SIGN OUT
-                    </button>
-                </Nav>
+                {restaurant && restaurant.isAuthenticated && (
+                    <Nav>
+                        <button
+                            className="btn btn-primary btn-sm"
+                            type="button"
+                            onClick={handleAdminLogout}
+                        >
+                            SIGN OUT
+                        </button>
+                    </Nav>
+                )}
             </Container>
         </Navbar>
     );
