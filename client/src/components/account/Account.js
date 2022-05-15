@@ -1,9 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
-import card from "react-bootstrap";
-import ChangePassword from "./ChangePassword";
-import SignOutButton from "./SignOut";
 import { AuthContext } from "../../firebase/Auth";
 import PastOrderItem from "./PastOrderItem";
 
@@ -25,8 +21,6 @@ const Account = () => {
                     `http://localhost:3001/user/userDetails/${currentUserUid}`
                 );
 
-                // console.log(data);
-
                 setUserData(data);
                 setLoading(false);
             } catch (e) {
@@ -37,7 +31,6 @@ const Account = () => {
         getUser();
     }, []);
 
-    //   console.log(userData);
     if (loading) {
         return (
             <div>
@@ -51,11 +44,7 @@ const Account = () => {
                 <br />
                 <h3>{userData.name}</h3>
                 <br />
-                <img
-                    src={userData.image_url}
-                    alt="profile picture"
-                    className="user"
-                />
+                <img src={userData.image_url} alt="profile" className="user" />
                 <br />
                 <br />
                 <p>Address: {userData.address}</p>
@@ -80,14 +69,6 @@ const Account = () => {
                 ) : (
                     <p>N/A</p>
                 )}
-                <br />
-                {/* <Link to="/changePassword" className="profileLink">
-                    Change Password
-                </Link> */}
-                <br />
-                <br />
-                {/* <ChangePassword /> */}
-                {/* <SignOutButton /> */}
             </div>
         );
     }
