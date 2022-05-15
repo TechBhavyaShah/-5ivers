@@ -321,7 +321,7 @@ const addItemToRestaurant = async function addItemToRestaurant(
     };
   }
 
-  if (!number.isInteger(stock)) {
+  if (!Number.isInteger(stock)) {
     throw {
       message: "Stock should be only integer value.",
       status: 400,

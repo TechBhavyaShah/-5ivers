@@ -271,7 +271,7 @@ router.post("/foodItem/:restaurantId", async (req, res) => {
     return;
   }
 
-  if (!number.isInteger(restaurantItemData.stock)) {
+  if (!Number.isInteger(restaurantItemData.stock)) {
     res.status(400).json({
       error: "The stock Should be Integer Value!.",
     });
@@ -666,7 +666,7 @@ router.put("/foodItem/:restaurantId/:foodItemId", async (req, res) => {
     return;
   }
 
-  if (!number.isInteger(stock)) {
+  if (!Number.isInteger(stock)) {
     res.status(400).json({
       error: "The stock Should be Integer Value!.",
     });
