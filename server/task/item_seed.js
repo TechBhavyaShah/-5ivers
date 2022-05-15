@@ -1567,6 +1567,126 @@ async function main() {
       "Chinese",
       10
     );
+    let rest31Item1 = await restaurantData.addItemToRestaurant(
+      restCollection[30]._id,
+      "Tres Golpes, Mangú",
+      "Queso, huevo y salami. Mangu, 1cheese,1 egg 2 salamis",
+      3.0,
+      "https://i.ytimg.com/vi/o0Irz2Bk_ik/maxresdefault.jpg",
+      "non-veg",
+      "Caribbean",
+      10
+    );
+    let rest31Item2 = await restaurantData.addItemToRestaurant(
+      restCollection[30]._id,
+      "Morir Soñando con Limón o Naranja",
+      "Morir soñando with lemon or orange.",
+      2.5,
+      "https://diariolibre.blob.core.windows.net.optimalcdn.com/images/binrepository/morir-sonando_17167512_20210903145924.jpg",
+      "non-veg",
+      "Caribbean",
+      10
+    );
+    let rest31Item3 = await restaurantData.addItemToRestaurant(
+      restCollection[30]._id,
+      "Longaniza (Dominican sausage)",
+      "fried dominicam sausage cut in pieces",
+      4.0,
+      "https://i.ytimg.com/vi/mIEnfwftbjw/maxresdefault.jpg",
+      "non-veg",
+      "Caribbean",
+      10
+    );
+    let rest31Item4 = await restaurantData.addItemToRestaurant(
+      restCollection[30]._id,
+      "Huevo Revuelto con Vegetales",
+      "Scrambled eggs with vegetables.",
+      3.0,
+      "https://cdn.queapetito.com/wp-content/uploads/2018/09/REVUELTO-1.jpg",
+      "non-veg",
+      "Caribbean",
+      10
+    );
+    let rest32Item1 = await restaurantData.addItemToRestaurant(
+      restCollection[31]._id,
+      "Guacamole & Chips",
+      "Vegetarian. Vegan. Spicy or not spicy.",
+      5.0,
+      "https://img.cdn4dd.com/p/fit=cover,width=600,format=auto,quality=50/media/photos/fb86bb4c-b8f4-4030-b594-92479cc3b84e-retina-large.jpg",
+      "vegan",
+      "Mexican, Tex-Mex",
+      10
+    );
+    let rest32Item2 = await restaurantData.addItemToRestaurant(
+      restCollection[31]._id,
+      "Chicken American Quesadilla",
+      "",
+      5.0,
+      "https://img.cdn4dd.com/p/fit=cover,width=600,format=auto,quality=50/media/photos/fa05bd55-3373-49a9-b87f-709d177d71ad-retina-large.jpg",
+      "non-veg",
+      "Mexican, Tex-Mex",
+      10
+    );
+    let rest32Item3 = await restaurantData.addItemToRestaurant(
+      restCollection[31]._id,
+      "Mexican Style Corn on the Cob",
+      "Vegetarian. Vegan. Mayo, cheese, chile, lime.",
+      3.0,
+      "https://img.cdn4dd.com/p/fit=cover,width=600,format=auto,quality=50/media/photos/977a8aaf-c194-4366-be1d-04935ecc5929-retina-large.jpg",
+      "non-veg",
+      "Mexican, Tex-Mex",
+      10
+    );
+    let rest32Item4 = await restaurantData.addItemToRestaurant(
+      restCollection[31]._id,
+      "Chicken Burrito",
+      "",
+      4.0,
+      "https://img.cdn4dd.com/p/fit=cover,width=600,format=auto,quality=50/media/photos/7398686e-95cd-4a3c-bcfa-2d8e86abe3e4-retina-large.jpg",
+      "non-veg",
+      "Mexican, Tex-Mex",
+      10
+    );
+    let rest32Item5 = await restaurantData.addItemToRestaurant(
+      restCollection[31]._id,
+      "Chicken Nachos",
+      "",
+      1.0,
+      "https://img.cdn4dd.com/p/fit=cover,width=600,format=auto,quality=50/media/photos/a2d66094-c5de-4752-99c3-ae8d752cf416-retina-large.jpg",
+      "non-veg",
+      "Mexican, Tex-Mex",
+      10
+    );
+    let rest32Item6 = await restaurantData.addItemToRestaurant(
+      restCollection[31]._id,
+      "Mixed Ceviche",
+      "32oz container. Calamari, shrimp, fish, jalapeño, lime, cilantro.",
+      6.0,
+      "https://img.cdn4dd.com/p/fit=cover,width=600,format=auto,quality=50/media/photos/a505af92-28a9-4c03-b7ee-37f717a08629-retina-large.jpg",
+      "non-veg",
+      "Mexican, Tex-Mex",
+      10
+    );
+    let rest33Item1 = await restaurantData.addItemToRestaurant(
+      restCollection[32]._id,
+      "Pollo Flautas",
+      "3 pieces. Shredded chicken in chipotle sauce.",
+      1.0,
+      "https://img.cdn4dd.com/p/fit=cover,width=600,format=auto,quality=50/media/photos/1b20bfab-3ee7-4331-a0ee-212e48b22d5b-retina-large.jpg",
+      "non-veg",
+      "Mexican, Soup",
+      10
+    );
+    let rest33Item2 = await restaurantData.addItemToRestaurant(
+      restCollection[32]._id,
+      "Pollo Enchiladas",
+      "Chicken.",
+      3.0,
+      "https://img.cdn4dd.com/p/fit=cover,width=600,format=auto,quality=50/media/photos/82a4ea02-35c7-4ba6-b7c7-6701d6b3f161-retina-large.jpg",
+      "non-veg",
+      "Mexican, Soup",
+      10
+    );
   } catch (e) {
     console.log(e);
   }
