@@ -1,15 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import axios from "axios";
-import SelectCountry from "./SelectCountry";
 import { Navigate } from "react-router-dom";
 import {
     doCreateUserWithEmailAndPassword,
     doUpdateProfileDisplayName,
 } from "../../firebase/FirebaseFunctions";
 import { AuthContext } from "../../firebase/Auth";
-// import SocialSignIn from "./SocialSignIn";
 
-import { Input } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
 import { TextField, Button } from "@material-ui/core";
 import { Controller, useForm } from "react-hook-form";
@@ -72,7 +69,7 @@ const SignUp = () => {
             email,
             address,
             postalCode,
-            country,
+            // country,
             aboutMe,
             passwordOne,
             passwordTwo,
@@ -82,11 +79,14 @@ const SignUp = () => {
         email = email.trim();
         address = address.trim();
         postalCode = postalCode.trim();
-        country = country.trim();
+        // country = country.trim();
         aboutMe = aboutMe.trim();
         /* I don't allow spaces at all in passwords, but I'll trim it anyway */
         passwordOne = passwordOne.trim();
         passwordTwo = passwordTwo.trim();
+
+        // Appending address details together
+        address = `${address} ${postalCode}`;
 
         console.log(data);
 
@@ -129,12 +129,14 @@ const SignUp = () => {
         }
 
         let imageUrl;
-        try {
-            // Upload profile pic to S3 and grab S3 url to pass to axios call below
-            let profilePic = data.profilePic[0];
-            imageUrl = await uploadImage(profilePic);
-        } catch (e) {
-            console.log(e);
+        if (data.profilePic) {
+            try {
+                // Upload profile pic to S3 and grab S3 url to pass to axios call below
+                let profilePic = data.profilePic[0];
+                imageUrl = await uploadImage(profilePic);
+            } catch (e) {
+                console.log(e);
+            }
         }
 
         try {
@@ -151,25 +153,30 @@ const SignUp = () => {
                     about_me
                     image_url
             */
-            // let createUser = axios.post();
+            let createUser = await axios.post(
+                "http://localhost:3001/user/userDetails",
+                {
+                    id: userId,
+                    name: name,
+                    emailAddress: email,
+                    image_url: imageUrl,
+                    biography: aboutMe,
+                    address: address,
+                }
+            );
         } catch (e) {
             console.log(e);
         }
-        // reset();
+        reset();
     };
 
     if (currentUser) {
-        return <Navigate to="/home" />;
+        return <Navigate to="/" />;
     }
 
-    // console.log(errors);
     return (
         <div>
-            <h1>Sign up</h1>
-
-            {/* {errors.length > 0
-                ? errors.map((error) => <h4 className="error">{error}</h4>)
-                : null} */}
+            <h1 className="textCenter">Sign Up</h1>
 
             <form className={classes.root} onSubmit={handleSubmit(onSubmit)}>
                 <Controller
@@ -200,21 +207,6 @@ const SignUp = () => {
                     }}
                 ></Controller>
 
-                {/* <div className="form-group">
-                    <label>
-                        Name:
-                        <input
-                            className="form-control"
-                            id="name"
-                            autoComplete="name"
-                            name="displayName"
-                            type="text"
-                            placeholder="Name"
-                            required
-                        />
-                    </label>
-                </div> */}
-
                 <Controller
                     name="email"
                     control={control}
@@ -241,21 +233,6 @@ const SignUp = () => {
                         },
                     }}
                 ></Controller>
-
-                {/* <div className="form-group">
-                    <label>
-                        Email:
-                        <input
-                            className="form-control"
-                            id="email"
-                            autoComplete="email"
-                            name="email"
-                            type="email"
-                            placeholder="Email"
-                            required
-                        />
-                    </label>
-                </div> */}
 
                 <Controller
                     name="address"
@@ -286,21 +263,6 @@ const SignUp = () => {
                     }}
                 ></Controller>
 
-                {/* <div className="form-group">
-                    <label>
-                        Address:
-                        <textarea
-                            className="form-control"
-                            id="address"
-                            autoComplete="address"
-                            name="address"
-                            type="text"
-                            placeholder="Address"
-                            required
-                        />
-                    </label>
-                </div> */}
-
                 <Controller
                     name="postalCode"
                     control={control}
@@ -328,30 +290,6 @@ const SignUp = () => {
                         },
                     }}
                 ></Controller>
-
-                {/* <div className="form-group">
-                    <label>
-                        ZIP or Postal Code:
-                        <input
-                            className="form-control"
-                            id="postal-code"
-                            autoComplete="postal-code"
-                            name="postal-code"
-                            type="text"
-                            placeholder="ZIP or Postal Code"
-                            required
-                        />
-                    </label>
-                </div> */}
-
-                <SelectCountry control={control} />
-
-                {/* <div className="form-group">
-                    <label>
-                        Country or region:
-                        <SelectCountry />
-                    </label>
-                </div> */}
 
                 <Controller
                     name="aboutMe"
@@ -382,19 +320,6 @@ const SignUp = () => {
                     }}
                 ></Controller>
 
-                {/* <div className="form-group">
-                    <label>
-                        About me:
-                        <textarea
-                            className="form-control"
-                            required
-                            name="aboutMe"
-                            type="text"
-                            placeholder="About Me"
-                        />
-                    </label>
-                </div> */}
-
                 <Controller
                     name="passwordOne"
                     control={control}
@@ -423,20 +348,6 @@ const SignUp = () => {
                         },
                     }}
                 ></Controller>
-
-                {/* <div className="form-group">
-                    <label>
-                        Password:
-                        <input
-                            className="form-control"
-                            id="passwordOne"
-                            name="passwordOne"
-                            type="password"
-                            placeholder="Password"
-                            required
-                        />
-                    </label>
-                </div> */}
 
                 <Controller
                     name="passwordTwo"
@@ -467,19 +378,6 @@ const SignUp = () => {
                     }}
                 ></Controller>
 
-                {/* <div className="form-group">
-                    <label>
-                        Confirm Password:
-                        <input
-                            className="form-control"
-                            name="passwordTwo"
-                            type="password"
-                            placeholder="Confirm Password"
-                            required
-                        />
-                    </label>
-                </div> */}
-
                 <Controller
                     name="profilePic"
                     control={control}
@@ -488,9 +386,10 @@ const SignUp = () => {
                         field: { onChange, value },
                         fieldState: { error },
                     }) => (
-                        <div>
+                        <div className="textCenter">
                             <p>Upload Profile Picture</p>
                             <input
+                                className="alignContent"
                                 // label="Profile Picture"
                                 // variant="filled"
                                 type="file"
@@ -508,8 +407,6 @@ const SignUp = () => {
                     }}
                 ></Controller>
 
-                {/* <input type="file" name="profilePic"></input> */}
-
                 <Button
                     type="submit"
                     variant="contained"
@@ -521,7 +418,6 @@ const SignUp = () => {
                 </Button>
             </form>
             <br />
-            {/* <SocialSignIn /> */}
         </div>
     );
 };

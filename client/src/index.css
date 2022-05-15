@@ -1,13 +1,76 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+        monospace;
+}
+
+.mandatory {
+    color: #b71c1c;
+}
+
+.cart-item-image {
+    height: 75px;
+    width: 75px;
+}
+
+.cart-action-badge {
+    padding: 0.5rem 0.75rem 0.5rem 0.75rem;
+    cursor: pointer;
+}
+
+.cursor-disabled {
+    pointer-events: none;
+    cursor: no-drop;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.loader {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: #eceaea;
+    background-image: url("../public/Loader.gif");
+    background-size: 500px;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 10000000;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+
+.loader-wrapper {
+    background: #fff;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 999999;
+    opacity: 0.5;
+    overflow: hidden;
+    height: 100%;
+}
+
+.loader-wrapper .loaders {
+    position: absolute;
+    text-align: center;
+    top: 45%;
+    left: 50%;
 }

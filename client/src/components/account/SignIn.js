@@ -45,6 +45,10 @@ const SignIn = () => {
         // event.preventDefault();
         let { email, password } = data;
 
+        email = email.trim();
+        /* I don't allow spaces at all in passwords, but I'll trim it anyway */
+        password = password.trim();
+
         try {
             await doSignInWithEmailAndPassword(email, password);
         } catch (error) {
@@ -69,7 +73,7 @@ const SignIn = () => {
     const passwordReset = async (event) => {
         event.preventDefault();
 
-        let email = document.getElementById("email").value;
+        let email = document.getElementById("email").value.trim();
 
         if (email) {
             try {
@@ -85,7 +89,7 @@ const SignIn = () => {
             setError("email", {
                 type: "client",
                 message:
-                    "Please enter an email address below before you click the forgot password link",
+                    "Please enter an email address below before you click the forgot password link!",
             });
             return false;
         }
@@ -93,12 +97,12 @@ const SignIn = () => {
     };
 
     if (currentUser) {
-        return <Navigate to="/home" />;
+        return <Navigate to="/restaurants" />;
     }
 
     return (
         <div>
-            <h1>Log in</h1>
+            <h1 className="textCenter">Log in</h1>
             <form className={classes.root} onSubmit={handleSubmit(handleLogin)}>
                 <Controller
                     name="email"
@@ -127,21 +131,6 @@ const SignIn = () => {
                         },
                     }}
                 ></Controller>
-
-                {/* <div className="form-group">
-                    <label>
-                        Email:
-                        <input
-                            className="form-control"
-                            name="email"
-                            id="email"
-                            type="email"
-                            placeholder="Email"
-                            required
-                        />
-                    </label>
-                </div> */}
-
                 <Controller
                     name="password"
                     control={control}
@@ -162,22 +151,13 @@ const SignIn = () => {
                     )}
                     rules={{
                         required: "Password Required",
+                        pattern: {
+                            // No empty strings/strings with whitespace allowed
+                            value: /^\S*$/,
+                            message: "Password Required",
+                        },
                     }}
                 ></Controller>
-
-                {/* <div className="form-group">
-                    <label>
-                        Password:
-                        <input
-                            className="form-control"
-                            name="password"
-                            type="password"
-                            placeholder="Password"
-                            required
-                        />
-                    </label>
-                </div> */}
-
                 <Button
                     type="submit"
                     variant="contained"
@@ -188,12 +168,7 @@ const SignIn = () => {
                     Log in
                 </Button>
             </form>
-            <button className="forgotPassword" onClick={passwordReset}>
-                Forgot Password
-            </button>
-
             <br />
-            {/* <SocialSignIn /> */}
         </div>
     );
 };

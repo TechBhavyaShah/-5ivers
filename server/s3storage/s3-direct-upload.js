@@ -12,28 +12,28 @@ const accessKeyId = process.env.AWS_ACCESS_KEY;
 const secretAccessKey = process.env.AWS_SECRET_KEY;
 
 const s3 = new AWS.S3({
-    // apiVersion,
-    region,
-    accessKeyId,
-    secretAccessKey,
-    signatureVersion: "v4",
+  // apiVersion,
+  region,
+  accessKeyId,
+  secretAccessKey,
+  signatureVersion: "v4",
 });
 
 async function generateUploadURL() {
-    const rawBytes = await randomBytes(16);
-    const imageName = rawBytes.toString("hex");
+  const rawBytes = await randomBytes(16);
+  const imageName = rawBytes.toString("hex");
 
-    const params = {
-        Bucket: bucketName,
-        Key: imageName,
-        Expires: 60,
-    };
+  const params = {
+    Bucket: bucketName,
+    Key: imageName,
+    Expires: 60,
+  };
 
-    const uploadURL = await s3.getSignedUrlPromise("putObject", params);
-    console.log(uploadURL);
-    return uploadURL;
+  const uploadURL = await s3.getSignedUrlPromise("putObject", params);
+  console.log(uploadURL);
+  return uploadURL;
 }
 
 module.exports = {
-    generateUploadURL,
+  generateUploadURL,
 };

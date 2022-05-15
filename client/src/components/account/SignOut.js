@@ -7,12 +7,16 @@ const SignOutButton = () => {
 
     const handleSignOut = async () => {
         await doSignOut();
-        navigate("/home");
+        navigate("/");
     };
 
     return (
-        <button type="button" onClick={handleSignOut}>
-            Sign Out
+        <button
+            type="button"
+            className="btn btn-primary btn-sm"
+            onClick={handleSignOut}
+        >
+            SIGN OUT
         </button>
     );
 };
