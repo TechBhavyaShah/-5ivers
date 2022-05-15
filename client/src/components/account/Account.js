@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import card from "react-bootstrap";
 import ChangePassword from "./ChangePassword";
 import SignOutButton from "./SignOut";
 import { AuthContext } from "../../firebase/Auth";
+import PastOrderItem from "./PastOrderItem";
 
 import "../../App.css";
 
@@ -23,7 +25,7 @@ const Account = () => {
                     `http://localhost:3001/user/userDetails/${currentUserUid}`
                 );
 
-                console.log(data);
+                // console.log(data);
 
                 setUserData(data);
                 setLoading(false);
@@ -35,9 +37,7 @@ const Account = () => {
         getUser();
     }, []);
 
-    // let pastOrders = user.pastOrders;
-
-    // console.log(userData);
+    //   console.log(userData);
     if (loading) {
         return (
             <div>
@@ -48,19 +48,44 @@ const Account = () => {
         return (
             <div className="profile">
                 <h2>User Profile</h2>
-                <br/>
+                <br />
                 <h3>{userData.name}</h3>
                 <br />
-                <img src={userData.image_url} alt="profile picture" className="user" />
+                <img
+                    src={userData.image_url}
+                    alt="profile picture"
+                    className="user"
+                />
                 <br />
                 <br />
                 <p>Address: {userData.address}</p>
                 <p>About me: {userData.biography}</p>
                 <br />
                 <br />
-                <Link to="/changePassword" className="profileLink">
+
+                <p>Past Orders: </p>
+                {userData && userData.pastOrders !== 0 ? (
+                    <div>
+                        <main className="container mt-5 text-center w-50">
+                            {userData.pastOrders.map((order) => {
+                                return (
+                                    <PastOrderItem
+                                        data={order}
+                                        key={order.orderId + order.itemId}
+                                    />
+                                );
+                            })}
+                        </main>{" "}
+                    </div>
+                ) : (
+                    <p>N/A</p>
+                )}
+                <br />
+                {/* <Link to="/changePassword" className="profileLink">
                     Change Password
-                </Link>
+                </Link> */}
+                <br />
+                <br />
                 {/* <ChangePassword /> */}
                 {/* <SignOutButton /> */}
             </div>

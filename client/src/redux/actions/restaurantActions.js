@@ -6,3 +6,10 @@ export const signInRestaurant = (restaurant) => {
         payload: { restaurant: restaurant },
     };
 };
+
+export const signOutRestaurant = () => {
+    return {
+        type: ActionTypes.SIGN_OUT_RESTAURANT,
+        payload: null,
+    };
+};

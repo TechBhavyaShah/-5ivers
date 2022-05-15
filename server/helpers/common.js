@@ -105,9 +105,21 @@ function isStringValidInteger(string, variableName) {
     isArgumentString(string, variableName);
     isStringEmpty(string, variableName);
 
-    const number = parseInt(string, 10);
+    const number = Number(string);
 
     isNumber(number, variableName);
+    isInteger(number, variableName);
+    isNumberPositive(number, variableName);
+}
+
+function isStringValidNumber(string, variableName) {
+    isArgumentString(string, variableName);
+    isStringEmpty(string, variableName);
+
+    const number = Number(string);
+
+    isNumber(number, variableName);
+    isNumberPositive(number, variableName);
 }
 
 function isNumber(number, variableName) {
@@ -115,6 +127,15 @@ function isNumber(number, variableName) {
         throwError(
             ErrorCode.BAD_REQUEST,
             `Error: ${variableName || "Provided variable"} must be a number.`
+        );
+    }
+}
+
+function isInteger(number, variableName) {
+    if (!Number.isInteger(number)) {
+        throwError(
+            ErrorCode.BAD_REQUEST,
+            `Error: ${variableName || "Provided variable"} must be an integer.`
         );
     }
 }
@@ -162,6 +183,67 @@ function isJsonWebToken(accessToken) {
     }
 }
 
+function isOptionValid(allowedOptions, givenOption, variableName) {
+    if (!allowedOptions.includes(givenOption)) {
+        throwError(
+            ErrorCode.BAD_REQUEST,
+            `Error: Invalid ${variableName || "provided variable"} selected.`
+        );
+    }
+}
+
+function isObject(obj, variableName) {
+    if (
+        !obj ||
+        Array.isArray(obj) ||
+        typeof obj !== "object" ||
+        obj === null ||
+        !(obj instanceof Object) ||
+        obj.constructor !== Object
+    ) {
+        throwError(
+            ErrorCode.BAD_REQUEST,
+            `Error: ${
+                variableName || "provided variable"
+            } is not a Object. Expected Object.`
+        );
+    }
+}
+
+function isFileTypeValid(allowedFileTypes, givenFileType, variableName) {
+    isString(givenFileType, variableName);
+    isStringEmpty(givenFileType, variableName);
+
+    if (!allowedFileTypes.includes(givenFileType.trim().toLowerCase())) {
+        throwError(
+            ErrorCode.BAD_REQUEST,
+            `Error: Invalid ${variableName || "provided variable"} file type.`
+        );
+    }
+}
+
+function isFileSizeValid(fileSize, variableName) {
+    isNumber(fileSize, variableName);
+
+    if (fileSize < 1) {
+        throwError(
+            ErrorCode.BAD_REQUEST,
+            `Error: Invalid ${variableName || "provided variable"} file size.`
+        );
+    }
+}
+
+function isUrlValid(string, variableName) {
+    try {
+        new URL(string);
+    } catch (error) {
+        throwError(
+            ErrorCode.BAD_REQUEST,
+            `Error: Invalid ${variableName || "provided variable"} url.`
+        );
+    }
+}
+
 const throwError = (code = 500, message = "Error: Internal server error") => {
     throw { code, message };
 };
@@ -183,4 +265,10 @@ module.exports = {
     isUuid,
     isString,
     isJsonWebToken,
+    isOptionValid,
+    isObject,
+    isFileTypeValid,
+    isFileSizeValid,
+    isStringValidNumber,
+    isUrlValid,
 };

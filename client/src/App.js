@@ -14,20 +14,21 @@ import Home from "./components/Home";
 import "./App.css";
 import AdminRoutes from "./components/admin/AdminRoutes";
 import Cart from "./components/Cart";
+import { useSelector } from "react-redux";
+import AdminNavBar from "./components/admin/AdminNavBar";
 
 function App() {
+  const restaurant = useSelector((state) => state.restaurant);
   return (
     <AuthProvider>
       <Router>
-        <div className="App">
-          <div className="App">
-            <header className="App-header">
-              <Navigation />
-            </header>
-          </div>
-        </div>
+        {restaurant && restaurant.isAuthenticated ? (
+          <AdminNavBar />
+        ) : (
+          <Navigation />
+        )}
         <Routes>
-          <Route index element={<Home />} />
+          {/* <Route index element={<Landing />} /> */}
           {/*<Route path="landing" element={<Landing />} />*/}
           {/* Private route */}
           {/*<Route path="/home" element={<Home />} />*/}
@@ -41,7 +42,14 @@ function App() {
           <Route path="/admin/*" element={<AdminRoutes />} />
           <Route path="/restaurants/:restaurantId" element={<Restaurant />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="*" element={<p>There's nothing here: 404!</p>} />
+          <Route
+            path="*"
+            element={
+              <p className="text-center fs-1 mt-5">
+                There's nothing here: 404!
+              </p>
+            }
+          />
         </Routes>
       </Router>
     </AuthProvider>
