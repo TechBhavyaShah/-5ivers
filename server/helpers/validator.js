@@ -24,6 +24,40 @@ function isRestaurantUsernameValid(username) {
     return username;
 }
 
+function isFoodItemNameValid(name) {
+    common.isArgumentString(name, "food item name");
+    common.isStringEmpty(name, "food item name");
+
+    return name.trim();
+}
+
+function isFoodItemTypeValid(_type) {
+    common.isArgumentString(_type, "food item type");
+    common.isStringEmpty(_type, "food item type");
+
+    const type = _type.trim().toLowerCase();
+
+    const allowedOptions = ["veg", "non-veg", "vegan"];
+
+    common.isOptionValid(allowedOptions, type, "food item type");
+
+    return type;
+}
+
+function isFoodItemDescriptionValid(description) {
+    common.isArgumentString(description, "food item description");
+    common.isStringEmpty(description, "food item description");
+
+    return description.trim();
+}
+
+function isFoodItemCuisinesValid(cuisines) {
+    common.isArgumentString(cuisines, "food item cuisines");
+    common.isStringEmpty(cuisines, "food item cuisines");
+
+    return cuisines.trim();
+}
+
 function isPostSignInTotalFieldsValid(totalFields) {
     const TOTAL_MANDATORY_FIELDS = 2;
 
@@ -44,6 +78,18 @@ function isUpdateFoodItemStockValid(totalFields) {
 
 function isCheckRestaurantTotalFieldsValid(totalFields) {
     const TOTAL_MANDATORY_FIELDS = 2;
+
+    common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
+}
+
+function isPostFoodItemFieldsValid(totalFields) {
+    const TOTAL_MANDATORY_FIELDS = 6;
+
+    common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
+}
+
+function isAddFoodItemFieldsValid(totalFields) {
+    const TOTAL_MANDATORY_FIELDS = 8;
 
     common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
 }
@@ -93,6 +139,29 @@ function isFoodItemStockValid(stock) {
     return Number(stock);
 }
 
+function isFoodItemPriceValid(price) {
+    common.isStringValidNumber(price, "food item price");
+
+    return Number(price);
+}
+
+function isFoodItemUploadImageValid(image) {
+    common.isObject(image, "food item image");
+
+    const allowedFileTypes = ["image/jpeg", "image/jpg", "image/png"];
+
+    common.isFileTypeValid(allowedFileTypes, image.mimetype, "food item image");
+    common.isFileSizeValid(image.size, "food item image");
+}
+
+function isFoodItemImageUrlValid(imageUrl) {
+    common.isArgumentString(imageUrl, "food item image");
+    common.isStringEmpty(imageUrl, "food item image");
+    common.isUrlValid(imageUrl, "food item image");
+
+    return imageUrl.trim();
+}
+
 module.exports = {
     isRestaurantPasswordValid,
     isRestaurantUsernameValid,
@@ -104,4 +173,13 @@ module.exports = {
     isFoodItemIdValid,
     isFoodItemStockValid,
     isUpdateFoodItemStockValid,
+    isFoodItemNameValid,
+    isFoodItemDescriptionValid,
+    isFoodItemPriceValid,
+    isFoodItemTypeValid,
+    isFoodItemCuisinesValid,
+    isFoodItemUploadImageValid,
+    isPostFoodItemFieldsValid,
+    isFoodItemImageUrlValid,
+    isAddFoodItemFieldsValid,
 };

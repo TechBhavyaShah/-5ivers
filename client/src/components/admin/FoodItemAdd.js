@@ -98,7 +98,7 @@ function FoodItemAdd() {
         };
 
         try {
-            await axios.post(
+            const { data } = await axios.post(
                 `http://localhost:3001/restaurants/foodItems/${restaurant.id}`,
                 postData,
                 {
@@ -109,7 +109,10 @@ function FoodItemAdd() {
                 }
             );
 
-            window.location.href = "http://localhost:3000/admin/restaurant";
+            if (data && data.success) {
+                window.location.href = "http://localhost:3000/admin/restaurant";
+            }
+
             setError(null);
             setIsError(false);
         } catch (error) {

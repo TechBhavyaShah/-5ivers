@@ -427,30 +427,69 @@ router.post(
                 request.header("accessToken")
             );
 
-            if (!decodedAccessToken.restaurant?.id) {
+            if (
+                !decodedAccessToken.restaurant?.id ||
+                request.params.id.trim() !== decodedAccessToken.restaurant?.id
+            ) {
                 throwError(
                     ErrorCode.UNAUTHORIZED,
                     "Error: You are not logged in."
                 );
             }
-
             const requestPostData = request.body;
+
+            validator.isPostFoodItemFieldsValid(
+                Object.keys(requestPostData).length
+            );
+
+            const restaurantId = validator.isRestaurantIdValid(
+                xss(decodedAccessToken.restaurant?.id)
+            );
+
+            const name = validator.isFoodItemNameValid(
+                xss(requestPostData.name)
+            );
+            const description = validator.isFoodItemDescriptionValid(
+                xss(requestPostData.description)
+            );
+            const price = validator.isFoodItemPriceValid(
+                requestPostData.price === 0
+                    ? requestPostData.price.toString()
+                    : xss(requestPostData.price)
+            );
+
+            validator.isFoodItemUploadImageValid(request.file);
+
+            const type = validator.isFoodItemTypeValid(
+                xss(requestPostData.type)
+            );
+            const cuisines = validator.isFoodItemCuisinesValid(
+                xss(requestPostData.cuisines)
+            );
+            const stock = validator.isFoodItemStockValid(
+                requestPostData.stock === 0
+                    ? requestPostData.stock.toString()
+                    : xss(requestPostData.stock)
+            );
+
+            const imageUrl = `${s3AwsUrl}${request.file.filename}`;
 
             await _uploadFoodItemImage(request.file);
 
             await restaurantdata.addItemToRestaurant(
-                decodedAccessToken.restaurant.id,
-                requestPostData.name,
-                requestPostData.description,
-                parseInt(requestPostData.price),
-                `${s3AwsUrl}${request.file.filename}`,
-                requestPostData.type,
-                requestPostData.cuisines,
-                parseInt(requestPostData.stock)
+                restaurantId,
+                name,
+                description,
+                price,
+                imageUrl,
+                type,
+                cuisines,
+                stock
             );
 
             response.json({ success: true });
         } catch (error) {
+            console.log(error);
             response.status(error.code || error.status || 500).json({
                 error: error.message || "Error: Internal server error.",
             });
@@ -474,7 +513,7 @@ async function _uploadFoodItemImage(file) {
                 dstPath: imageDestinationPath,
                 height: 175,
             },
-            async function (error, stdout) {
+            async function (error) {
                 if (error) {
                     throwError(ErrorCode.INTERNAL_SERVER_ERROR, error);
                 }
@@ -493,7 +532,7 @@ async function _uploadFoodItemImage(file) {
                     region: process.env.AWS_BUCKET_REGION,
                 });
 
-                const awsImage = await s3
+                await s3
                     .upload(params, function (error) {
                         if (error) {
                             throwError(ErrorCode.INTERNAL_SERVER_ERROR, error);
@@ -515,6 +554,7 @@ async function _uploadFoodItemImage(file) {
             }
         );
     } catch (error) {
+        console.log(error);
         throwCatchError(error);
     }
 }
