@@ -133,3 +133,10 @@
 .textCenter{
 	text-align: center;
 }
+
+.alignContent {
+  align-items: center !important;
+  width: 14rem;
+  
+}
+
