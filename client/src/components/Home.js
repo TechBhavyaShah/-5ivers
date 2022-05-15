@@ -64,7 +64,7 @@ const Home = () => {
                 </p>
                 <ul>
                     <li>
-                        According the
+                        According the {" "}
                         <a href="https://www.epa.gov/sustainable-management-food/sustainable-management-food-basics">
                             U.S Environmental Protection Agency,
                         </a>{" "}
