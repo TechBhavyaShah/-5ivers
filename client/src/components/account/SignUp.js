@@ -181,6 +181,7 @@ const SignUp = () => {
             <form className={classes.root} onSubmit={handleSubmit(onSubmit)}>
                 <Controller
                     name="name"
+                    InputLabelProps="name"
                     control={control}
                     defaultValue=""
                     render={({
@@ -188,7 +189,9 @@ const SignUp = () => {
                         fieldState: { error },
                     }) => (
                         <TextField
+                            id="name"
                             label="Name"
+                            InputLabelProps="name"
                             variant="filled"
                             type="text"
                             value={value}
@@ -216,6 +219,7 @@ const SignUp = () => {
                         fieldState: { error },
                     }) => (
                         <TextField
+                            id="email"
                             label="Email"
                             variant="filled"
                             type="email"
@@ -243,6 +247,7 @@ const SignUp = () => {
                         fieldState: { error },
                     }) => (
                         <TextField
+                            id="address"
                             label="Address"
                             variant="filled"
                             type="text"
@@ -272,6 +277,7 @@ const SignUp = () => {
                         fieldState: { error },
                     }) => (
                         <TextField
+                            id="zip-code"
                             label="ZIP or Postal Code"
                             variant="filled"
                             type="text"
@@ -300,6 +306,7 @@ const SignUp = () => {
                         fieldState: { error },
                     }) => (
                         <TextField
+                            id="about-me"
                             label="About Me"
                             variant="filled"
                             type="text"
@@ -329,6 +336,7 @@ const SignUp = () => {
                         fieldState: { error },
                     }) => (
                         <TextField
+                            id="password"
                             label="Password"
                             variant="filled"
                             type="password"
@@ -358,6 +366,7 @@ const SignUp = () => {
                         fieldState: { error },
                     }) => (
                         <TextField
+                            id="confirm-password"
                             label="Confirm Password"
                             variant="filled"
                             type="password"
@@ -388,7 +397,9 @@ const SignUp = () => {
                     }) => (
                         <div className="textCenter">
                             <p>Upload Profile Picture</p>
+                            <label htmlFor="profile-pic"></label>
                             <input
+                                id="profile-pic"
                                 className="alignContent"
                                 // label="Profile Picture"
                                 // variant="filled"
