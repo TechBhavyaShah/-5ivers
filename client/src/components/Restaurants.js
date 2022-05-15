@@ -15,6 +15,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { Link, useParams } from "react-router-dom";
+import Loader from "./Loader";
 // const noImage = require('../public/logo512.png')
 const useStyles = makeStyles({
   card: {
@@ -196,7 +197,7 @@ const Restaurants = () => {
           setError404(false);
         }
       }
-      if (searchTerm.length !== 0) {
+      if (searchTerm.trim().length !== 0) {
         getSearchedTermData(searchTerm, userLat, userLon);
       } else {
         if (locationAcquired) {
@@ -221,50 +222,77 @@ const Restaurants = () => {
   const buildCard = (restaurant) => {
     return (
       // <h1>heer</h1>
-      <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={restaurant._id}>
-        <Card className={classes.card} variant="outlined">
-          <CardActionArea>
-            <Link to={`/restaurants/${restaurant._id}`}>
-              <CardMedia
-                className={classes.media}
-                component="img"
-                image={
-                  "/restaurant_images/" +
-                  restaurant.restaurant_name.replace(" ", "") +
-                  ".png"
-                }
-                //
-                // {show.thumbnail && show.thumbnail.path && show.thumbnail.extension ? show.thumbnail.path + '.'+ show.thumbnail.extension : noImage}
-                title="show image"
-                onError={(event) => (event.target.src = "/default.png")}
-              />
 
-              <CardContent>
-                <Typography
-                  className={classes.titleHead}
-                  gutterBottom
-                  variant="h6"
-                  component="h2"
-                >
-                  {restaurant.restaurant_name}
-                </Typography>
-                <Typography variant="body2" color="textSecondary" component="p">
-                  {restaurant.distance} Miles
-                  <br />
-                  {restaurant.address}
-                </Typography>
-              </CardContent>
-            </Link>
-          </CardActionArea>
-        </Card>
-      </Grid>
+      // <div className="container mt-5 w-50">
+      <div className="col">
+        <div className="card h-100">
+          <Link to={`/restaurants/${restaurant._id}`}>
+            <img
+              src={
+                "/restaurant_images/" +
+                restaurant.restaurant_name.replace(" ", "") +
+                ".png"
+              }
+              className="card-img-top"
+              alt={restaurant.restaurant_name}
+              onError={(event) => (event.target.src = "/default.png")}
+            />
+            <div className="card-body">
+              <p className="card-title fs-5">{restaurant.restaurant_name}</p>
+              <p className="card-text">{restaurant.address}</p>
+              <p className="card-text">{restaurant.distance} Miles</p>
+            </div>
+          </Link>
+        </div>
+      </div>
+      // </div>
+
+      // <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={restaurant._id}>
+      //   <Card className={classes.card} variant="outlined">
+      //     <CardActionArea>
+      //       <Link to={`/restaurants/${restaurant._id}`}>
+      //         <CardMedia
+      //           className={classes.media}
+      //           component="img"
+      //           image={
+      //             "/restaurant_images/" +
+      //             restaurant.restaurant_name.replace(" ", "") +
+      //             ".png"
+      //           }
+      //           //
+      //           // {show.thumbnail && show.thumbnail.path && show.thumbnail.extension ? show.thumbnail.path + '.'+ show.thumbnail.extension : noImage}
+      //           title="show image"
+      //           onError={(event) => (event.target.src = "/default.png")}
+      //         />
+
+      //         <CardContent>
+      //           <Typography
+      //             className={classes.titleHead}
+      //             gutterBottom
+      //             variant="h6"
+      //             component="h2"
+      //           >
+      //             {restaurant.restaurant_name}
+      //           </Typography>
+      //           <Typography variant="body2" color="textSecondary" component="p">
+      //             {restaurant.distance} Miles
+      //             <br />
+      //             {restaurant.address}
+      //           </Typography>
+      //         </CardContent>
+      //       </Link>
+      //     </CardActionArea>
+      //   </Card>
+      // </Grid>
     );
   };
   if (loading) {
-    return <h1>Loading</h1>;
+    return <Loader />;
   } else if (error404) {
     return (
-      <div className={classes.root}>
+      <div className="text-center">
+        <br />
+        <br />
         <label>
           Search Restaurants:
           <input
@@ -275,9 +303,8 @@ const Restaurants = () => {
           />
         </label>
         <br />
-        <br />
-        <br />
-        <h1>No Restaurant found.</h1>
+
+        <h1 className="text-center">No Restaurant found.</h1>
       </div>
     );
   } else if (restaurantsList) {
@@ -293,23 +320,30 @@ const Restaurants = () => {
   return (
     <div>
       {/* search restaurants */}
-      <label>
-        Search Restaurants:
-        <input
-          id="name"
-          name="name"
-          defaultValue={searchTerm}
-          onChange={handleChange}
-        />
-      </label>
-      <br />
-      <br />
-      <br />
-      <div id="res-list">
-        <Grid container className={classes.grid} spacing={5}>
-          {card}
-        </Grid>
+      <div className="text-center">
+        <br />
+        <br />
+        <label>
+          Search Restaurants:
+          <input
+            type="text"
+            id="name"
+            name="name"
+            defaultValue={searchTerm}
+            onChange={handleChange}
+          />
+        </label>
       </div>
+
+      <br />
+
+      <div className="container mt-5">
+        <div className="row row-cols-1 row-cols-md-4 g-4">{card}</div>
+      </div>
+
+      {/* <Grid container className={classes.grid} spacing={5}>
+        {card}
+      </Grid> */}
     </div>
   );
 };

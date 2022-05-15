@@ -180,8 +180,6 @@ router.put("/createOrder/:id", async (request, response) => {
             requestPostData.cart
         );
 
-        console.log(orderResponse);
-
         if (orderResponse.length > 0) {
             response.json({ success: false, errors: orderResponse });
 
