@@ -62,20 +62,26 @@ const Account = () => {
         <p>Past Orders: </p>
         {userData && userData.pastOrders !== 0 ? (
           <div>
-            {userData.pastOrders.map((order) => {
-              return (
-                <main className="container mt-5 text-center w-50">
-                  <PastOrderItem data={order} key={order.id} />
-                </main>
-              );
-            })}{" "}
+            <main className="container mt-5 text-center w-50">
+              {userData.pastOrders.map((order) => {
+                return (
+                  <PastOrderItem
+                    data={order}
+                    key={order.orderId + order.itemId}
+                  />
+                );
+              })}
+            </main>{" "}
           </div>
         ) : (
           <p>N/A</p>
         )}
+        <br />
         <Link to="/changePassword" className="profileLink">
           Change Password
         </Link>
+        <br />
+        <br />
         {/* <ChangePassword /> */}
         {/* <SignOutButton /> */}
       </div>
