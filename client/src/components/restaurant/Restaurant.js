@@ -68,7 +68,7 @@ const Restaurant = () => {
                 <h1>{response.restaurant_name}</h1>
                 <img
                     className="roundRestImg"
-                    src={`/restaurant_images/${response.restaurant_image}`}
+                    src={response.restaurant_image}
                     alt={response.name}
                     onError={(event) => (event.target.src = "/default.png")}
                 />
@@ -88,13 +88,16 @@ const Restaurant = () => {
                                             currentFoodItem.item_id
                                         )}
                                         restaurant={response.restaurant_name}
+                                        restaurantId={response._id}
                                     />
                                 );
                             })}
                         </div>
                     )}
-                {!response && (
-                    <p className="text-center">No food items found.</p>
+                {(!response ||
+                    !response.food_items ||
+                    response.food_items.length < 1) && (
+                    <p className="text-center fs-5">No food items found.</p>
                 )}
             </div>
         </>

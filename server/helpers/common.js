@@ -205,7 +205,27 @@ function isObject(obj, variableName) {
             ErrorCode.BAD_REQUEST,
             `Error: ${
                 variableName || "provided variable"
-            } is not a Object. Expected Object.`
+            } is not a object. Expected object.`
+        );
+    }
+}
+
+function isVariableArray(arr, variableName) {
+    if (!Array.isArray(arr)) {
+        throwError(
+            ErrorCode.BAD_REQUEST,
+            `Error: ${
+                variableName || "provided variable"
+            } is not an array. Expected array.`
+        );
+    }
+}
+
+function isArrayEmpty(arr, variableName) {
+    if (arr.length < 1) {
+        throwError(
+            ErrorCode.BAD_REQUEST,
+            `Error: ${variableName || "provided variable"} cannot be empty.`
         );
     }
 }
@@ -244,6 +264,26 @@ function isUrlValid(string, variableName) {
     }
 }
 
+function isNumberValid(number, variableName) {
+    isNumber(number, variableName);
+    isNumberPositive(number, variableName);
+}
+
+function isIntegerValid(number, variableName) {
+    isNumber(number, variableName);
+    isInteger(number, variableName);
+    isNumberPositive(number, variableName);
+}
+
+function isObjectLengthValid(obj, expectedObjectLength, variableName) {
+    if (Object.keys(obj).length !== expectedObjectLength) {
+        throwError(
+            ErrorCode.BAD_REQUEST,
+            `Error: ${variableName} has invalid number of fields.`
+        );
+    }
+}
+
 const throwError = (code = 500, message = "Error: Internal server error") => {
     throw { code, message };
 };
@@ -271,4 +311,9 @@ module.exports = {
     isFileSizeValid,
     isStringValidNumber,
     isUrlValid,
+    isVariableArray,
+    isArrayEmpty,
+    isObjectLengthValid,
+    isNumberValid,
+    isIntegerValid,
 };

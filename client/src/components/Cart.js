@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { clearCart } from "../redux/actions/cartActions";
+import Loader from "./Loader";
 
 function Cart() {
     const dispatch = useDispatch();
@@ -14,6 +15,7 @@ function Cart() {
     const [error, setError] = useState(null);
     const [isError, setIsError] = useState(false);
     const [message, setMessage] = useState("");
+    const [cartError, setCartError] = useState(null);
     const { currentUser } = useContext(AuthContext);
 
     async function handlePurchase() {
@@ -22,10 +24,16 @@ function Cart() {
         const postData = { cart };
 
         try {
-            await axios.put(
+            const { data } = await axios.put(
                 `http://localhost:3001/user/createOrder/${currentUser.uid}/`,
                 postData
             );
+
+            if (data && !data.success) {
+                setCartError(data.errors);
+
+                return;
+            }
 
             setMessage("Order placed successfully.");
             setError(null);
@@ -64,6 +72,13 @@ function Cart() {
     }
     return (
         <main className="container mt-5 text-center w-50">
+            {isLoading && (
+                <div className="loader-wrapper">
+                    <div className="loaders">
+                        <Loader />
+                    </div>
+                </div>
+            )}
             <h1>Your Shopping Cart</h1>
             <div className="my-3 p-3 bg-body rounded shadow text-start">
                 {cart.map((currentFoodItem) => {
@@ -99,6 +114,15 @@ function Cart() {
                     )}
                 </p>
                 {isError && <p className="text-danger">{error}</p>}
+                {cartError &&
+                    cartError.length > 0 &&
+                    cartError.map((currentError, index) => {
+                        return (
+                            <p className="text-danger m-0" key={index}>
+                                {currentError}
+                            </p>
+                        );
+                    })}
             </div>
         </main>
     );

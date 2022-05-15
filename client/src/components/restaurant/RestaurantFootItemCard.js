@@ -1,7 +1,12 @@
 import { useDispatch } from "react-redux";
 import { addToCart, removeFromCart } from "../../redux/actions/cartActions";
 
-function RestaurantFoodItemCard({ data, isAddedToCart, restaurant }) {
+function RestaurantFoodItemCard({
+    data,
+    isAddedToCart,
+    restaurant,
+    restaurantId,
+}) {
     const dispatch = useDispatch();
 
     function handleAddToCart(data) {
@@ -15,6 +20,7 @@ function RestaurantFoodItemCard({ data, isAddedToCart, restaurant }) {
             cuisines: data.cuisines,
             quantity: 1,
             restaurant: restaurant,
+            restaurantId: restaurantId,
         };
 
         dispatch(addToCart(foodItem));
