@@ -69,7 +69,7 @@ const Restaurant = () => {
                 <img
                     className="roundRestImg"
                     src={response.restaurant_image}
-                    alt={response.name}
+                    alt={response.restaurant_name}
                     onError={(event) => (event.target.src = "/default.png")}
                 />
                 <p>{response.address}</p>
