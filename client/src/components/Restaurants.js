@@ -197,7 +197,7 @@ const Restaurants = () => {
           setError404(false);
         }
       }
-      if (searchTerm.length !== 0) {
+      if (searchTerm.trim().length !== 0) {
         getSearchedTermData(searchTerm, userLat, userLon);
       } else {
         if (locationAcquired) {
@@ -290,7 +290,9 @@ const Restaurants = () => {
     return <Loader />;
   } else if (error404) {
     return (
-      <div className={classes.root}>
+      <div className="text-center">
+        <br />
+        <br />
         <label>
           Search Restaurants:
           <input
@@ -301,9 +303,8 @@ const Restaurants = () => {
           />
         </label>
         <br />
-        <br />
-        <br />
-        <h1>No Restaurant found.</h1>
+
+        <h1 className="text-center">No Restaurant found.</h1>
       </div>
     );
   } else if (restaurantsList) {
@@ -320,9 +321,12 @@ const Restaurants = () => {
     <div>
       {/* search restaurants */}
       <div className="text-center">
+        <br />
+        <br />
         <label>
           Search Restaurants:
           <input
+            type="text"
             id="name"
             name="name"
             defaultValue={searchTerm}
@@ -331,8 +335,6 @@ const Restaurants = () => {
         </label>
       </div>
 
-      <br />
-      <br />
       <br />
 
       <div className="container mt-5">
