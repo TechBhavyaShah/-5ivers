@@ -51,6 +51,11 @@ function isFoodItemDescriptionValid(description) {
     return description.trim();
 }
 
+function isFoodItemRestaurantValid(restaurant) {
+    common.isArgumentString(restaurant, "food item restaurant");
+    common.isStringEmpty(restaurant, "food item restaurant");
+}
+
 function isFoodItemCuisinesValid(cuisines) {
     common.isArgumentString(cuisines, "food item cuisines");
     common.isStringEmpty(cuisines, "food item cuisines");
@@ -65,6 +70,18 @@ function isPostSignInTotalFieldsValid(totalFields) {
 }
 
 function isPutFoodItemStockValid(totalFields) {
+    const TOTAL_MANDATORY_FIELDS = 1;
+
+    common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
+}
+
+function isCreateOrderTotalFieldsValid(totalFields) {
+    const TOTAL_MANDATORY_FIELDS = 2;
+
+    common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
+}
+
+function isPutCreateOrderTotalFieldsValid(totalFields) {
     const TOTAL_MANDATORY_FIELDS = 1;
 
     common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
@@ -145,6 +162,14 @@ function isFoodItemPriceValid(price) {
     return Number(price);
 }
 
+function isCartFoodItemPriceValid(price) {
+    common.isNumberValid(price, "food item price");
+}
+
+function isCartFoodItemQuantityValid(quantity) {
+    common.isIntegerValid(quantity, "food item quantity");
+}
+
 function isFoodItemUploadImageValid(image) {
     common.isObject(image, "food item image");
 
@@ -162,11 +187,57 @@ function isFoodItemImageUrlValid(imageUrl) {
     return imageUrl.trim();
 }
 
+function isUserIdValid(userId) {
+    common.isArgumentString(userId, "user id");
+    common.isStringEmpty(userId, "user id");
+
+    return userId.trim();
+}
+
+function isCartFieldsValid(cart) {
+    common.isVariableArray(cart, "cart");
+    common.isArrayEmpty(cart, "cart");
+
+    for (const currentItem of cart) {
+        common.isObject(currentItem, "cart food item");
+
+        const EXPECTED_OBJECT_LENGTH = 10;
+        common.isObjectLengthValid(
+            currentItem,
+            EXPECTED_OBJECT_LENGTH,
+            "Cart food item"
+        );
+
+        isRestaurantIdValid(currentItem.restaurantId);
+        isFoodItemIdValid(currentItem.id);
+        isFoodItemNameValid(currentItem.name);
+        isCartFoodItemPriceValid(currentItem.price);
+
+        currentItem.image &&
+            currentItem.image.trim().length > 0 &&
+            isFoodItemImageUrlValid(currentItem.image);
+
+        isFoodItemTypeValid(currentItem.type);
+
+        currentItem.description &&
+            currentItem.description.trim().length > 0 &&
+            isFoodItemDescriptionValid(currentItem.description);
+
+        currentItem.cuisines &&
+            currentItem.cuisines.trim().length > 0 &&
+            isFoodItemCuisinesValid(currentItem.cuisines);
+
+        isCartFoodItemQuantityValid(currentItem.quantity);
+        isFoodItemRestaurantValid(currentItem.restaurant);
+    }
+}
+
 module.exports = {
     isRestaurantPasswordValid,
     isRestaurantUsernameValid,
     isPostSignInTotalFieldsValid,
     isCheckRestaurantTotalFieldsValid,
+    isPutCreateOrderTotalFieldsValid,
     isPutFoodItemStockValid,
     isRestaurantIdValid,
     isAccessTokenValid,
@@ -182,4 +253,7 @@ module.exports = {
     isPostFoodItemFieldsValid,
     isFoodItemImageUrlValid,
     isAddFoodItemFieldsValid,
+    isCartFieldsValid,
+    isUserIdValid,
+    isCreateOrderTotalFieldsValid,
 };

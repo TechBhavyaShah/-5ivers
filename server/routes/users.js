@@ -6,6 +6,7 @@ const userColl = mongoCollections.users;
 const ObjectID = require("mongodb").ObjectId;
 const router = express.Router();
 const xss = require("xss");
+const validator = require("../helpers/validator");
 const ErrorCode = require("../helpers/error-code");
 
 function validateEmail(email) {
@@ -166,16 +167,24 @@ router.put("/createOrder/:id", async (request, response) => {
     try {
         const requestPostData = request.body;
 
-        if (
-            !requestPostData ||
-            !requestPostData.cart ||
-            requestPostData.cart.length < 1
-        ) {
-            throwError(ErrorCode.NOT_FOUND, "Error: Data not found.");
+        validator.isPutCreateOrderTotalFieldsValid(
+            Object.keys(requestPostData).length
+        );
+
+        const userId = validator.isUserIdValid(xss(request.params.id));
+
+        validator.isCartFieldsValid(requestPostData.cart);
+
+        const orderResponse = await usersData.createOrder(
+            userId,
+            requestPostData.cart
+        );
+
+        if (orderResponse.length > 0) {
+            response.json({ success: false, errors: orderResponse });
+
+            return;
         }
-
-        await usersData.createOrder(request.params.id, requestPostData.cart);
-
         response.json({ success: true });
     } catch (error) {
         response.status(error.code || 500).json({
