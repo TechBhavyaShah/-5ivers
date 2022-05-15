@@ -224,14 +224,15 @@ const Restaurants = () => {
       // <h1>heer</h1>
 
       // <div className="container mt-5 w-50">
-      <div className="col">
+      <div className="col" key={restaurant._id}>
         <div className="card h-100">
           <Link to={`/restaurants/${restaurant._id}`}>
             <img
               src={
-                "/restaurant_images/" +
-                restaurant.restaurant_name.replace(" ", "") +
-                ".png"
+                restaurant.restaurant_image
+                // "/restaurant_images/" +
+                // restaurant.restaurant_name.replace(" ", "") +
+                // ".png"
               }
               className="card-img-top"
               alt={restaurant.restaurant_name}
@@ -245,105 +246,37 @@ const Restaurants = () => {
           </Link>
         </div>
       </div>
-      // </div>
-
-      // <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={restaurant._id}>
-      //   <Card className={classes.card} variant="outlined">
-      //     <CardActionArea>
-      //       <Link to={`/restaurants/${restaurant._id}`}>
-      //         <CardMedia
-      //           className={classes.media}
-      //           component="img"
-      //           image={
-      //             "/restaurant_images/" +
-      //             restaurant.restaurant_name.replace(" ", "") +
-      //             ".png"
-      //           }
-      //           //
-      //           // {show.thumbnail && show.thumbnail.path && show.thumbnail.extension ? show.thumbnail.path + '.'+ show.thumbnail.extension : noImage}
-      //           title="show image"
-      //           onError={(event) => (event.target.src = "/default.png")}
-      //         />
-
-      //         <CardContent>
-      //           <Typography
-      //             className={classes.titleHead}
-      //             gutterBottom
-      //             variant="h6"
-      //             component="h2"
-      //           >
-      //             {restaurant.restaurant_name}
-      //           </Typography>
-      //           <Typography variant="body2" color="textSecondary" component="p">
-      //             {restaurant.distance} Miles
-      //             <br />
-      //             {restaurant.address}
-      //           </Typography>
-      //         </CardContent>
-      //       </Link>
-      //     </CardActionArea>
-      //   </Card>
-      // </Grid>
     );
   };
   if (loading) {
     return <Loader />;
-  } else if (error404) {
-    return (
-      <div className="text-center">
-        <br />
-        <br />
-        <label>
-          Search Restaurants:
-          <input
-            id="name"
-            name="name"
-            defaultValue={searchTerm}
-            onChange={handleChange}
-          />
-        </label>
-        <br />
-
-        <h1 className="text-center">No Restaurant found.</h1>
-      </div>
-    );
-  } else if (restaurantsList) {
-    card =
-      restaurantsList &&
-      restaurantsList.map((rest) => {
-        return buildCard(rest);
-      });
   }
-  //   const handleChange = (e) => {
-  //     setSearchTerm(e.target.value);
-  //   };
+
   return (
-    <div>
-      {/* search restaurants */}
-      <div className="text-center">
-        <br />
-        <br />
-        <label>
-          Search Restaurants:
-          <input
-            type="text"
-            id="name"
-            name="name"
-            defaultValue={searchTerm}
-            onChange={handleChange}
-          />
-        </label>
-      </div>
-
+    <div className="text-center">
       <br />
+      <br />
+      <label>
+        Search Restaurants:
+        <input
+          id="name"
+          name="name"
+          defaultValue={searchTerm}
+          onChange={handleChange}
+        />
+      </label>
+      <br />
+      {error404 && <h1 className="text-center">No Restaurant found.</h1>}
 
-      <div className="container mt-5">
-        <div className="row row-cols-1 row-cols-md-4 g-4">{card}</div>
-      </div>
-
-      {/* <Grid container className={classes.grid} spacing={5}>
-        {card}
-      </Grid> */}
+      {!error404 && restaurantsList && restaurantsList.length > 0 && (
+        <div className="container mt-5">
+          <div className="row row-cols-1 row-cols-md-4 g-4">
+            {restaurantsList.map((rest) => {
+              return buildCard(rest);
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
