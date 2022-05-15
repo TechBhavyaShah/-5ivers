@@ -35,8 +35,10 @@ const Account = () => {
                 <h2>Loading....</h2>
             </div>
         );
-    } else {
-        return (
+    }
+
+    return (
+        userData && (
             <div className="profile mt-4">
                 <h1 className="fs-2 my-3">User Profile</h1>
                 <h2 className="fs-3 my-3">{userData.name}</h2>
@@ -70,8 +72,8 @@ const Account = () => {
                     <p>No orders</p>
                 )}
             </div>
-        );
-    }
+        )
+    );
 };
 
 export default Account;
