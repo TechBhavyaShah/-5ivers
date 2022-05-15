@@ -4,7 +4,6 @@ import Loader from "../Loader";
 import axios from "axios";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
 
 function FoodItemEdit() {
     const restaurant = useSelector((state) => state.restaurant);
@@ -15,7 +14,6 @@ function FoodItemEdit() {
     const [foodItemStock, setFoodItemStock] = useState(0);
     const [message, setMessage] = useState("");
     const { foodItemId } = useParams();
-    const navigate = useNavigate();
 
     useEffect(() => {
         async function getRestaurantFoodItems() {
@@ -177,6 +175,7 @@ function FoodItemEdit() {
                                             event.target.value.trim()
                                         )
                                     }
+                                    autoComplete="off"
                                 />
                             </li>
                             <li className="list-group-item text-center">

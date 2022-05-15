@@ -17,7 +17,76 @@ function FoodItemAdd() {
     const [type, setType] = useState("");
     const [image, setImage] = useState("");
 
-    async function handleSubmit() {
+    function handleSubmit() {
+        let errors = "";
+
+        if (name.trim().length < 1) {
+            errors += ` Name is required.`;
+        }
+
+        if (description.trim().length < 1) {
+            errors += ` Description is required.`;
+        }
+
+        if (price.length < 1) {
+            errors += ` Price is required.`;
+        }
+
+        if (!isNumberValid(price)) {
+            errors += ` Price should be non negative number.`;
+        }
+
+        if (cuisines.trim().length < 1) {
+            errors += ` Cuisines is required.`;
+        }
+
+        if (type.length < 1) {
+            errors += ` Type is required.`;
+        }
+
+        if (stock.length < 1) {
+            errors += ` Stock is required.`;
+        }
+
+        if (!isNumberValidInteger(stock)) {
+            errors += ` Stock should be non negative integer.`;
+        }
+
+        if (!image) {
+            errors += ` Image is required.`;
+        }
+
+        if (
+            image &&
+            !["image/jpeg", "image/jpg", "image/png"].includes(image.type)
+        ) {
+            errors += ` Only .png, .jgp, .jpeg images allowed.`;
+        }
+
+        if (errors.trim().length > 0) {
+            setError(errors);
+            setIsError(true);
+            return false;
+        }
+
+        addFoodItem();
+    }
+
+    function isNumberValidInteger(_number) {
+        const number = Number(_number);
+
+        return isNaN(number) || number < 0 || !Number.isInteger(number)
+            ? false
+            : true;
+    }
+
+    function isNumberValid(_number) {
+        const number = Number(_number);
+
+        return isNaN(number) || number < 0 ? false : true;
+    }
+
+    async function addFoodItem() {
         const postData = {
             name,
             description,
@@ -81,6 +150,7 @@ function FoodItemAdd() {
                             placeholder="Enter food item name"
                             value={name}
                             onChange={(event) => setName(event.target.value)}
+                            autoComplete="off"
                         />
                     </div>
                     <div className="mb-3">
@@ -96,6 +166,7 @@ function FoodItemAdd() {
                             onChange={(event) =>
                                 setDescription(event.target.value)
                             }
+                            autoComplete="off"
                         />
                     </div>
                     <div className="mb-3">
@@ -111,6 +182,7 @@ function FoodItemAdd() {
                             onChange={(event) =>
                                 setPrice(event.target.value.trim())
                             }
+                            autoComplete="off"
                         />
                     </div>
                     <div className="mb-3">
@@ -124,8 +196,9 @@ function FoodItemAdd() {
                             placeholder="Enter food item cuisines"
                             value={cuisines}
                             onChange={(event) =>
-                                setCuisines(event.target.value.trim())
+                                setCuisines(event.target.value)
                             }
+                            autoComplete="off"
                         />
                     </div>
                     <div className="mb-3">
@@ -141,6 +214,7 @@ function FoodItemAdd() {
                             onChange={(event) =>
                                 setStock(event.target.value.trim())
                             }
+                            autoComplete="off"
                         />
                     </div>
 
@@ -175,6 +249,9 @@ function FoodItemAdd() {
                                 setImage(event.target.files[0])
                             }
                         />
+                        <span className="form-text">
+                            Only .png, .jgp, .jpeg images allowed
+                        </span>
                     </div>
 
                     {isError && (
