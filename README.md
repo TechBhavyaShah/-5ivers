@@ -38,6 +38,7 @@ We also have seeded both user accounts and restaurant admin accounts (so you can
 
 ### Restaurant Admin Accounts
 Access the Admin login page using http://localhost:3000/admin/signin  (Note: There is no button to go to admin page. We need to manually type the url)
+
 The username and password follow the same format for each restaurant... 
 
 Username: restaurant{number}
