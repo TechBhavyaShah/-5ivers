@@ -1,7 +1,12 @@
 const ObjectID = require("mongodb").ObjectId;
 const mongoCollections = require("../config/mongoCollections");
 const users = mongoCollections.users;
-// const uuid = require("uuid");
+const restaurants = mongoCollections.restaurants;
+const ErrorCode = require("../helpers/error-code");
+const validator = require("../helpers/validator");
+const uuid = require("uuid");
+const xss = require("xss");
+const moment = require("moment");
 
 function validateEmail(email) {
   const re =
@@ -64,7 +69,9 @@ async function createUser(
   const userCollection = await users();
 
   const lowerUser = emailAddress.toLowerCase();
-  const userexists = await userCollection.findOne({ emailAddress: lowerUser });
+  const userexists = await userCollection.findOne({
+    emailAddress: lowerUser,
+  });
 
   if (userexists)
     throw {
@@ -99,7 +106,10 @@ async function getById(id) {
   if (typeof id != "string")
     throw { message: `${id} is not string`, status: 400 };
   if (/^ *$/.test(id))
-    throw { message: `id with just empty spaces is not valid`, status: 400 };
+    throw {
+      message: `id with just empty spaces is not valid`,
+      status: 400,
+    };
 
   const userCollection = await users();
   let getId;
@@ -121,7 +131,10 @@ async function getById(id) {
 
 async function getByEmail(emailAddress) {
   if (!emailAddress)
-    throw { message: `You must provide a proper emailAddress`, status: 400 };
+    throw {
+      message: `You must provide a proper emailAddress`,
+      status: 400,
+    };
   if (typeof emailAddress != "string")
     throw { message: `${emailAddress} is not string`, status: 400 };
   if (/^ *$/.test(emailAddress))
@@ -140,7 +153,10 @@ async function getByEmail(emailAddress) {
   });
 
   if (user === null)
-    throw { message: `No user exists with that Email Address`, status: 400 };
+    throw {
+      message: `No user exists with that Email Address`,
+      status: 400,
+    };
 
   return JSON.parse(JSON.stringify(user));
 }
@@ -150,7 +166,10 @@ async function getPastOrders(id) {
   if (typeof id != "string")
     throw { message: `${id} is not string`, status: 400 };
   if (/^ *$/.test(id))
-    throw { message: `id with just empty spaces is not valid`, status: 400 };
+    throw {
+      message: `id with just empty spaces is not valid`,
+      status: 400,
+    };
 
   const userCollection = await users();
   //   let getId;
@@ -164,63 +183,90 @@ async function getPastOrders(id) {
   return userDetails.pastOrders;
 }
 
-// async function checkUser(emailAddress, password) {
-//   if (!emailAddress || !password) {
-//     throw { message: `All fields need to have valid values`, status: 400 };
-//   }
+async function createOrder(userId, cart) {
+  try {
+    const userCollection = await users();
+    const restaurantCollection = await restaurants();
 
-//   if (typeof emailAddress !== "string" || /^ *$/.test(emailAddress)) {
-//     throw { message: `Please enter a valid email`, status: 400 };
-//   }
+    const orderId = uuid.v4();
 
-//   if (!validateEmail(emailAddress))
-//     throw { message: `Please Enter valid Email Address`, status: 400 };
+    for (const currentFoodItem of cart) {
+      const foodItem = await restaurantCollection.findOne(
+        { "food_items.item_id": currentFoodItem.id },
+        {
+          projection: {
+            _id: 1,
+            "food_items.$": 1,
+          },
+        }
+      );
 
-//   if (/^ *$/.test(password))
-//     throw { message: `password cannot be empty`, status: 400 };
+      [foodItem.food_items] = foodItem.food_items;
 
-//   if (/\s/g.test(password))
-//     throw { message: `password cannot have spaces`, status: 400 };
+      restaurantCollection.updateOne(
+        {
+          _id: foodItem._id,
+          "food_items.item_id": foodItem.food_items.item_id,
+        },
+        {
+          $set: {
+            "food_items.$.stock":
+              foodItem.food_items.stock - currentFoodItem.quantity,
+          },
+        }
+      );
 
-//   if (password.length < 8) {
-//     throw {
-//       message: `Password should be atleast 8 characters long`,
-//       status: 400,
-//     };
-//   }
+      const updateData = {
+        orderId: orderId,
+        itemId: currentFoodItem.id,
+        name: currentFoodItem.name,
+        price: currentFoodItem.price,
+        totalPrice:
+          Math.round(
+            (currentFoodItem.price * currentFoodItem.quantity +
+              Number.EPSILON) *
+              100
+          ) / 100,
+        image: currentFoodItem.image,
+        type: currentFoodItem.type,
+        description: currentFoodItem.description,
+        cuisines: currentFoodItem.cuisines,
+        quantity: currentFoodItem.quantity,
+        restaurant: currentFoodItem.restaurant,
+        orderDate: moment().format("MM/DD/YYYY"),
+      };
 
-//   const userCollection = await users();
-//   const user = await userCollection.findOne({
-//     emailAddress: emailAddress.toLowerCase(),
-//   });
+      await userCollection.updateOne(
+        { id: userId },
+        {
+          $push: {
+            pastOrders: updateData,
+          },
+        }
+      );
+    }
+  } catch (error) {
+    throwCatchError(error);
+  }
+}
 
-//   if (user === null)
-//     throw {
-//       message: `Either the Email Address or password is invalid`,
-//       status: 400,
-//     };
+const throwError = (code = 500, message = "Error: Internal Server Error") => {
+  throw { code, message };
+};
 
-//   let compareToMatch = false;
+const throwCatchError = (error) => {
+  console.log(error);
+  if ((error.code || error.status) && error.message) {
+    throwError(error.code || error.status, error.message);
+  }
 
-//   try {
-//     compareToMatch = await bcrypt.compare(password, user.password);
-//   } catch (e) {
-//     //no op
-//   }
-
-//   if (compareToMatch) {
-//     return { authenticated: true };
-//   } else {
-//     throw {
-//       message: `Either the Email Address or password is invalid`,
-//       status: 400,
-//     };
-//   }
-// }
+  throwError(ErrorCode.INTERNAL_SERVER_ERROR, "Error: Internal server error.");
+};
 
 module.exports = {
   createUser,
   getById,
   getByEmail,
   getPastOrders,
+  createOrder,
 };

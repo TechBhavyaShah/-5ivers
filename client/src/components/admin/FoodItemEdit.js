@@ -48,12 +48,42 @@ function FoodItemEdit() {
         getRestaurantFoodItems();
     }, [restaurant, foodItemId]);
 
-    async function handleSubmit() {
+    function handleSubmit() {
+        setMessage("");
+
+        let errors = "";
+
+        if (foodItemStock.length < 1) {
+            errors += `  Food item stock is required.`;
+        }
+
+        if (!isNumberValid(foodItemStock)) {
+            errors += `  Food item stock should be non negative integer.`;
+        }
+
+        if (errors.trim().length > 0) {
+            setError(errors);
+            setIsError(true);
+            return false;
+        }
+
+        updateStock();
+    }
+
+    function isNumberValid(_number) {
+        const number = Number(_number);
+
+        return isNaN(number) || number < 0 || !Number.isInteger(number)
+            ? false
+            : true;
+    }
+
+    async function updateStock() {
         setMessage("");
 
         try {
             const putData = {
-                stock: foodItemStock,
+                stock: parseInt(foodItemStock),
             };
 
             await axios.put(
@@ -77,16 +107,24 @@ function FoodItemEdit() {
         }
     }
 
+    axios.interceptors.response.use(
+        (response) => response,
+        (error) => {
+            if (
+                error.response.status === 401 ||
+                error.response.status === 403
+            ) {
+                window.location.href = "http://localhost:3000/admin/restaurant";
+            }
+        }
+    );
+
     if (isLoading) {
         return <Loader />;
     }
 
-    if (isError) {
-        <p className="text-danger text-center">{error}</p>;
-    }
-
     return (
-        <>
+        response && (
             <div className="container mt-5 w-50">
                 <div className="col">
                     <div className="card h-100">
@@ -119,7 +157,7 @@ function FoodItemEdit() {
                                 <strong>Price: </strong>$
                                 {response.foodItem.price}
                             </li>
-                            <li className="list-group-item mt-2 mb-2">
+                            <li className="list-group-item mt-2">
                                 <label
                                     htmlFor="food-item-stock"
                                     className="form-label"
@@ -137,26 +175,30 @@ function FoodItemEdit() {
                                             event.target.value.trim()
                                         )
                                     }
+                                    autoComplete="off"
                                 />
                             </li>
+                            <li className="list-group-item text-center">
+                                {isError && (
+                                    <p className="text-danger text-center">
+                                        {error}
+                                    </p>
+                                )}
+
+                                {message && message.length > 0 && (
+                                    <p className="text-success text-center">
+                                        {message}
+                                    </p>
+                                )}
+                                <Button
+                                    className="btn btn-primary"
+                                    type="button"
+                                    onClick={handleSubmit}
+                                >
+                                    Submit
+                                </Button>
+                            </li>
                         </ul>
-
-                        {isError && (
-                            <p className="text-danger text-center">{error}</p>
-                        )}
-
-                        {message && message.length > 0 && (
-                            <p className="text-success text-center">
-                                {message}
-                            </p>
-                        )}
-                        <Button
-                            className="btn btn-primary"
-                            type="button"
-                            onClick={handleSubmit}
-                        >
-                            Submit
-                        </Button>
                     </div>
                 </div>
 
@@ -169,7 +211,7 @@ function FoodItemEdit() {
                     </Link>
                 </p>
             </div>
-        </>
+        )
     );
 }
 

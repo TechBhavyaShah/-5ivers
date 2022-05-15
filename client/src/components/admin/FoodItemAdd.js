@@ -1,12 +1,10 @@
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
 
 function FoodItemAdd() {
-    const navigate = useNavigate();
-
     const restaurant = useSelector((state) => state.restaurant);
     const [error, setError] = useState(null);
     const [isError, setIsError] = useState(false);
@@ -19,7 +17,76 @@ function FoodItemAdd() {
     const [type, setType] = useState("");
     const [image, setImage] = useState("");
 
-    async function handleSubmit() {
+    function handleSubmit() {
+        let errors = "";
+
+        if (name.trim().length < 1) {
+            errors += ` Name is required.`;
+        }
+
+        if (description.trim().length < 1) {
+            errors += ` Description is required.`;
+        }
+
+        if (price.length < 1) {
+            errors += ` Price is required.`;
+        }
+
+        if (!isNumberValid(price)) {
+            errors += ` Price should be non negative number.`;
+        }
+
+        if (cuisines.trim().length < 1) {
+            errors += ` Cuisines is required.`;
+        }
+
+        if (type.length < 1) {
+            errors += ` Type is required.`;
+        }
+
+        if (stock.length < 1) {
+            errors += ` Stock is required.`;
+        }
+
+        if (!isNumberValidInteger(stock)) {
+            errors += ` Stock should be non negative integer.`;
+        }
+
+        if (!image) {
+            errors += ` Image is required.`;
+        }
+
+        if (
+            image &&
+            !["image/jpeg", "image/jpg", "image/png"].includes(image.type)
+        ) {
+            errors += ` Only .png, .jgp, .jpeg images allowed.`;
+        }
+
+        if (errors.trim().length > 0) {
+            setError(errors);
+            setIsError(true);
+            return false;
+        }
+
+        addFoodItem();
+    }
+
+    function isNumberValidInteger(_number) {
+        const number = Number(_number);
+
+        return isNaN(number) || number < 0 || !Number.isInteger(number)
+            ? false
+            : true;
+    }
+
+    function isNumberValid(_number) {
+        const number = Number(_number);
+
+        return isNaN(number) || number < 0 ? false : true;
+    }
+
+    async function addFoodItem() {
         const postData = {
             name,
             description,
@@ -31,7 +98,7 @@ function FoodItemAdd() {
         };
 
         try {
-            await axios.post(
+            const { data } = await axios.post(
                 `http://localhost:3001/restaurants/foodItems/${restaurant.id}`,
                 postData,
                 {
@@ -42,7 +109,10 @@ function FoodItemAdd() {
                 }
             );
 
-            navigate("/admin/restaurant");
+            if (data && data.success) {
+                window.location.href = "http://localhost:3000/admin/restaurant";
+            }
+
             setError(null);
             setIsError(false);
         } catch (error) {
@@ -52,6 +122,18 @@ function FoodItemAdd() {
             setIsError(true);
         }
     }
+
+    axios.interceptors.response.use(
+        (response) => response,
+        (error) => {
+            if (
+                error.response.status === 401 ||
+                error.response.status === 403
+            ) {
+                window.location.href = "http://localhost:3000/admin/restaurant";
+            }
+        }
+    );
 
     return (
         <div className="container text-center mt-5 w-50">
@@ -71,6 +153,7 @@ function FoodItemAdd() {
                             placeholder="Enter food item name"
                             value={name}
                             onChange={(event) => setName(event.target.value)}
+                            autoComplete="off"
                         />
                     </div>
                     <div className="mb-3">
@@ -86,6 +169,7 @@ function FoodItemAdd() {
                             onChange={(event) =>
                                 setDescription(event.target.value)
                             }
+                            autoComplete="off"
                         />
                     </div>
                     <div className="mb-3">
@@ -101,6 +185,7 @@ function FoodItemAdd() {
                             onChange={(event) =>
                                 setPrice(event.target.value.trim())
                             }
+                            autoComplete="off"
                         />
                     </div>
                     <div className="mb-3">
@@ -114,8 +199,9 @@ function FoodItemAdd() {
                             placeholder="Enter food item cuisines"
                             value={cuisines}
                             onChange={(event) =>
-                                setCuisines(event.target.value.trim())
+                                setCuisines(event.target.value)
                             }
+                            autoComplete="off"
                         />
                     </div>
                     <div className="mb-3">
@@ -131,6 +217,7 @@ function FoodItemAdd() {
                             onChange={(event) =>
                                 setStock(event.target.value.trim())
                             }
+                            autoComplete="off"
                         />
                     </div>
 
@@ -165,6 +252,9 @@ function FoodItemAdd() {
                                 setImage(event.target.files[0])
                             }
                         />
+                        <span className="form-text">
+                            Only .png, .jgp, .jpeg images allowed
+                        </span>
                     </div>
 
                     {isError && (

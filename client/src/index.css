@@ -13,3 +13,29 @@ code {
 .mandatory {
     color: #b71c1c;
 }
+
+.cart-item-image {
+    height: 75px;
+    width: 75px;
+}
+
+.cart-action-badge {
+    padding: 0.5rem 0.75rem 0.5rem 0.75rem;
+    cursor: pointer;
+}
+
+.cursor-disabled {
+    pointer-events: none;
+    cursor: no-drop;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}

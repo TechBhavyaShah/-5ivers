@@ -129,7 +129,7 @@ const create = async function create(
 //---------------Function to get a restaurant By Id-------------------//
 
 async function getRestaurantById(id) {
-    console.log(id);
+    //   console.log(id);
     if (!id) throw { message: `You must provide a proper id`, status: 400 };
     if (typeof id != "string")
         throw { message: `${id} is not string`, status: 400 };
@@ -147,6 +147,7 @@ async function getRestaurantById(id) {
     if (restaurant === null)
         throw { message: `No restaurant exists with that id`, status: 400 };
 
+    delete restaurant.password;
     return restaurant;
 }
 
@@ -172,268 +173,108 @@ const getAllRestaurants = async function getAllRestaurants() {
 
 //--------------Add the Item to a Restaurant by restaurant ID----------------//
 const addItemToRestaurant = async function addItemToRestaurant(
-    restaurantId,
-    name,
-    description,
-    price,
-    item_image,
-    type,
-    cuisines,
-    stock
+    _restaurantId,
+    _name,
+    _description,
+    _price,
+    _imageUrl,
+    _type,
+    _cuisines,
+    _stock
 ) {
-    if (arguments.length != 8) {
-        throw {
-            message: `All the 8 Arguments should be available in order to process request`,
-            status: 400,
-        };
-    }
+    try {
+        validator.isAddFoodItemFieldsValid(arguments.length);
 
-    if (!restaurantId) {
-        throw {
-            message: "You must provide restaurant ID to add the item",
-            status: 400,
-        };
-    }
+        const restaurantId = validator.isRestaurantIdValid(xss(_restaurantId));
+        const name = validator.isFoodItemNameValid(xss(_name));
+        const description = validator.isFoodItemDescriptionValid(
+            xss(_description)
+        );
+        const price = validator.isFoodItemPriceValid(
+            _price === 0 ? _price.toString() : xss(_price)
+        );
+        const imageUrl = validator.isFoodItemImageUrlValid(xss(_imageUrl));
+        const type = validator.isFoodItemTypeValid(xss(_type));
+        const cuisines = validator.isFoodItemCuisinesValid(xss(_cuisines));
+        const stock = validator.isFoodItemStockValid(
+            _stock === 0 ? _stock.toString() : xss(_stock)
+        );
 
-    if (!name) {
-        throw { message: "You must provide name of the Item", status: 400 };
-    }
-    // if (!description) {
-    //   throw { message: 'You must provide decription of the Item', status: 400 }
-    // }
-    // if (!price) {
-    //   throw { message: "You must provide price of the Item", status: 400 };
-    // }
-    // if (!item_image) {
-    //   throw { message: 'You must provide Image of the Item', status: 400 }
-    // }
+        const restaurantsCollection = await restaurants();
 
-    if (!type) {
-        throw { message: "You must provide Type of the Item ", status: 400 };
-    }
+        const restaurant = await restaurantsCollection.findOne({
+            _id: restaurantId,
+        });
 
-    // if (!stock) {
-    //   throw { message: "You must provide stock of the Item ", status: 400 };
-    // }
-
-    //------------Starts here--------------------//
-    if (name == null || price == null || type == null || stock == null) {
-        throw {
-            message:
-                "name price type and stock parameter must be provided in the function for adding an item",
-            status: 400,
-        };
-    }
-
-    if (restaurantId == null) {
-        throw {
-            message:
-                "You must provide restaurant ID to add the item. It cannot be null",
-            status: 400,
-        };
-    }
-
-    if (
-        typeof name !== "string" ||
-        typeof description !== "string" ||
-        typeof price !== "number" ||
-        typeof item_image !== "string" ||
-        typeof type !== "string" ||
-        typeof stock !== "number" ||
-        typeof restaurantId !== "string"
-    ) {
-        throw {
-            message:
-                "The name,description,item_image,type,restaurantId must all be of string Type and price and stock should be of Number Type. No Other Datatype is allowed!",
-            status: 400,
-        };
-    }
-
-    if (isNaN(price) || isNaN(stock)) {
-        throw {
-            message:
-                "The price and stock should be of Number Type. No Other Datatype is allowed!",
-            status: 400,
-        };
-    }
-
-    if (/^ *$/.test(name)) {
-        throw {
-            message: "Item name cannot be empty Spaces",
-            status: 400,
-        };
-    }
-
-    // if (/^ *$/.test(description)) {
-    //   throw {
-    //     message: 'Item description cannot be empty Spaces',
-    //     status: 400,
-    //   }
-    // }
-
-    if (/^ *$/.test(price)) {
-        throw {
-            message: "Item Price cannot be empty Spaces",
-            status: 400,
-        };
-    }
-
-    // if (/^ *$/.test(item_image)) {
-    //   throw {
-    //     message: 'Item Image cannot be empty Spaces',
-    //     status: 400,
-    //   }
-    // }
-
-    if (/^ *$/.test(type)) {
-        throw {
-            message: "Item Type cannot be empty Spaces",
-            status: 400,
-        };
-    }
-
-    if (/^ *$/.test(stock)) {
-        throw {
-            message: "The Stock cannot be empty Spaces",
-            status: 400,
-        };
-    }
-
-    if (/^ *$/.test(restaurantId)) {
-        throw {
-            message: "Restaurant ID cannot be empty Spaces",
-            status: 400,
-        };
-    }
-
-    if (
-        type.toLowerCase() !== "veg" &&
-        type.toLowerCase() !== "non-veg" &&
-        type.toLowerCase() !== "vegan"
-    ) {
-        throw {
-            message:
-                "The Type option should only have veg,non-veg and vegan. No other types are allowed",
-            status: 400,
-        };
-    }
-
-    name = name.trim();
-    description = description.trim();
-    type = type.trim();
-    cuisines = cuisines.trim();
-
-    const newItem = {
-        item_id: uuid.v4(),
-        name: name,
-        description: description,
-        price: price,
-        item_image: item_image,
-        type: type,
-        cuisines: cuisines,
-        stock: stock,
-    };
-
-    const restaurantsCollection = await restaurants();
-
-    await restaurantsCollection.updateOne(
-        { _id: restaurantId },
-        {
-            $push: {
-                food_items: newItem,
-            },
+        if (!restaurant) {
+            throwError(ErrorCode.NOT_FOUND, "Error: Restaurant not found.");
         }
-    );
+
+        const newItem = {
+            item_id: uuid.v4(),
+            name: name,
+            description: description,
+            price: price,
+            item_image: imageUrl,
+            type: type,
+            cuisines: cuisines,
+            stock: stock,
+        };
+
+        await restaurantsCollection.updateOne(
+            { _id: restaurantId },
+            {
+                $push: {
+                    food_items: newItem,
+                },
+            }
+        );
+    } catch (error) {
+        console.log(error);
+        throwCatchError(error);
+    }
 };
 
-const updateFoodItemStock = async function updateFoodItemStock(
-    restaurantId,
-    itemId,
-    stock
-) {
-    if (arguments.length != 3) {
-        throw {
-            message: `All the 1 Arguments should be available in order to process request`,
-            status: 400,
-        };
-    }
+async function updateFoodItemStock(_restaurantId, _itemId, _stock) {
+    try {
+        validator.isUpdateFoodItemStockValid(arguments.length);
 
-    if (!stock || !restaurantId || !itemId) {
-        throw {
-            message:
-                "You must provide stock,restaurant Id and Item Id of the Item ",
-            status: 400,
-        };
-    }
+        const foodItemId = validator.isFoodItemIdValid(xss(_itemId));
 
-    if (
-        restaurantId == null ||
-        restaurantId == undefined ||
-        itemId == null ||
-        itemId == undefined
-    ) {
-        throw {
-            message:
-                "You must provide restaurant ID and Item Id to add the item. It cannot be null",
-            status: 400,
-        };
-    }
+        const stock = validator.isFoodItemStockValid(
+            _stock === 0 ? _stock.toString() : xss(_stock)
+        );
 
-    if (/^ *$/.test(restaurantId)) {
-        throw {
-            message: "Restaurant ID cannot be empty Spaces",
-            status: 400,
-        };
-    }
+        const restaurantId = validator.isRestaurantIdValid(xss(_restaurantId));
 
-    if (/^ *$/.test(itemId)) {
-        throw {
-            message: "Item ID cannot be empty Spaces",
-            status: 400,
-        };
-    }
-    if (stock == null || stock == undefined) {
-        throw {
-            message:
-                "the stock parameter must be provided in the function for updating an item",
-            status: 400,
-        };
-    }
+        const restaurantsCollection = await restaurants();
 
-    if (/^ *$/.test(stock)) {
-        throw {
-            message: "The Stock cannot be empty Spaces",
-            status: 400,
-        };
+        const foodItem = await restaurantsCollection.findOne(
+            { "food_items.item_id": foodItemId },
+            {
+                projection: {
+                    _id: 1,
+                    "food_items.$": 1,
+                },
+            }
+        );
+
+        if (!foodItem) {
+            throwError(ErrorCode.NOT_FOUND, "Error: Food item not found.");
+        }
+
+        if (restaurantId !== foodItem._id) {
+            throwError(ErrorCode.UNAUTHORIZED, "Error: Unauthorized access.");
+        }
+
+        restaurantsCollection.updateOne(
+            { _id: restaurantId, "food_items.item_id": foodItemId },
+            { $set: { "food_items.$.stock": stock } }
+        );
+    } catch (error) {
+        throwCatchError(error);
     }
-
-    if (
-        typeof stock !== "number" ||
-        typeof restaurantId !== "string" ||
-        typeof itemId !== "string"
-    ) {
-        throw {
-            message:
-                "The stock should be of Number Type and restaurant id and Item Id should be of string type. No Other Datatype is allowed!",
-            status: 400,
-        };
-    }
-
-    if (isNaN(stock)) {
-        throw {
-            message:
-                "The stock should be of Number Type. No Other Datatype is allowed!",
-            status: 400,
-        };
-    }
-
-    const restaurantsCollection = await restaurants();
-
-    restaurantsCollection.updateOne(
-        { _id: restaurantId, "food_items.item_id": itemId },
-        { $set: { "food_items.$.stock": stock } }
-    );
-};
+}
 
 async function getFoodItemsByRestaurantId(_restaurantId) {
     try {
@@ -467,7 +308,7 @@ async function getFoodItemsByRestaurantId(_restaurantId) {
 
 async function getFoodItemByFoodItemId(_foodItemId) {
     try {
-        const foodItemId = validator.isRestaurantIdValid(xss(_foodItemId));
+        const foodItemId = validator.isFoodItemIdValid(xss(_foodItemId));
 
         const restaurantCollection = await restaurants();
 

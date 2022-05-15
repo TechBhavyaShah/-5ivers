@@ -17,6 +17,15 @@ const initialState = {
     address: decodedToken.restaurant?.address,
 };
 
+const defaultState = {
+    token: null,
+    isAuthenticated: false,
+    id: null,
+    name: null,
+    image: null,
+    address: null,
+};
+
 export const restaurantReducer = (state = initialState, { type, payload }) => {
     switch (type) {
         case ActionTypes.SIGN_IN_RESTAURANT:
@@ -29,6 +38,9 @@ export const restaurantReducer = (state = initialState, { type, payload }) => {
                 image: payload.restaurant.image,
                 address: payload.restaurant.address,
             };
+
+        case ActionTypes.SIGN_OUT_RESTAURANT:
+            return defaultState;
 
         default:
             return state;

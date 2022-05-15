@@ -44,9 +44,21 @@ function AdminRestaurant() {
         getRestaurantFoodItems();
     }, [restaurant]);
 
+    axios.interceptors.response.use(
+        (response) => response,
+        (error) => {
+            if (
+                error.response.status === 401 ||
+                error.response.status === 403
+            ) {
+                window.location.href = "http://localhost:3000/admin/restaurant";
+            }
+        }
+    );
+
     return (
         <>
-            <div className="text-center">
+            <div className="text-center mt-5">
                 <h1>{restaurant.name}</h1>
                 <img src={`/${restaurant.image}`} alt={restaurant.name} />
                 <p>{restaurant.address}</p>

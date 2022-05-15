@@ -6,6 +6,7 @@ const userColl = mongoCollections.users;
 const ObjectID = require("mongodb").ObjectId;
 const router = express.Router();
 const xss = require("xss");
+const ErrorCode = require("../helpers/error-code");
 
 function validateEmail(email) {
     const re =
@@ -133,8 +134,8 @@ router.post("/userDetails", async (req, res) => {
             // if (postUser) {
             //     return res.redirect("/");
             // }
-            res.json(postUser);
         } catch (e) {
+            console.log(e);
             res.status(e.status || 500).send({
                 error: e.message || `Internal Server Error`,
             });
@@ -160,5 +161,31 @@ router.get("/pastOrders/:userId", async (req, res) => {
         res.status(404).send({ error: e.message });
     }
 });
+
+router.put("/createOrder/:id", async (request, response) => {
+    try {
+        const requestPostData = request.body;
+
+        if (
+            !requestPostData ||
+            !requestPostData.cart ||
+            requestPostData.cart.length < 1
+        ) {
+            throwError(ErrorCode.NOT_FOUND, "Error: Data not found.");
+        }
+
+        await usersData.createOrder(request.params.id, requestPostData.cart);
+
+        response.json({ success: true });
+    } catch (error) {
+        response.status(error.code || 500).json({
+            error: error.message || "Error: Internal server error.",
+        });
+    }
+});
+
+const throwError = (code = 500, message = "Internal Server Error") => {
+    throw { code, message };
+};
 
 module.exports = router;
