@@ -13,8 +13,6 @@ const Account = () => {
     let currentUserUid = currentUser.uid;
 
     useEffect(() => {
-        console.log("On load useEffect (sign up)");
-
         async function getUser() {
             try {
                 const { data } = await axios.get(
@@ -39,21 +37,23 @@ const Account = () => {
         );
     } else {
         return (
-            <div className="profile">
-                <h2>User Profile</h2>
-                <br />
-                <h3>{userData.name}</h3>
-                <br />
+            <div className="profile mt-4">
+                <h1 className="fs-2 my-3">User Profile</h1>
+                <h2 className="fs-3 my-3">{userData.name}</h2>
                 <img src={userData.image_url} alt="profile" className="user" />
-                <br />
-                <br />
-                <p>Address: {userData.address}</p>
-                <p>About me: {userData.biography}</p>
-                <br />
-                <br />
+                <p className="my-3">
+                    <strong>Address:</strong> {userData.address}
+                </p>
+                <p>
+                    <strong>About me:</strong> {userData.biography}
+                </p>
 
-                <p>Past Orders: </p>
-                {userData && userData.pastOrders !== 0 ? (
+                <p>
+                    <strong>Past Orders:</strong>
+                </p>
+                {userData &&
+                userData.pastOrders &&
+                userData.pastOrders.length > 0 ? (
                     <div>
                         <main className="container mt-5 text-center w-50">
                             {userData.pastOrders.map((order) => {
@@ -67,7 +67,7 @@ const Account = () => {
                         </main>{" "}
                     </div>
                 ) : (
-                    <p>N/A</p>
+                    <p>No orders</p>
                 )}
             </div>
         );
