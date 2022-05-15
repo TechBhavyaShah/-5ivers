@@ -97,7 +97,7 @@ const SignIn = () => {
     };
 
     if (currentUser) {
-        return <Navigate to="/home" />;
+        return <Navigate to="/" />;
     }
 
     return (

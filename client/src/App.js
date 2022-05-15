@@ -28,7 +28,7 @@ function App() {
                     <Navigation />
                 )}
                 <Routes>
-                    <Route index element={<Landing />} />
+                    {/* <Route index element={<Landing />} /> */}
                     {/*<Route path="landing" element={<Landing />} />*/}
                     {/* Private route */}
                     {/*<Route path="/home" element={<Home />} />*/}
