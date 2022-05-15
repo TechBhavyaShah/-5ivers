@@ -61,7 +61,7 @@ const Account = () => {
 
         <p>Past Orders: </p>
         {userData && userData.pastOrders !== 0 ? (
-          <p>
+          <div>
             {userData.pastOrders.map((order) => {
               return (
                 <main className="container mt-5 text-center w-50">
@@ -69,7 +69,7 @@ const Account = () => {
                 </main>
               );
             })}{" "}
-          </p>
+          </div>
         ) : (
           <p>N/A</p>
         )}
