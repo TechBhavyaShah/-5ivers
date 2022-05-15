@@ -252,6 +252,27 @@ router.post("/foodItem/:restaurantId", async (req, res) => {
         return;
     }
 
+    if (restaurantItemData.stock < 0) {
+        res.status(400).json({
+            error: "Item stock cannot be less than zero",
+        });
+        return;
+    }
+
+    if (restaurantItemData.price < 0) {
+        res.status(400).json({
+            error: "Item price cannot be less than zero",
+        });
+        return;
+    }
+
+    if (!number.isInteger(restaurantItemData.stock)) {
+        res.status(400).json({
+            error: "The stock Should be Integer Value!.",
+        });
+        return;
+    }
+
     let name = restaurantItemData.name;
     let description = restaurantItemData.description;
     let price = restaurantItemData.price;
@@ -703,6 +724,20 @@ router.put("/foodItem/:restaurantId/:foodItemId", async (req, res) => {
     if (isNaN(stock)) {
         res.status(400).json({
             error: "The stock should be of Number Type. No Other Datatype is allowed!",
+        });
+        return;
+    }
+
+    if (stock < 0) {
+        res.status(400).json({
+            error: "The stock cannot be negative",
+        });
+        return;
+    }
+
+    if (!number.isInteger(stock)) {
+        res.status(400).json({
+            error: "The stock Should be Integer Value!.",
         });
         return;
     }
