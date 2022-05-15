@@ -1,16 +1,11 @@
-import axios from "axios";
 import React from "react";
 import "../App.css";
 
 const Home = () => {
-    // async function userLoc() {
     navigator.geolocation.getCurrentPosition((position) => {
-        console.log(position);
         let lat = position.coords.latitude;
         let lon = position.coords.longitude;
     });
-
-    // }
     return (
         <div className="container w-75 mt-5">
             <div>
