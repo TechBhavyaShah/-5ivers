@@ -17,7 +17,7 @@ But for good measure and completion, you would need to create a file called `.en
 ### Package and data setup
 Navigate to `/client` and `/server` and run `npm install` to install the required dependencies on both the client and server-side of our project.
 
-Then run `npm run seed`, `npm run item_seed`, `npm run users_seed` to run the various seed files for our database. (Since we are using MongoDB Atlas, we cleared out the database prior to submitting so it has a clean slate for you to work with)
+Then run `npm run seed`, `node /task/item_seed`, `node /task/users_seed` to run the various seed files for our database. (Since we are using MongoDB Atlas, we cleared out the database prior to submitting so it has a clean slate for you to work with)
 
 ### ImageMagick Setup
 The next step is to install ImageMagick on your machine since it will be needed locally for one of our image upload features to work...
