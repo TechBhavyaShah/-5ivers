@@ -365,7 +365,7 @@ router.get(
                 );
             }
 
-            const foodItemId = validator.isRestaurantIdValid(
+            const foodItemId = validator.isFoodItemIdValid(
                 xss(request.params.foodItemId)
             );
 
@@ -525,6 +525,10 @@ router.put(
         try {
             const requestPostData = request.body;
 
+            validator.isPutFoodItemStockValid(
+                Object.keys(requestPostData).length
+            );
+
             const decodedAccessToken = validator.isAccessTokenValid(
                 request.header("accessToken")
             );
@@ -536,10 +540,20 @@ router.put(
                 );
             }
 
+            const foodItemId = validator.isFoodItemIdValid(
+                xss(request.params.foodItemId)
+            );
+
+            const stock = validator.isFoodItemStockValid(
+                requestPostData.stock === 0
+                    ? requestPostData.stock.toString()
+                    : xss(requestPostData.stock)
+            );
+
             await restaurantdata.updateFoodItemStock(
                 decodedAccessToken.restaurant.id,
-                request.params.foodItemId,
-                parseInt(requestPostData.stock)
+                foodItemId,
+                stock
             );
 
             response.json({ success: true });

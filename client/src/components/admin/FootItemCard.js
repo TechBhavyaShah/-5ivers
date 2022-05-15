@@ -32,13 +32,15 @@ function FoodItemCard({ data }) {
                         <strong>Stock: </strong>
                         {data.stock}
                     </li>
+                    <li className="list-group-item text-center">
+                        <Link
+                            className="btn btn-primary"
+                            to={`/admin/restaurant/foodItem/Edit/${data.item_id}`}
+                        >
+                            Edit
+                        </Link>
+                    </li>
                 </ul>
-                <Link
-                    className="btn btn-primary"
-                    to={`/admin/restaurant/foodItem/Edit/${data.item_id}`}
-                >
-                    Edit
-                </Link>
             </div>
         </div>
     );

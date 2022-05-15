@@ -1,12 +1,10 @@
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
 
 function FoodItemAdd() {
-    const navigate = useNavigate();
-
     const restaurant = useSelector((state) => state.restaurant);
     const [error, setError] = useState(null);
     const [isError, setIsError] = useState(false);
@@ -42,7 +40,7 @@ function FoodItemAdd() {
                 }
             );
 
-            navigate("/admin/restaurant");
+            window.location.href = "http://localhost:3000/admin/restaurant";
             setError(null);
             setIsError(false);
         } catch (error) {
@@ -52,6 +50,18 @@ function FoodItemAdd() {
             setIsError(true);
         }
     }
+
+    axios.interceptors.response.use(
+        (response) => response,
+        (error) => {
+            if (
+                error.response.status === 401 ||
+                error.response.status === 403
+            ) {
+                window.location.href = "http://localhost:3000/admin/restaurant";
+            }
+        }
+    );
 
     return (
         <div className="container text-center mt-5 w-50">

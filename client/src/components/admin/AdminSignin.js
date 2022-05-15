@@ -17,7 +17,31 @@ function AdminSignin() {
     const [error, setError] = useState(null);
     const [isError, setIsError] = useState(false);
 
-    async function handleSigninButton() {
+    function handleSigninButton() {
+        let errors = "";
+
+        if (restaurantUsername.length < 1) {
+            errors += `  Restaurant username is required.`;
+        }
+
+        if (restaurantPassword.length < 1) {
+            errors += `  Restaurant password is required.`;
+        }
+
+        if (restaurantPassword.length > 0 && restaurantPassword.length < 8) {
+            errors += `  Restaurant password should be of at least 8 characters long.`;
+        }
+
+        if (errors.trim().length > 0) {
+            setError(errors);
+            setIsError(true);
+            return false;
+        }
+
+        doSignIn();
+    }
+
+    async function doSignIn() {
         setIsLoading(true);
 
         try {
@@ -72,7 +96,9 @@ function AdminSignin() {
                     controlId="restaurant-username"
                     autoComplete="off"
                 >
-                    <Form.Label>Restaurant Username</Form.Label>
+                    <Form.Label>
+                        Restaurant Username<span className="mandatory">*</span>
+                    </Form.Label>
                     <Form.Control
                         type="text"
                         placeholder="Enter restaurant username"
@@ -88,7 +114,9 @@ function AdminSignin() {
                     controlId="restaurant-password"
                     autoComplete="off"
                 >
-                    <Form.Label>Password</Form.Label>
+                    <Form.Label>
+                        Password<span className="mandatory">*</span>
+                    </Form.Label>
                     <Form.Control
                         type="password"
                         placeholder="Enter restaurant password"

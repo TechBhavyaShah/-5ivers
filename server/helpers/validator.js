@@ -30,6 +30,18 @@ function isPostSignInTotalFieldsValid(totalFields) {
     common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
 }
 
+function isPutFoodItemStockValid(totalFields) {
+    const TOTAL_MANDATORY_FIELDS = 1;
+
+    common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
+}
+
+function isUpdateFoodItemStockValid(totalFields) {
+    const TOTAL_MANDATORY_FIELDS = 3;
+
+    common.isTotalFieldsValid(totalFields, TOTAL_MANDATORY_FIELDS);
+}
+
 function isCheckRestaurantTotalFieldsValid(totalFields) {
     const TOTAL_MANDATORY_FIELDS = 2;
 
@@ -45,6 +57,17 @@ function isRestaurantIdValid(_restaurantId) {
     common.isUuid(restaurantId);
 
     return restaurantId;
+}
+
+function isFoodItemIdValid(_foodItemId) {
+    common.isArgumentString(_foodItemId, "food item id");
+    common.isStringEmpty(_foodItemId, "food item id");
+
+    const foodItemId = _foodItemId.trim();
+
+    common.isUuid(foodItemId);
+
+    return foodItemId;
 }
 
 function isRestaurantIdValid(_foodItemId) {
@@ -64,11 +87,21 @@ function isAccessTokenValid(accessToken) {
     return common.isJsonWebToken(accessToken);
 }
 
+function isFoodItemStockValid(stock) {
+    common.isStringValidInteger(stock, "food item stock");
+
+    return Number(stock);
+}
+
 module.exports = {
     isRestaurantPasswordValid,
     isRestaurantUsernameValid,
     isPostSignInTotalFieldsValid,
     isCheckRestaurantTotalFieldsValid,
+    isPutFoodItemStockValid,
     isRestaurantIdValid,
     isAccessTokenValid,
+    isFoodItemIdValid,
+    isFoodItemStockValid,
+    isUpdateFoodItemStockValid,
 };

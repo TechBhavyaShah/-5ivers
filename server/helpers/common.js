@@ -105,9 +105,10 @@ function isStringValidInteger(string, variableName) {
     isArgumentString(string, variableName);
     isStringEmpty(string, variableName);
 
-    const number = parseInt(string, 10);
+    const number = Number(string);
 
     isNumber(number, variableName);
+    isInteger(number, variableName);
 }
 
 function isNumber(number, variableName) {
@@ -115,6 +116,15 @@ function isNumber(number, variableName) {
         throwError(
             ErrorCode.BAD_REQUEST,
             `Error: ${variableName || "Provided variable"} must be a number.`
+        );
+    }
+}
+
+function isInteger(number, variableName) {
+    if (!Number.isInteger(number)) {
+        throwError(
+            ErrorCode.BAD_REQUEST,
+            `Error: ${variableName || "Provided variable"} must be an integer.`
         );
     }
 }
