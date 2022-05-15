@@ -110,33 +110,45 @@
   object-fit: cover;
 }
 
-.profile{
-	margin: auto;
-	text-align: center;
+.profile {
+  margin: auto;
+  text-align: center;
 }
 
-.profileLink{
-	color: white;
-  	padding: 0.4rem 0.8rem;
-	background-color: #282c34;
-	border-radius: 3px;
-	/* color: white; */
-	text-decoration: none !important;
-	margin: 5px;
+.profileLink {
+  color: white;
+  padding: 0.4rem 0.8rem;
+  background-color: #282c34;
+  border-radius: 3px;
+  /* color: white; */
+  text-decoration: none !important;
+  margin: 5px;
 }
 .profileLink:hover {
-	background-color: white;
-	color: #1a2a5a;
-	border: 2px solid  #1a2a5a;
-}
-
-.textCenter{
-	text-align: center;
+  background-color: white;
+  color: #1a2a5a;
+  border: 2px solid #1a2a5a;
 }
 
 .alignContent {
   align-items: center !important;
   width: 14rem;
-  
 }
 
+.textCenter {
+  text-align: center;
+}
+
+.container {
+  margin-top: 4.8rem;
+  margin-bottom: 3.2rem;
+}
+.row {
+  max-width: 120rem;
+}
+.col-xl-10 {
+  width: 83.3333333333%;
+}
+.col-xl-offset-1 {
+  margin-left: 8.3333333333%;
+}
