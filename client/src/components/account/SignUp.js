@@ -51,9 +51,7 @@ const SignUp = () => {
                     "Content-Type": imageFile.type,
                 },
             });
-        } catch (e) {
-            console.log(e);
-        }
+        } catch (e) {}
 
         const imageUrl = data.split("?")[0];
 
@@ -88,8 +86,6 @@ const SignUp = () => {
         // Appending address details together
         address = `${address} ${postalCode}`;
 
-        console.log(data);
-
         if (passwordOne !== passwordTwo) {
             setError("passwordOne", {
                 type: "client",
@@ -108,7 +104,6 @@ const SignUp = () => {
             );
             await doUpdateProfileDisplayName(name);
         } catch (error) {
-            console.log(error.code);
             if (error.code == "auth/weak-password") {
                 setError("passwordOne", {
                     type: "server",
@@ -134,15 +129,12 @@ const SignUp = () => {
                 // Upload profile pic to S3 and grab S3 url to pass to axios call below
                 let profilePic = data.profilePic[0];
                 imageUrl = await uploadImage(profilePic);
-            } catch (e) {
-                console.log(e);
-            }
+            } catch (e) {}
         }
 
         try {
             // Axios call to backend to create a user with the firebase uid
             let userId = user.user.uid;
-            console.log(userId);
 
             /* 
                 Request body:
@@ -164,9 +156,7 @@ const SignUp = () => {
                     address: address,
                 }
             );
-        } catch (e) {
-            console.log(e);
-        }
+        } catch (e) {}
         reset();
     };
 

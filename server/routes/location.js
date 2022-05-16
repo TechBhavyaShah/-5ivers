@@ -43,7 +43,6 @@ router.get("/location/:lat/:lon", async (req, res) => {
             res.json(data);
         }
     } catch (e) {
-        console.log(e.message || "Something went wrong");
         res.status(e.status || 400).json({
             error: e.message || "Something went wrong",
         });
