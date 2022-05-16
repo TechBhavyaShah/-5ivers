@@ -22,7 +22,10 @@ But for good measure and completion, you would need to create a file called `.en
 
 Navigate to `/client` and `/server` and run `npm install` or `npm install --force` to install the required dependencies on both the client and server-side of our project.
 
-Then run `npm run seed`, `node task/item_seed`, `node task/users_seed` to run the various seed files for our database. (Since we are using MongoDB Atlas, we cleared out the database prior to submitting so it has a clean slate for you to work with)
+Since we are using MongoDB Atlas, we have seeded our database with the data there is no need to run the seed files in your setup.
+We are just providing this commands if you want to add your own data into seed file, run `npm run seed`, `node task/item_seed` to run the various seed files for our database.
+
+Note: If you run the seed file, data will be duplicated in MongoDB Atlas
 
 ### ImageMagick Setup
 
