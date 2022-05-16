@@ -96,7 +96,6 @@ async function createUser(
         throw { message: `Could not add user`, status: 400 };
 
     const newId = insertInfo.insertedId.toString();
-    //   console.log(newId)
     const user = await getById(id);
 
     return JSON.parse(JSON.stringify(user));
@@ -122,8 +121,6 @@ async function getById(id) {
     //   }
 
     const user = await userCollection.findOne({ id: id });
-    //   console.log(user)
-
     if (user === null)
         throw { message: `No user exists with that id`, status: 400 };
 
@@ -318,7 +315,6 @@ const throwError = (code = 500, message = "Error: Internal Server Error") => {
 };
 
 const throwCatchError = (error) => {
-    console.log(error);
     if ((error.code || error.status) && error.message) {
         throwError(error.code || error.status, error.message);
     }

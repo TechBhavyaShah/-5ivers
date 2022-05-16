@@ -22,7 +22,6 @@ const Account = () => {
                 setUserData(data);
                 setLoading(false);
             } catch (e) {
-                console.log(e);
                 setLoading(false);
             }
         }

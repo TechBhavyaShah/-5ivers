@@ -14,6 +14,7 @@ function FoodItemEdit() {
     const [foodItemStock, setFoodItemStock] = useState(0);
     const [message, setMessage] = useState("");
     const { foodItemId } = useParams();
+    const accessToken = localStorage.getItem("accessToken");
 
     useEffect(() => {
         async function getRestaurantFoodItems() {
@@ -24,7 +25,7 @@ function FoodItemEdit() {
                     `http://localhost:3001/restaurants/foodItems/singleFoodItem/${foodItemId}`,
                     {
                         headers: {
-                            accessToken: restaurant.token,
+                            accessToken: accessToken,
                         },
                     }
                 );
@@ -46,7 +47,7 @@ function FoodItemEdit() {
         }
 
         getRestaurantFoodItems();
-    }, [restaurant, foodItemId]);
+    }, [restaurant, foodItemId, accessToken]);
 
     function handleSubmit() {
         setMessage("");

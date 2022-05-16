@@ -67,7 +67,6 @@ const ChangePassword = () => {
             alert("Password has been changed, you will now be logged out");
             navigate("/home");
         } catch (error) {
-            console.log(error.code);
             if (error.code == "auth/wrong-password") {
                 setError("currentPassword", {
                     type: "server",

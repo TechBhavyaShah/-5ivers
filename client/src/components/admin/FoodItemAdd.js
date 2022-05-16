@@ -8,6 +8,7 @@ function FoodItemAdd() {
     const restaurant = useSelector((state) => state.restaurant);
     const [error, setError] = useState(null);
     const [isError, setIsError] = useState(false);
+    const accessToken = localStorage.getItem("accessToken");
 
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
@@ -103,7 +104,7 @@ function FoodItemAdd() {
                 postData,
                 {
                     headers: {
-                        accessToken: restaurant.token,
+                        accessToken: accessToken,
                         "Content-Type": "multipart/form-data",
                     },
                 }

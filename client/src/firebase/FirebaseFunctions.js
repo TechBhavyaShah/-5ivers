@@ -31,7 +31,6 @@ async function doCreateUserWithEmailAndPassword(email, password) {
     // try {
     const user = await createUserWithEmailAndPassword(auth, email, password);
     // await updateProfile(user, { displayName: displayName });
-    console.log(user.user.uid);
 
     return user;
     // Axios call to a backend route
@@ -49,7 +48,6 @@ async function doCreateUserWithEmailAndPassword(email, password) {
 
 // CREATE SEPARATE FUNCTION TO UPDATE PROFILE, I KEEP RUNNING INTO NETWORK ERROR DOING IT CONSECUTIVELY WITH THE FN BEFORE THIS
 async function doUpdateProfileDisplayName(displayName) {
-    console.log(displayName);
     await updateProfile(auth.currentUser, { displayName: displayName });
 }
 

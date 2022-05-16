@@ -8,6 +8,8 @@ import { useSelector } from "react-redux";
 
 function AdminRoutes() {
     const restaurant = useSelector((state) => state.restaurant);
+    const accessToken = localStorage.getItem("accessToken");
+
     return (
         <>
             <AdminNavBar />
@@ -15,7 +17,9 @@ function AdminRoutes() {
                 <Route
                     path="/signin"
                     element={
-                        restaurant && restaurant.isAuthenticated ? (
+                        accessToken &&
+                        restaurant &&
+                        restaurant.isAuthenticated ? (
                             <AdminRestaurant />
                         ) : (
                             <AdminSignin />
@@ -25,7 +29,9 @@ function AdminRoutes() {
                 <Route
                     path="/restaurant"
                     element={
-                        restaurant && restaurant.isAuthenticated ? (
+                        accessToken &&
+                        restaurant &&
+                        restaurant.isAuthenticated ? (
                             <AdminRestaurant />
                         ) : (
                             <Navigate to="/admin/signin" />
@@ -35,7 +41,9 @@ function AdminRoutes() {
                 <Route
                     path="/restaurant/foodItem/Edit/:foodItemId"
                     element={
-                        restaurant && restaurant.isAuthenticated ? (
+                        accessToken &&
+                        restaurant &&
+                        restaurant.isAuthenticated ? (
                             <FoodItemEdit />
                         ) : (
                             <Navigate to="/admin/signin" />
@@ -45,7 +53,9 @@ function AdminRoutes() {
                 <Route
                     path="/restaurant/foodItem/Add"
                     element={
-                        restaurant && restaurant.isAuthenticated ? (
+                        accessToken &&
+                        restaurant &&
+                        restaurant.isAuthenticated ? (
                             <FoodItemAdd />
                         ) : (
                             <Navigate to="/admin/signin" />
