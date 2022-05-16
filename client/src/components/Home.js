@@ -17,9 +17,9 @@ const Home = () => {
                 <p>
                     Wholesome Food is a waste food management Web application
                     that allows users to browse unsold food items in nearby(in
-                    1.5 Miles of radius) shops and restaurants. The users can
-                    purchase them at a highly discounted price, avoiding food
-                    waste.
+                    <strong> 1.5 Miles of radius</strong>) shops and
+                    restaurants. The users can purchase them at a highly
+                    discounted price, avoiding food waste.
                 </p>
                 <h3>
                     <b>Why it is necessary?</b>

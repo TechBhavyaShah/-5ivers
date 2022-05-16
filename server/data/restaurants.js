@@ -129,7 +129,6 @@ const create = async function create(
 //---------------Function to get a restaurant By Id-------------------//
 
 async function getRestaurantById(id) {
-    //   console.log(id);
     if (!id) throw { message: `You must provide a proper id`, status: 400 };
     if (typeof id != "string")
         throw { message: `${id} is not string`, status: 400 };
@@ -230,7 +229,6 @@ const addItemToRestaurant = async function addItemToRestaurant(
             }
         );
     } catch (error) {
-        console.log(error);
         throwCatchError(error);
     }
 };
@@ -395,7 +393,6 @@ const throwError = (code = 500, message = "Error: Internal Server Error") => {
 };
 
 const throwCatchError = (error) => {
-    console.log(error);
     if (error.code && error.message) {
         throwError(error.code, error.message);
     }
