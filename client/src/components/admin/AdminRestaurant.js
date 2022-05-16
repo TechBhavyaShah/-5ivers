@@ -11,6 +11,7 @@ function AdminRestaurant() {
     const [error, setError] = useState(null);
     const [isError, setIsError] = useState(false);
     const [response, setResponse] = useState(null);
+    const accessToken = localStorage.getItem("accessToken");
 
     useEffect(() => {
         async function getRestaurantFoodItems() {
@@ -21,7 +22,7 @@ function AdminRestaurant() {
                     `http://localhost:3001/restaurants/foodItems/${restaurant.id}`,
                     {
                         headers: {
-                            accessToken: restaurant.token,
+                            accessToken: accessToken,
                         },
                     }
                 );
@@ -42,7 +43,7 @@ function AdminRestaurant() {
         }
 
         getRestaurantFoodItems();
-    }, [restaurant]);
+    }, [restaurant, accessToken]);
 
     axios.interceptors.response.use(
         (response) => response,

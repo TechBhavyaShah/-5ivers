@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 function AdminNavBar() {
     const dispatch = useDispatch();
     const restaurant = useSelector((state) => state.restaurant);
+    const accessToken = localStorage.getItem("accessToken");
 
     function handleAdminLogout() {
         localStorage.removeItem("accessToken");
@@ -23,7 +24,7 @@ function AdminNavBar() {
                 >
                     <img src="/icon96.png" alt="brand logo" height="50" />
                 </Navbar.Brand>
-                {restaurant && restaurant.isAuthenticated && (
+                {accessToken && restaurant && restaurant.isAuthenticated && (
                     <Nav>
                         <button
                             className="btn btn-primary btn-sm"
